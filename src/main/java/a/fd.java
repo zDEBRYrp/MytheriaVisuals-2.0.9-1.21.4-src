@@ -246,7 +246,8 @@ public class fd {
 
          if (var17.getUniform("screenSize") != null) {
             MinecraftClient var18 = MinecraftClient.getInstance();
-            var17.getUniform("screenSize").set(var18.getWindow().getFramebufferWidth(), var18.getWindow().getFramebufferHeight());
+            var17.getUniform("screenSize")
+               .set((float)var18.getWindow().getFramebufferWidth(), (float)var18.getWindow().getFramebufferHeight());
          }
 
          if (var17.getUniform("baseColor") != null) {
