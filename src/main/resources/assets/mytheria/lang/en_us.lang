@@ -1,0 +1,925 @@
+
+# Описания
+modules.descriptions.autorelist=Automatically relists items through the auction
+modules.descriptions.auto_relist=Automatically relists items through the auction
+modules.descriptions.shifttap=Automatically shifts when hitting an entity
+modules.descriptions.itemradius=Shows item interaction radius
+modules.descriptions.autonear=Automatically sends /near command at set intervals
+modules.descriptions.auto_near=Automatically sends /near command at set intervals
+modules.descriptions.blink=Creates a last position effect behind the player
+modules.descriptions.auto_sprint=Enables automatic sprinting
+modules.descriptions.menu=Client features menu
+modules.descriptions.ambience=Changes the world's ambiance
+modules.descriptions.swing_animation=Changes hand swing animations
+modules.descriptions.sound_esp=Shows where a trident or TNT sound was played
+modules.descriptions.tnt_timer=Displays the time until TNT explodes
+modules.descriptions.view_model=Changes the viewmodel position
+modules.descriptions.trap_esp=Highlights traps
+modules.descriptions.world=Visual world additions
+modules.descriptions.auto_invisible=Automatically drinks invisibility potions
+modules.descriptions.mine_helper=Helper functions for mining
+modules.descriptions.middle_click=Performs an action on middle mouse click
+modules.descriptions.auto_eat=Automatically eats food at a certain hunger level
+modules.descriptions.player_utils=Helper functions for the player
+modules.descriptions.item_pickup=Notifies you when picking up a donor item
+modules.descriptions.object_info=Shows information about traps and structures in the world
+modules.descriptions.fast_exp=Быстрое бросание бутылок опыта
+
+# Object Info
+modules.settings.object_info.particle_mode=Particle Mode
+modules.settings.object_info.particle_mode.gravity=Gravity
+modules.settings.object_info.particle_mode.scatter=Scatter
+modules.settings.object_info.sonar_effect=Sonar Effect
+modules.settings.object_info.debug_mode=Debug Mode
+
+modules.object_info.trap=Trap
+modules.object_info.dragon=Dragon Trap
+modules.object_info.plast=Plast
+modules.descriptions.hit_sound=Plays a sound when hitting an entity
+modules.descriptions.item_highlighter=Highlight items in inventory and hotbar
+
+# Hit Sound
+modules.settings.hit_sound.only_critical=Only Critical
+modules.settings.hit_sound.only_critical.description=Play sound only on critical hits
+modules.settings.hit_sound.sound=Sound
+modules.settings.hit_sound.volume=Volume
+modules.settings.hit_sound.volume.description=Hit sound volume
+modules.settings.hit_sound.pitch=Pitch
+modules.settings.hit_sound.pitch.description=Sound pitch
+
+# Item Highlighter
+modules.settings.item_highlighter.items=Items
+modules.descriptions.name_protect=Visually changes player nickname
+modules.descriptions.elytra_utils=Helper functions for elytras
+modules.descriptions.auto_accept=Automatically accepts teleport requests
+modules.descriptions.death_cords=Sends death coordinates to chat
+modules.descriptions.auto_swap=Automatically swaps items in the off-hand
+modules.descriptions.auto_join=Automatically joins a game mode
+modules.descriptions.sounds=Adds sounds to the client
+modules.descriptions.kill_effects=A beautiful effect on entity death
+modules.descriptions.friend_markers=Visually marks friends
+modules.descriptions.friend_marker=Displays a crystal above friends' heads
+modules.descriptions.chat_helper=Chat improvements
+
+# Chat Helper
+modules.settings.chat_helper.chat_history=Chat History
+modules.settings.chat_helper.anti_spam=Anti-Spam
+
+# Target ESP
+modules.descriptions.target_esp=Marks the active target
+modules.settings.target_esp.mode=Mode
+modules.settings.target_esp.mode.souls=Souls
+modules.settings.target_esp.mode.crystals=Crystals
+
+# Target List
+modules.descriptions.target_list=Tracks and notifies about target players joining/leaving
+modules.settings.target_esp.mode.chains=Chains
+modules.settings.target_esp.mode.circles=Circles
+modules.settings.target_esp.mode.marker=Marker
+modules.settings.target_esp.mode.ring=Ring
+modules.settings.target_esp.mode.pigs=Pigs
+modules.settings.target_esp.change_color_on_damage=Change color on damage
+modules.settings.target_esp.speed=Speed
+modules.settings.target_esp.size=Size
+modules.settings.target_esp.particle_count=Particle count
+modules.settings.target_esp.particle_thickness=Particle thickness
+
+# Particles
+modules.descriptions.particles=Falling particles around the player
+modules.settings.particles.amount=Amount
+modules.settings.particles.size=Particle Size
+modules.settings.particles.animate_colors=Animate Colors
+modules.settings.particles.type=Particle Type
+modules.settings.particles.type.stars=Stars
+modules.settings.particles.type.snow=Snow
+modules.settings.particles.type.dollars=Dollars
+
+# Friend Markers
+modules.settings.friends_markers.setting=Mode
+modules.settings.friends_markers.heads=Heads
+
+# Interface
+modules.descriptions.interface=Interface elements of the cheat
+modules.settings.interface.liquidGlass=Liquid Glass
+modules.settings.interface.minimalism=Minimalism
+modules.settings.interface.language=Language
+modules.settings.interface.mode=Style
+modules.settings.interface.theme=Theme
+modules.settings.interface.dark=Dark
+modules.settings.interface.light=Light
+
+# Removals
+modules.descriptions.removals=Removes various game elements
+modules.settings.removals.effects=Remove effects
+modules.settings.removals.hurtCam=Hurt camera shake
+modules.settings.removals.scoreboard=Scoreboard
+modules.settings.removals.bossBar=Boss bar
+modules.settings.removals.portal=Portal effect
+modules.settings.removals.fire=Fire
+modules.settings.removals.water=Water overlay/darkening
+modules.settings.removals.pumpkin=Pumpkin overlay/darkening
+modules.settings.removals.fov=Dynamic FOV
+modules.settings.removals.breakParticles=Block Particles
+modules.settings.removals.weather=Weather Particles
+modules.settings.removals.darkness=Darkness
+modules.settings.removals.vignette=Vignette
+
+modules.settings.removals.sounds=Remove sounds
+modules.settings.removals.beacon=Beacon
+modules.settings.removals.weatherSound=Weather
+modules.settings.removals.phantoms=Phantoms
+
+# NoSlow
+modules.settings.noslow.mode=Mode
+modules.settings.noslow.grim=Grim
+modules.settings.noslow.spooky=SpookyTime
+modules.settings.noslow.holly=HolyWorld
+
+# CustomFog
+modules.descriptions.custom_fog=Fog customization
+modules.settings.custom_fog.distance=From/to
+modules.settings.custom_fog.distance.description=Adjusts the start and end of the fog
+modules.settings.custom_fog.color=Fog color
+
+# CustomHitBox
+modules.descriptions.custom_hitbox=Shows entity hitboxes
+modules.settings.custom_hitbox.fill=Fill
+modules.settings.custom_hitbox.color=Hitbox color
+modules.settings.custom_hitbox.show_eye_height=Show eye height
+modules.settings.custom_hitbox.show_look_vector=Show look vector
+
+# Prediction
+modules.descriptions.prediction=Displays the flight trajectory of ender pearls, tridents, etc.
+
+modules.settings.prediction.entities=Entities to display
+modules.settings.prediction.entities.pearls=Ender Pearls
+modules.settings.prediction.entities.tridents=Tridents
+modules.settings.prediction.entities.arrows=Arrows
+modules.settings.prediction.entities.snowballs=Snowballs
+modules.settings.prediction.entities.potions=Potions
+modules.settings.prediction.entities.items=Items
+modules.settings.prediction.render_mode=Render Mode
+modules.settings.prediction.render_mode.default=Simple
+modules.settings.prediction.render_mode.glow=Glow
+modules.settings.prediction.hand=In hands
+modules.settings.prediction.walls=Through Walls
+modules.settings.prediction.hud=Incoming Hits
+modules.settings.prediction.hud.description=Displays text on screen when a trident, arrow, etc. is flying at you
+
+# ShiftTap
+modules.settings.shifttap.interval=Interval
+modules.settings.shifttap.interval.description=How long to hold shift in ticks
+
+# ItemRadius
+modules.settings.itemradius.ender_eye=Ender Eye
+modules.settings.itemradius.ender_eye.description=Show ender eye radius
+modules.settings.itemradius.ender_eye_color=Ender Eye Color
+modules.settings.itemradius.sugar=Sugar
+modules.settings.itemradius.sugar.description=Show sugar radius
+modules.settings.itemradius.sugar_color=Sugar Color
+modules.settings.itemradius.netherite_scrap=Trap
+modules.settings.itemradius.netherite_scrap.description=Show trap radius
+modules.settings.itemradius.netherite_scrap_color=Trap Color
+modules.settings.itemradius.dried_kelp=Plastic
+modules.settings.itemradius.dried_kelp.description=Show plastic radius
+modules.settings.itemradius.dried_kelp_color=Plastic Color
+modules.settings.itemradius.snowball=Snowball
+modules.settings.itemradius.snowball.description=Show snowball radius
+modules.settings.itemradius.snowball_color=Snowball Color
+modules.settings.itemradius.proximity_color=Change color when player in radius
+modules.settings.itemradius.proximity_color.description=Change color when player in radius
+modules.settings.itemradius.proximity_color_setting=Color when player in radius
+
+# Auto Near
+modules.settings.auto_near.delay=Delay
+modules.settings.auto_near.delay.description=Interval between sending /near command
+
+# -------- худ --------
+
+# > Эффект
+
+# > Armor
+
+# > ТаргетХуд
+
+# > ArmorHud
+
+# > Dynamic Island
+
+# > Inventory
+
+# > Hotbar
+hud.hotbar=Hotbar
+hud.hotbar.description=Display custom hotbar
+
+# > Armor
+hud.armor.description=Show armor durability
+
+# > Inventory HUD
+hud.inventory.description=Display inventory preview
+
+# > Effects
+hud.effects.description=Active potion effects
+
+# > Keybinds
+hud.keybinds.description=Show active keybinds
+
+# > ArrayList
+hud.arraylist=ArrayList
+hud.arraylist.description=Alphabetically sorted list of active modules
+
+# > Target HUD
+hud.targethud.description=Target information display
+
+# > Watermark
+hud.watermark.description=Client watermark
+
+# > Cooldowns
+hud.cooldowns.description=Item cooldown tracker
+
+# > Dynamic Island
+hud.dynamic_island.description=Dynamic status island
+
+remove=Remove
+actions=Actions
+settings=Settings
+enabled=enabled
+disabled=disabled
+
+# цели
+players=Players
+animals=Animals
+mobs=Mobs
+invisibles=Invisibles
+friends=Friends
+
+# slider suffixes
+slot=slot
+sec=sec
+block=block
+
+# мейнменю
+mainmenu.next=Click to continue
+mainmenu.greeting.morning=Good morning
+mainmenu.greeting.afternoon=Good afternoon
+mainmenu.greeting.evening=Good evening
+mainmenu.greeting.night=Good night
+mainmenu.singleplayer=Singleplayer
+mainmenu.multiplayer=Multiplayer
+mainmenu.accounts=Accounts
+mainmenu.settings=Settings
+mainmenu.quit=Quit
+
+# Days of the week
+time.days.monday=Monday
+time.days.tuesday=Tuesday
+time.days.wednesday=Wednesday
+time.days.thursday=Thursday
+time.days.friday=Friday
+time.days.saturday=Saturday
+time.days.sunday=Sunday
+
+# Months
+time.months.january=January
+time.months.february=February
+time.months.march=March
+time.months.april=April
+time.months.may=May
+time.months.june=June
+time.months.july=July
+time.months.august=August
+time.months.september=September
+time.months.october=October
+time.months.november=November
+time.months.december=December
+
+# Настройки
+type_text=Enter text
+setting_of=of
+
+# Колорпикер
+colorpicker.opacity=Opacity
+colorpicker.click_to_sample=Click to sample
+
+# Поиск
+search.tooltip=Press Ctrl + F to open search
+search.tooltip.tab=Tab - Open settings
+search.tooltip.enter=Enter - Toggle
+
+# меню
+menu.binding=Press any key
+
+configs.loaded=Config loaded successfully
+chat.connection_warning=You have connected to the server %s using version %s. You may want to switch to a more suitable client version for better experience.
+
+# > Mass localization
+friend=Friend
+enemy=Enemy
+copy=Copy
+
+# Свинги
+# названия пресетов для свингов
+
+# Инфо
+coords=Coordinates
+server=Server
+speed=Speed
+hud.player.speedY=Y-axis speed
+hud.player=Player
+hud.world=World
+hud.world.compact_server=Compact server name
+
+color=Color
+
+delay=Delay
+mode=Mode
+size=Size
+
+elements=Elements
+
+modules.settings.name_protect.fake_name=Fake name
+
+health=Health
+key=Key
+
+# AutoAuth
+
+# AutoPilot
+
+# Cat
+
+# Config
+commands.config.description=Manages configurations
+commands.config.invalid_action=Unknown action!
+commands.config.saved=Config %s saved!
+
+# FakePlayer
+
+# Friends
+commands.friends.description=Manages friends
+commands.friends.target=You can't add a target as a friend!
+commands.friends.added=Player %s added to friends!
+commands.friends.removed=Player %s removed from friends!
+commands.friends.exists=Player %s is already in your friends list!
+commands.friends.self=You can't add yourself as a friend!
+commands.friends.not_exists=Player %s not found in friends list!
+commands.friends.list=Friends list:
+commands.friends.empty=Friends list is empty :(
+
+# Help
+commands.help.description=Displays the list of commands
+
+# Inventory
+
+# Prefix
+
+# ReHub
+
+# Toggle
+
+# Vclip
+
+# Target
+commands.target.friend_error=You can't add a friend to your targets!
+commands.target.already_exists=Target %s is already in the list
+commands.target.self_error=You can't target yourself
+commands.target.added=Target %s has been added
+commands.target.not_found=Target with the name %s was not found!
+commands.target.removed=Target %s has been removed
+commands.target.cleared=Target list has been cleared!
+commands.target.empty=Target list is empty!
+commands.target.list_header=Target list:
+commands.target.list_entry=[%s] %s
+
+# Auto Farm
+modules.auto_farm.screen.select_section_ft=● Select a section
+modules.auto_farm.screen.select_section=● Select a section
+modules.auto_farm.screen.food_seller=Food buyer
+
+# Auto Resell
+modules.settings.autorelist.interval=Interval
+modules.settings.autorelist.interval.description=Interval between relisting (in seconds)
+modules.settings.autorelist.debug=Debug
+modules.settings.autorelist.debug.description=Show debug messages
+
+# Auto Swap
+modules.settings.auto_swap.button=Button
+modules.settings.auto_swap.item=Item
+modules.settings.auto_swap.item.talisman=Talisman
+modules.settings.auto_swap.item.orb=Orb
+modules.settings.auto_swap.swap_to=Swap to
+modules.settings.auto_swap.swap_to.talisman=Talisman
+modules.settings.auto_swap.swap_to.orb=Orb
+
+# Auto Eat
+modules.settings.auto_eat.food=Hunger level
+modules.settings.auto_eat.food.description=At what hunger value to start eating
+
+# Auto Leave
+modules.auto_leave.near_player=Player nearby!
+modules.auto_leave.low_health=Low health!
+modules.auto_leave.banned_word=banned
+
+# Waypoints
+modules.descriptions.waypoints=Displays waypoints in the world
+modules.waypoints.base_name=Waypoint
+modules.waypoints.player_removed=Waypoint on player %s removed because they are unavailable
+modules.waypoints.exists=Waypoint "%s" already exists
+modules.waypoints.added=Added waypoint "%s" at %d, %d, %d
+modules.waypoints.deleted=Deleted waypoint "%s"
+modules.waypoints.not_found=Waypoint "%s" not found
+modules.waypoints.cleared=All waypoints cleared
+
+# Trap ESP
+modules.trap_esp.label=Trap
+modules.trap_esp.depth=Depth of %s blocks
+modules.trap_esp.private=Private
+modules.trap_esp.no_private=No private
+
+# TNT Timer
+modules.tnt_timer.format=%%.1f s
+
+# Ambience
+modules.settings.ambience.end_sky=Change sky
+modules.settings.ambience.custom_time=Change time
+modules.settings.ambience.time=Time
+modules.settings.ambience.bright=Enable brightness
+
+# Menu
+modules.settings.menu.mode=Mode
+modules.settings.menu.mode.dropdown=Panels
+modules.settings.menu.mode.modern=Modern
+modules.settings.menu.mode.test=Classic
+
+# View Model
+modules.settings.view_model.main_translate_x=Right X offset
+modules.settings.view_model.main_translate_y=Right Y offset
+modules.settings.view_model.main_translate_z=Right Z offset
+modules.settings.view_model.main_rotate_x=Right rotation X
+modules.settings.view_model.main_rotate_y=Right rotation Y
+modules.settings.view_model.main_rotate_z=Right rotation Z
+modules.settings.view_model.off_translate_x=Left X offset
+modules.settings.view_model.off_translate_y=Left Y offset
+modules.settings.view_model.off_translate_z=Left Z offset
+modules.settings.view_model.off_rotate_x=Left rotation X
+modules.settings.view_model.off_rotate_y=Left rotation Y
+modules.settings.view_model.off_rotate_z=Left rotation Z
+
+# Block Overlay
+modules.descriptions.blockoverlay=Highlights the block you are looking at
+modules.settings.blockoverlay.fill=Fill
+modules.settings.blockoverlay.sync_with_theme=Sync with theme
+modules.settings.blockoverlay.color=Highlight color
+modules.settings.blockoverlay.use_shader=Use shader
+modules.settings.blockoverlay.use_shader.desc=Enable shaders for block
+modules.settings.blockoverlay.shader_mode=Shader
+modules.settings.blockoverlay.shader_mode.desc=Select shader for block
+modules.settings.blockoverlay.shader_mode.cobweb=Cobweb
+modules.settings.blockoverlay.shader_mode.nebula=Nebula
+modules.settings.blockoverlay.shader_mode.plasma=Plasma
+modules.settings.blockoverlay.shader_mode.starfield=Starfield
+modules.settings.blockoverlay.shader_mode.fireworks=Geometry
+modules.settings.blockoverlay.shader_mode.galaxy=Galaxy
+modules.settings.blockoverlay.shader_mode.stars=Aqua
+modules.settings.blockoverlay.shader_opacity=Shader opacity
+modules.settings.blockoverlay.shader_opacity.desc=Shader opacity setting
+modules.settings.blockoverlay.shader_speed=Animation speed
+modules.settings.blockoverlay.shader_speed.desc=Shader animation speed
+
+# Custom Fog
+modules.settings.custom_fog.sync_with_theme=Sync with theme
+
+# Kill Effects
+modules.settings.kill_effects.color_mode=Color mode
+modules.settings.kill_effects.color_mode.client=Client color
+modules.settings.kill_effects.color_mode.custom=Custom color
+modules.settings.kill_effects.color=Color
+modules.settings.kill_effects.play_sound=Play sound
+modules.settings.kill_effects.volume=Volume
+modules.settings.kill_effects.mobs=Effects for mobs
+modules.settings.kill_effects.sound_type=Sound type
+modules.settings.kill_effects.sync_with_theme=Sync with theme
+
+# Target ESP
+modules.settings.target_esp.sync_with_theme=Sync with theme
+modules.settings.target_esp.color=Color
+
+# World
+modules.settings.world.sync_with_theme=Sync with theme
+modules.settings.world.color=Color
+
+# Hit Effect
+modules.descriptions.hiteffect=Glowing Mytheria of blocks on hit
+modules.settings.hiteffect.color=Hit color
+modules.settings.hiteffect.totem_color=Totem color
+modules.settings.hiteffect.sync_with_theme=Sync with theme
+
+# Freelook
+modules.descriptions.freelook=Free camera view in third person
+freelook.keybind=Keybind
+
+# Zoom
+modules.descriptions.zoom=Zooms camera
+modules.settings.zoom.key=Zoom key
+modules.settings.zoom.level=Zoom level
+modules.settings.zoom.smooth=Smooth zoom
+modules.settings.zoom.smooth_speed=Smooth speed
+
+# Chinahat
+modules.descriptions.chinahat=Chinese hat above the head
+modules.settings.chinahat.height_offset=Height offset
+modules.settings.chinahat.width=Width
+modules.settings.chinahat.height=Height
+modules.settings.chinahat.color=Color
+modules.settings.chinahat.alpha=Transparency
+modules.settings.chinahat.sync_with_theme=Sync with theme
+
+##Кнопки в инвентаре
+
+
+# > Watermark
+hud.watermark=Watermark
+hud.watermark.show_role=Show role
+hud.watermark.show_ping=Show ping
+hud.watermark.show_fps=Show FPS
+hud.watermark.show_ip=Show server IP
+
+# > Target List
+hud.target_list=Target List
+modules.settings.target_list.players=Target Players
+modules.settings.target_list.add_player=Enter player name
+modules.target_list.player_joined=Player Joined
+
+# > Effects
+hud.effects=Effects
+hud.effects.alert=Expiration alert
+hud.effects.separate_donate=Separate donate
+
+# > Armor
+hud.armor=Armor
+
+# > TargetHud
+hud.targethud=Target
+hud.targethud.look=On hover
+hud.targethud.armor=Armor display
+hud.targethud.armor.none=Don't display
+hud.targethud.armor.number=Durability percentage
+hud.targethud.armor.icon=Icons
+
+# > Keybinds
+hud.keybinds=Keybinds
+hud.always_display=Always display
+hud.show_example=Show example
+
+# > Dynamic Island
+hud.dynamic_island=Dynamic Island
+hud.dynamic_island.statuses=Statuses
+hud.dynamic_island.statuses.alerts=Alerts
+hud.dynamic_island.statuses.pvp=PVP Mode
+hud.dynamic_island.statuses.events=Events
+hud.dynamic_island.statuses.mine=Mine
+hud.dynamic_island.statuses.music=Music
+hud.dynamic_island.statuses.default=Watermark
+
+# > Inventory
+hud.inventory=Inventory
+
+# Additional modules
+modules.descriptions.debug_shift=Fixes item use interruption when pressing Shift
+modules.descriptions.particle_effects=Custom particles for various events
+modules.descriptions.sound_esp=Shows where a sound was played
+modules.descriptions.coord_invite=Sends coordinates to a player via keybind
+modules.descriptions.spec_bind=Sends !Spec command with your nickname to chat via keybind
+modules.descriptions.assist=Helper for different servers
+modules.descriptions.tape_mouse=Tape Mouse
+modules.descriptions.fast_exp=Fast experience bottle usage while holding right click
+
+# Module settings with hardcode
+modules.settings.shifttap.interval.description=How long to hold shift in ticks
+modules.settings.invutils.item_scroller=Item scroller
+modules.settings.invutils.slot_lock=Slot lock
+modules.settings.fast_exp.delay=Delay
+modules.settings.custom_hitbox.entity_types.items=Items
+modules.settings.custom_hitbox.fill=Fill
+modules.settings.custom_hitbox.show_eye_height=Show eye height
+modules.settings.custom_hitbox.show_look_vector=Show look vector
+modules.settings.interface.themeMode=Theme mode
+
+# AspectRatio
+modules.descriptions.aspect_ratio=Changes screen aspect ratio
+modules.settings.aspect_ratio.ratio=Aspect ratio
+
+# TotemTracker
+modules.descriptions.totem_tracker=Displays totem pops in chat
+
+# CustomHitBox entity types
+modules.settings.custom_hitbox.entity_types=Entity types
+modules.settings.custom_hitbox.entity_types.players=Players
+modules.settings.custom_hitbox.entity_types.mobs=Mobs
+
+# Inventory Utils
+modules.settings.invutils.delay=Delay
+
+# Chinahat
+modules.settings.chinahat.height_offset=Height offset
+modules.settings.chinahat.width=Width
+modules.settings.chinahat.height=Height
+modules.settings.chinahat.color=Color
+modules.settings.chinahat.alpha=Transparency
+
+# Interface colors
+modules.settings.interface.clientColor=Client color
+modules.settings.interface.minimalism.backgroundColor=Minimalism background color
+modules.settings.interface.liquidGlass.glassColor=Glass color
+modules.settings.interface.blurStrength=Blur strength
+modules.settings.interface.liquidGlass.distortion=Distortion
+
+# Color mode settings
+modules.settings.color_mode=Color mode
+modules.settings.color_mode.client=Client color
+modules.settings.color_mode.custom=Custom color
+
+# Hit Particles
+modules.descriptions.hit_particles=Beautiful particles when hitting entities
+modules.settings.hit_particles.particle_type=Particle Type
+modules.settings.hit_particles.color_mode=Color Mode
+modules.settings.hit_particles.speed=Speed
+modules.settings.hit_particles.size=Size
+modules.settings.hit_particles.count=Count
+
+# Item Physics
+modules.descriptions.item_physics=Realistic physics for items on the ground
+
+# PVP AI
+modules.descriptions.pvp_ai=Shows win chances and damage indicators
+modules.settings.pvp_ai.damage_indicator=Damage Indicator
+modules.settings.pvp_ai.damage_size=Damage Size
+modules.settings.pvp_ai.damage_color=Damage Color
+
+# Jump Circle
+modules.descriptions.jump_circle=Creates animated circles when jumping
+modules.settings.jump_circle.size=Size
+modules.settings.jump_circle.hold_time=Hold Time
+modules.settings.jump_circle.mode=Mode
+modules.settings.jump_circle.mode.classic=Classic
+modules.settings.jump_circle.mode.mode2=Mode 2
+modules.settings.jump_circle.mode.mode3=Mode 3
+modules.settings.jump_circle.rotation_speed=Rotation Speed
+modules.settings.jump_circle.color_mode=Color Mode
+modules.settings.jump_circle.color_1=Color 1
+modules.settings.jump_circle.color_2=Color 2
+modules.settings.jump_circle.color_3=Color 3
+modules.settings.jump_circle.color_4=Color 4
+
+# Trails
+modules.descriptions.trails=Creates trails behind the player
+modules.settings.trails.length=Trail Length
+modules.settings.trails.sync_with_theme=Sync with theme
+modules.settings.trails.color=Trail Color
+
+# > Cooldowns
+hud.cooldowns=Cooldowns
+
+# Region Helper
+modules.descriptions.region_helper=Highlights region borders on servers
+modules.settings.region_helper.server=Server
+modules.settings.region_helper.server.funtime=FunTime
+modules.settings.region_helper.server.holyworld=HolyWorld
+modules.settings.region_helper.display_mode=Display Mode
+modules.settings.region_helper.display_mode.in_hand=In Hand
+modules.settings.region_helper.display_mode.placed=Placed Blocks
+modules.settings.region_helper.funtime_region_types=FunTime Region Types
+modules.settings.region_helper.region_types.iron=Iron Block
+modules.settings.region_helper.region_types.gold=Gold Block
+modules.settings.region_helper.region_types.diamond=Diamond Block
+modules.settings.region_helper.region_types.emerald=Emerald Block
+modules.settings.region_helper.region_types.diamond_ore=Diamond Ore
+modules.settings.region_helper.region_types.emerald_ore=Emerald Ore
+modules.settings.region_helper.holyworld_region_types=HolyWorld Region Types
+modules.settings.region_helper.holyworld.tiny_private=Tiny Private (Iron Block)
+modules.settings.region_helper.holyworld.small_private=Small Private (Gold Block)
+modules.settings.region_helper.holyworld.medium_private=Medium Private (Diamond Block)
+modules.settings.region_helper.holyworld.big_private=Big Private (Emerald Ore)
+modules.settings.region_helper.holyworld.unique_private=Unique Private (Netherite Block)
+modules.settings.region_helper.color.iron=Iron Block Color
+modules.settings.region_helper.color.gold=Gold Block Color
+modules.settings.region_helper.color.diamond=Diamond Block Color
+modules.settings.region_helper.color.emerald=Emerald Block Color
+modules.settings.region_helper.color.diamond_ore=Diamond Ore Color
+modules.settings.region_helper.color.emerald_ore=Emerald Ore Color
+modules.settings.region_helper.color.netherite_block=Netherite Block Color
+
+# Module names
+Block Overlay=Block Overlay
+Hit Particles=Hit Particles
+Inventory Utils=Inventory Utils
+
+# Additional description keys (with underscores)
+modules.descriptions.block_overlay=Highlights the block you are looking at
+modules.descriptions.hit_effect=Beautiful particles when hitting entities
+modules.descriptions.inventory_utils=Helpful functions for inventory
+
+# Better Minecraft
+modules.descriptions.better_minecraft=Adds smooth animations for screens, tab and F5
+modules.settings.better_minecraft.smooth_tab=Smooth Tab
+modules.settings.better_minecraft.smooth_screens=Smooth Screens
+modules.settings.better_minecraft.smooth_f5=Smooth F5
+
+# Blink
+modules.descriptions.blink=Creates a last position effect behind the player
+modules.settings.blink.style=Style
+modules.settings.blink.style.box=Box
+modules.settings.blink.style.player=Player
+modules.settings.blink.trigger=Trigger
+modules.settings.blink.trigger.always=Always
+modules.settings.blink.trigger.jump=Jump Only
+modules.settings.blink.show=Show
+modules.settings.blink.show.only_me=Only Me
+modules.settings.blink.show.friends=Friends
+modules.settings.blink.show.everyone=Everyone
+modules.settings.blink.first_person=First Person
+modules.settings.blink.on_hit=On Hit
+modules.settings.blink.hit_snapshot_count=Models on Hit
+modules.settings.blink.hit_spacing=Hit Spacing
+
+# Chat Helper
+modules.descriptions.chat_helper=Improves chat functionality
+modules.settings.chat_helper.chat_history=Chat History
+modules.settings.chat_helper.chat_history.description=Prevents server from clearing chat history
+modules.settings.chat_helper.anti_spam=Anti-Spam
+modules.settings.chat_helper.anti_spam.description=Groups identical messages with counter [x2], [x3], etc.
+
+# Crosshair
+modules.descriptions.crosshair=Replaces the default crosshair with a custom one
+modules.settings.crosshair.mode=Mode
+modules.settings.crosshair.length=Length
+modules.settings.crosshair.thickness=Thickness
+modules.settings.crosshair.gap=Gap
+modules.settings.crosshair.outline=Outline
+modules.settings.crosshair.dynamic_gap=Dynamic Gap
+
+# Hit Bubble
+modules.descriptions.hit_bubble=Bubble particles when hitting an entity
+modules.settings.hit_bubble.size=Size
+modules.settings.hit_bubble.fade_in=Fade In (ms)
+modules.settings.hit_bubble.fade_out=Fade Out (ms)
+modules.settings.hit_bubble.rotation=Rotation Speed
+modules.settings.hit_bubble.sync_with_theme=Sync with theme
+modules.settings.hit_bubble.color=Color
+modules.settings.hit_bubble.height_offset=Height Offset
+modules.settings.hit_bubble.max_distance=Max Distance
+
+# IRC
+modules.descriptions.irc=Global chat between all Mytheria users
+modules.descriptions.mythusers=Shows the Mytheria icon next to client users' names
+
+# Item Counter HUD
+hud.item_counter=Item Counter
+hud.item_counter.description=Counts specific items in inventory
+hud.item_counter.show_totems=Show Totems
+hud.item_counter.show_pearls=Show Ender Pearls
+hud.item_counter.show_golden_apples=Show Golden Apples
+hud.item_counter.show_enchanted_apples=Show Enchanted Apples
+hud.item_counter.direction=Direction
+hud.item_counter.vertical=Vertical
+hud.item_counter.horizontal=Horizontal
+hud.item_counter.totem=Totem
+hud.item_counter.pearl=Pearl
+hud.item_counter.golden_apple=Golden Apple
+hud.item_counter.enchanted_apple=Enchanted Apple
+
+# Low Armor Notify
+modules.descriptions.low_armor_notify=Notifies the player about low armor durability
+modules.settings.low_armor_notify.durability_threshold=Durability Threshold
+modules.settings.low_armor_notify.durability_threshold.description=At what durability (in %) to start notifying
+modules.settings.low_armor_notify.notify_interval=Notify Interval
+modules.settings.low_armor_notify.notify_interval.description=Interval between notifications (in seconds)
+modules.settings.low_armor_notify.helmet=Helmet
+modules.settings.low_armor_notify.helmet.description=Notify about low helmet durability
+modules.settings.low_armor_notify.chestplate=Chestplate
+modules.settings.low_armor_notify.chestplate.description=Notify about low chestplate durability
+modules.settings.low_armor_notify.leggings=Leggings
+modules.settings.low_armor_notify.leggings.description=Notify about low leggings durability
+modules.settings.low_armor_notify.boots=Boots
+modules.settings.low_armor_notify.boots.description=Notify about low boots durability
+modules.low_armor_notify.title=Low Armor Durability
+modules.low_armor_notify.helmet=Helmet
+modules.low_armor_notify.chestplate=Chestplate
+modules.low_armor_notify.leggings=Leggings
+modules.low_armor_notify.boots=Boots
+modules.low_armor_notify.armor=Armor
+
+# Donate Potions Notify
+modules.descriptions.donate_potions_notify=Notifies when a donate potion effect is about to expire
+modules.settings.donate_potions_notify.notify_before=Notify Before
+modules.settings.donate_potions_notify.notify_before.description=How many seconds before expiration to notify
+modules.settings.donate_potions_notify.assassin=Assassin Potion
+modules.settings.donate_potions_notify.assassin.description=Notify about Assassin Potion expiration
+modules.settings.donate_potions_notify.paladin=Paladin Potion
+modules.settings.donate_potions_notify.paladin.description=Notify about Paladin Potion expiration
+modules.settings.donate_potions_notify.wrath=Wrath Potion
+modules.settings.donate_potions_notify.wrath.description=Notify about Wrath Potion expiration
+modules.settings.donate_potions_notify.sleeping=Sleeping Potion
+modules.settings.donate_potions_notify.sleeping.description=Notify about Sleeping Potion expiration
+modules.settings.donate_potions_notify.radiation=Radiation Potion
+modules.settings.donate_potions_notify.radiation.description=Notify about Radiation Potion expiration
+modules.settings.donate_potions_notify.firecracker=Firecracker
+modules.settings.donate_potions_notify.firecracker.description=Notify about Firecracker expiration
+modules.settings.donate_potions_notify.holy_water=Holy Water
+modules.settings.donate_potions_notify.holy_water.description=Notify about Holy Water expiration
+modules.donate_potions_notify.title=Potion Expiring
+modules.donate_potions_notify.assassin=Assassin Potion
+modules.donate_potions_notify.paladin=Paladin Potion
+modules.donate_potions_notify.wrath=Wrath Potion
+modules.donate_potions_notify.sleeping=Sleeping Potion
+modules.donate_potions_notify.radiation=Radiation Potion
+modules.donate_potions_notify.firecracker=Firecracker
+modules.donate_potions_notify.holy_water=Holy Water
+modules.donate_potions_notify.expiring=Expiring
+
+# Swing Animation
+modules.settings.swing_animation.speed=Swing Speed
+modules.settings.swing_animation.speed.description=Swing animation duration in ticks (higher = slower)
+
+
+# Waypoints GUI
+waypoints.title=Waypoints
+waypoints.gui.name=Waypoint name
+waypoints.gui.edit=Edit waypoint
+waypoints.gui.add=New waypoint
+waypoints.gui.add_button=Add
+waypoints.gui.save=Save
+waypoints.gui.clear=Clear
+
+# Waypoints Settings
+modules.waypoints.auto_event=Auto waypoint on event
+modules.waypoints.auto_death=Auto waypoint on death location
+modules.waypoints.quick_bind=Quick waypoint
+modules.waypoints.quick_name=Quick Waypoint
+modules.waypoints.quick_created=Created quick waypoint "%s"
+modules.waypoints.death_name=Death Location
+modules.waypoints.death_created=Created death waypoint "%s"
+
+# Waypoints GUI
+waypoints.title=Waypoints
+waypoints.gui.name=Name
+waypoints.gui.search=Search...
+waypoints.gui.edit=Edit Waypoint
+waypoints.gui.add=Add Waypoint
+waypoints.gui.save=Save
+waypoints.gui.add_button=Add
+waypoints.gui.clear=Clear
+
+modules.descriptions.fogblur=Adds a blurred fog effect at distance
+modules.descriptions.hands=Applies shader effects to hands and items
+
+# FogBlur
+modules.settings.fogblur.fog_strength=Blur Strength
+modules.settings.fogblur.fog_distance=Fog Distance
+modules.settings.fogblur.linear_sampling=Linear Sampling
+modules.settings.fogblur.fog_rgb_puke=RGB Effect
+modules.settings.fogblur.fog_rgb_puke_opacity=RGB Opacity
+modules.settings.fogblur.fog_rgb_puke_saturation=RGB Saturation
+modules.settings.fogblur.fog_rgb_puke_brightness=RGB Brightness
+
+# Hands
+modules.settings.hands.mode=Mode
+modules.settings.hands.solid_color=First Color
+modules.settings.hands.solid_color2=Second Color
+modules.settings.hands.gradient_speed=Gradient Speed
+modules.settings.hands.blur_strength=Blur Strength
+
+# FogBlur
+modules.descriptions.fogblur=Adds a blurred fog effect at distance
+modules.settings.fogblur.fog_strength=Fog Strength
+modules.settings.fogblur.fog_distance=Fog Distance
+modules.settings.fogblur.linear_sampling=Linear Sampling
+modules.settings.fogblur.fog_rgb_puke=RGB Fog
+modules.settings.fogblur.fog_rgb_puke_opacity=RGB Opacity
+modules.settings.fogblur.fog_rgb_puke_saturation=RGB Saturation
+modules.settings.fogblur.fog_rgb_puke_brightness=RGB Brightness
+
+# Hands
+modules.descriptions.hands=Applies shader effects to hands and items
+modules.settings.hands.mode=Mode
+modules.settings.hands.solid_color=Color 1
+modules.settings.hands.solid_color2=Color 2
+modules.settings.hands.gradient_speed=Gradient Speed
+modules.settings.hands.blur_strength=Blur Strength
+
+# HandsModule additional modes
+modules.settings.hands.mode.plasma=Plasma
+modules.settings.hands.mode.cobweb=Cobweb
+modules.settings.hands.mode.nebula=Nebula
+modules.settings.hands.mode.galaxy=Galaxy
+modules.settings.hands.mode.stars=Stars
+modules.settings.hands.mode.starfield=Starfield
+modules.settings.hands.mode.fireworks=Fireworks
+
+# Armor HUD
+hud.armor.direction=Direction
+hud.armor.horizontal=Horizontal
+hud.armor.vertical=Vertical
+
+# Dynamic Island Settings
+hud.dynamic_island.show_side_icons=Show Side Icons

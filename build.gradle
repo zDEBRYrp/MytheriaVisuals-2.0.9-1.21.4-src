@@ -1,0 +1,88 @@
+plugins {
+	id 'fabric-loom' version '1.12.7'
+	id 'maven-publish'
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+	archivesName = project.archives_base_name
+}
+
+repositories {
+	mavenCentral()
+	// jagrosh's Discord-IPC (com.jagrosh.discordipc.*) is published via JitPack
+	maven { url = 'https://jitpack.io' }
+}
+
+loom {
+	accessWidenerPath = file("src/main/resources/mytheria.accesswidener")
+}
+
+dependencies {
+	// To change the versions see the gradle.properties file
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+	// Fabric API
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+	// Lombok - only needed at compile time for the @Generated / @NonNull
+	// markers left in the decompiled sources
+	compileOnly "org.projectlombok:lombok:${project.lombok_version}"
+	annotationProcessor "org.projectlombok:lombok:${project.lombok_version}"
+
+	// QR-code generation (used by fabric.mod.json's jarInJar entries originally)
+	implementation "com.google.zxing:core:${project.zxing_version}"
+	implementation "com.google.zxing:javase:${project.zxing_version}"
+	include "com.google.zxing:javase:${project.zxing_version}"
+
+	// MixinExtras (used directly by nesquik.mytheria.mixin.* classes: @WrapOperation, @ModifyExpressionValue, etc.)
+	// Fabric Loader 0.15.0+ already bundles this at runtime, but we still need it on the compile classpath.
+	include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:0.5.4")))
+
+	// JNA - used by dev.redstones.mediaplayerinfo.impl.win.* for the Windows media-session native bridge
+	// (see mediaplayerinfo/natives/win/MediaPlayerInfo.dll)
+	implementation "net.java.dev.jna:jna:5.15.0"
+	implementation "net.java.dev.jna:jna-platform:5.15.0"
+	include "net.java.dev.jna:jna:5.15.0"
+	include "net.java.dev.jna:jna-platform:5.15.0"
+
+	// ICU4J - used by a/xx.java for locale-aware date formatting.
+	// Already shipped transitively by Minecraft itself, listed here only so the IDE resolves the import.
+	compileOnly "com.ibm.icu:icu4j:75.1"
+
+	// JSR-305 - provides javax.annotation.Nullable/Nonnull used across a/* and mixin classes
+	compileOnly "com.google.code.findbugs:jsr305:3.0.2"
+}
+
+processResources {
+	inputs.property "version", project.version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": project.version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 21
+	it.options.encoding = 'UTF-8'
+}
+
+java {
+	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+	// if it is present.
+	// If you remove this line, sources will not be generated.
+	withSourcesJar()
+
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
+}
+
+jar {
+	from("LICENSE") {
+		rename { "${it}_${project.base.archivesName.get()}" }
+	}
+}

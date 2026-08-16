@@ -1,0 +1,170 @@
+{
+  "clickgui_open": { 
+    "sounds": [ "mytheria:clickgui_open" ],
+    "subtitle": "Click GUI Open"
+  },
+  "toggle": { 
+    "sounds": [ "mytheria:toggle" ],
+    "subtitle": "Toggle"
+  },
+  "applepay": { 
+    "sounds": [ "mytheria:applepay" ],
+    "subtitle": "Apple Pay"
+  },
+  "welcome": { 
+    "sounds": [ "mytheria:welcome" ],
+    "subtitle": "Welcome"
+  },
+  "typing": { 
+    "sounds": [ "mytheria:typing" ],
+    "subtitle": "Typing"
+  },
+  "critical": { 
+    "sounds": [ "mytheria:critical" ],
+    "subtitle": "Critical"
+  },
+  "kill1": { 
+    "sounds": [ "mytheria:kill1" ],
+    "subtitle": "Kill Sound 1"
+  },
+  "kill2": { 
+    "sounds": [ "mytheria:kill2" ],
+    "subtitle": "Kill Sound 2"
+  },
+  "kill3": { 
+    "sounds": [ "mytheria:kill3" ],
+    "subtitle": "Kill Sound 3"
+  },
+  "kill4": { 
+    "sounds": [ "mytheria:kill4" ],
+    "subtitle": "Kill Sound 4"
+  },
+  "kill5": { 
+    "sounds": [ "mytheria:kill5" ],
+    "subtitle": "Kill Sound 5"
+  },
+  "kill6": { 
+    "sounds": [ "mytheria:kill6" ],
+    "subtitle": "Kill Sound 6"
+  },
+  "hitsound1": { 
+    "sounds": [ "mytheria:bell" ],
+    "subtitle": "Hit Sound 1"
+  },
+  "hitsound2": { 
+    "sounds": [ "mytheria:bonk" ],
+    "subtitle": "Hit Sound 2"
+  },
+  "hitsound3": { 
+    "sounds": [ "mytheria:bubble" ],
+    "subtitle": "Hit Sound 3"
+  },
+  "hitsound4": { 
+    "sounds": [ "mytheria:krit" ],
+    "subtitle": "Hit Sound 4"
+  },
+  "hitsound5": { 
+    "sounds": [ "mytheria:hit1" ],
+    "subtitle": "Bell"
+  },
+  "hitsound6": { 
+    "sounds": [ "mytheria:hit2" ],
+    "subtitle": "Bonk"
+  },
+  "hitsound7": { 
+    "sounds": [ "mytheria:hit3" ],
+    "subtitle": "Bubble"
+  },
+  "hitsound8": { 
+    "sounds": [ "mytheria:hit4" ],
+    "subtitle": "Krit"
+  },
+  "bell": { 
+    "sounds": [ "mytheria:bell" ],
+    "subtitle": "Bell"
+  },
+  "bonk": { 
+    "sounds": [ "mytheria:bonk" ],
+    "subtitle": "Bonk"
+  },
+  "bubble": { 
+    "sounds": [ "mytheria:bubble" ],
+    "subtitle": "Bubble"
+  },
+  "krit": { 
+    "sounds": [ "mytheria:krit" ],
+    "subtitle": "Krit"
+  },
+  "moan1": { 
+    "sounds": [ "mytheria:moan1" ],
+    "subtitle": "Moan 1"
+  },
+  "moan2": { 
+    "sounds": [ "mytheria:moan2" ],
+    "subtitle": "Moan 2"
+  },
+  "moan3": { 
+    "sounds": [ "mytheria:moan3" ],
+    "subtitle": "Moan 3"
+  },
+  "moan4": { 
+    "sounds": [ "mytheria:moan4" ],
+    "subtitle": "Moan 4"
+  },
+  "module_enable_1": { 
+    "sounds": [ "mytheria:newsounds/module_enable_1" ],
+    "subtitle": "Module Enable 1"
+  },
+  "module_enable_2": { 
+    "sounds": [ "mytheria:newsounds/module_enable_2" ],
+    "subtitle": "Module Enable 2"
+  },
+  "module_enable_3": { 
+    "sounds": [ "mytheria:newsounds/module_enable_3" ],
+    "subtitle": "Module Enable 3"
+  },
+  "module_enable_4": { 
+    "sounds": [ "mytheria:newsounds/module_enable_4" ],
+    "subtitle": "Module Enable 4"
+  },
+  "module_enable_5": { 
+    "sounds": [ "mytheria:newsounds/module_enable_5" ],
+    "subtitle": "Module Enable 5"
+  },
+  "module_enable_6": { 
+    "sounds": [ "mytheria:newsounds/module_enable_6" ],
+    "subtitle": "Module Enable 6"
+  },
+  "module_enable_7": { 
+    "sounds": [ "mytheria:newsounds/module_enable_7" ],
+    "subtitle": "Module Enable 7"
+  },
+  "module_disable_1": { 
+    "sounds": [ "mytheria:newsounds/module_disable_1" ],
+    "subtitle": "Module Disable 1"
+  },
+  "module_disable_2": { 
+    "sounds": [ "mytheria:newsounds/module_disable_2" ],
+    "subtitle": "Module Disable 2"
+  },
+  "module_disable_3": { 
+    "sounds": [ "mytheria:newsounds/module_disable_3" ],
+    "subtitle": "Module Disable 3"
+  },
+  "module_disable_4": { 
+    "sounds": [ "mytheria:newsounds/module_disable_4" ],
+    "subtitle": "Module Disable 4"
+  },
+  "module_disable_5": { 
+    "sounds": [ "mytheria:newsounds/module_disable_5" ],
+    "subtitle": "Module Disable 5"
+  },
+  "module_disable_6": { 
+    "sounds": [ "mytheria:newsounds/module_disable_6" ],
+    "subtitle": "Module Disable 6"
+  },
+  "module_disable_7": { 
+    "sounds": [ "mytheria:newsounds/module_disable_7" ],
+    "subtitle": "Module Disable 7"
+  }
+}

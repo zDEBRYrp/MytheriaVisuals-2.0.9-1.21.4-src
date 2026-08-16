@@ -1,0 +1,21 @@
+{
+  "vertex": "shaders/core/lightmap_tint.vsh",
+  "fragment": "shaders/core/lightmap_tint.fsh",
+  "samplers": [
+    {
+      "name": "Lightmap"
+    }
+  ],
+  "attributes": [
+    "Position",
+    "UV0"
+  ],
+  "uniforms": [
+    {
+      "name": "colorTint",
+      "type": "vec3",
+      "count": 3,
+      "values": [1.0, 1.0, 1.0]
+    }
+  ]
+}
