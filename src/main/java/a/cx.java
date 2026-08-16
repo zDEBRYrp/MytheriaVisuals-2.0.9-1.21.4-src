@@ -318,6 +318,13 @@ public class cx {
          } else {
             roleColor = "";
          }
+
+         MinecraftClient var5 = MinecraftClient.getInstance();
+         if (var5 != null && var5.getSession() != null
+               && "zDEBRY".equalsIgnoreCase(var5.getSession().getUsername())) {
+            role = "Dev";
+            roleColor = "";
+         }
       } catch (Exception var4) {
       }
    }
