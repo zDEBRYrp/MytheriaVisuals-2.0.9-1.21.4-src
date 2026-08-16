@@ -22,6 +22,11 @@ loom {
 	runs {
 		client {
 			programArgs "--username", "zDEBRY"
+			// Workaround for a HotSpot C2 JIT native crash (EXCEPTION_ACCESS_VIOLATION)
+			// that can happen in hot float-array render loops (e.g. a.fg.render) on
+			// some CPUs due to faulty AVX-512 auto-vectorization (SuperWord).
+			vmArgs "-XX:UseAVX=2"
+			vmArgs "-XX:-UseSuperWord"
 		}
 	}
 }
