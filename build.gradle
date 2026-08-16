@@ -18,6 +18,12 @@ repositories {
 
 loom {
 	accessWidenerPath = file("src/main/resources/mytheria.accesswidener")
+
+	runs {
+		client {
+			programArgs "--username", "zDEBRY"
+		}
+	}
 }
 
 dependencies {
