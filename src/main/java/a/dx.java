@@ -641,10 +641,16 @@ public class dx extends CustomComponent implements IScaledResolution {
          return true;
       } else {
          cK var4 = var2.getSearchField();
-         return var4 != null
-            && !var4.getBuiltText().isBlank()
-            && !component.getModule().getName().toLowerCase().contains(var4.getBuiltText().toLowerCase())
-            && !component.getModule().getName().replace(" ", "").toLowerCase().contains(var4.getBuiltText().toLowerCase());
+         if (var4 == null || var4.getBuiltText().isBlank()) return false;
+         String search = var4.getBuiltText().toLowerCase().trim();
+         String name = component.getModule().getName().toLowerCase();
+         String nameNoSpaces = name.replace(" ", "");
+         String desc = "";
+         try {
+            desc = component.getModule().getDescription().toLowerCase();
+         } catch (Exception ignored) {}
+         boolean matches = name.contains(search) || nameNoSpaces.contains(search) || desc.contains(search);
+         return !matches;
       }
    }
 

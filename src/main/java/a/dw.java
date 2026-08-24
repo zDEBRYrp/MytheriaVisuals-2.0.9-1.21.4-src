@@ -515,6 +515,10 @@ public class dw extends dt implements IMinecraft, IScaledResolution {
       if (cK.LAST_FIELD != null) {
          cK.LAST_FIELD.setFocused(false);
       }
+      if (this.j != null) {
+         this.j.clear();
+         this.j.setFocused(false);
+      }
 
       super.close();
    }

@@ -201,6 +201,7 @@ public class cv implements IMinecraft {
    private boolean d = false;
    private boolean e = false;
    private boolean f = false;
+   private String waypointMode = "CLASSIC";
    private final EventListener<an> g = event -> {
       if (this.c > 7 && event.getKey() == this.c && event.getAction() == 1 && mc.currentScreen == null && mc.player != null) {
          this.a();
@@ -344,6 +345,19 @@ public class cv implements IMinecraft {
       this.b();
    }
 
+   public String getWaypointMode() {
+      return this.waypointMode;
+   }
+
+   public void setWaypointMode(String mode) {
+      if (mode == null) return;
+      String m = mode.toUpperCase();
+      if (m.equals("CLASSIC") || m.equals("BEACON") || m.equals("DOT") || m.equals("TRACER") || m.equals("BOTH")) {
+         this.waypointMode = m;
+         this.b();
+      }
+   }
+
    private void b() {
       try {
          JsonObject var1 = new JsonObject();
@@ -363,6 +377,7 @@ public class cv implements IMinecraft {
          var10.addProperty("quickWaypointBind", this.c);
          var10.addProperty("autoWaypointOnEvent", this.d);
          var10.addProperty("autoWaypointOnDeath", this.e);
+         var10.addProperty("waypointMode", this.waypointMode);
          var1.add("settings", var10);
 
          try (FileWriter var11 = new FileWriter(this.b)) {
@@ -413,6 +428,12 @@ public class cv implements IMinecraft {
 
                   if (var15.has("autoWaypointOnDeath")) {
                      this.e = var15.get("autoWaypointOnDeath").getAsBoolean();
+                  }
+                  if (var15.has("waypointMode")) {
+                     String m = var15.get("waypointMode").getAsString().toUpperCase();
+                     if (m.equals("CLASSIC") || m.equals("BEACON") || m.equals("DOT") || m.equals("TRACER") || m.equals("BOTH")) {
+                        this.waypointMode = m;
+                     }
                   }
                }
             }
