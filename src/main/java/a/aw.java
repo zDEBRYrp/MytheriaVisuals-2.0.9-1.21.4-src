@@ -185,18 +185,22 @@ public class aw {
    private final EventListener<W> b;
    private final EventListener<ab> c;
    private final EventListener<an> d = event -> {
-      if (MinecraftClient.getInstance().currentScreen == null) {
-         for (Module var3 : this.getModules()) {
-            if (var3.getKey() == event.getKey() && var3.getKey() != -1 && event.getAction() == 1) {
+      var mc = MinecraftClient.getInstance();
+      for (Module var3 : this.getModules()) {
+         if (var3.getKey() == event.getKey() && var3.getKey() != -1 && event.getAction() == 1) {
+            boolean isMenu = var3 instanceof bN;
+            if (mc.currentScreen == null || isMenu || mc.currentScreen instanceof ds) {
                var3.toggle();
             }
          }
       }
    };
    private final EventListener<ao> e = event -> {
-      if (MinecraftClient.getInstance().currentScreen == null) {
-         for (Module var3 : this.getModules()) {
-            if (var3.getKey() == event.getButton() && var3.getKey() != -1 && event.getAction() == 1) {
+      var mc = MinecraftClient.getInstance();
+      for (Module var3 : this.getModules()) {
+         if (var3.getKey() == event.getButton() && var3.getKey() != -1 && event.getAction() == 1) {
+            boolean isMenu = var3 instanceof bN;
+            if (mc.currentScreen == null || isMenu || mc.currentScreen instanceof ds) {
                var3.toggle();
             }
          }

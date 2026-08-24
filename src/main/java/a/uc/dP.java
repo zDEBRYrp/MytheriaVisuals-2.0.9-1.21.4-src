@@ -203,7 +203,9 @@ import nesquik.mytheria.utility.interfaces.IMinecraft;
 import nesquik.mytheria.utility.interfaces.IScaledResolution;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.util.InputUtil;
 
 public class dP extends dt implements IMinecraft, IScaledResolution {
    private static final List<dO> a = new LinkedList<>();
@@ -391,6 +393,22 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       this.l.update(this.i.isFocused() ? 1.0F : 0.0F);
       this.n.setEasing(this.m ? Easing.BAKEK : Easing.BAKEK_BACK);
       this.n.update(this.m);
+      this.pollMovement();
+   }
+
+   private void pollMovement() {
+      if (mc.player != null && !this.isSearchFocused()) {
+         long handle = mc.getWindow().getHandle();
+         KeyBinding[] binds = new KeyBinding[]{mc.options.forwardKey, mc.options.backKey, mc.options.leftKey, mc.options.rightKey, mc.options.jumpKey, mc.options.sneakKey, mc.options.sprintKey};
+         for (KeyBinding b : binds) {
+            int code = InputUtil.fromTranslationKey(b.getBoundKeyTranslationKey()).getCode();
+            b.setPressed(InputUtil.isKeyPressed(handle, code));
+         }
+      }
+   }
+
+   private boolean isSearchFocused() {
+      return this.i != null && this.i.isFocused();
    }
 
    @Override
@@ -1461,7 +1479,11 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       if (var1.isEnabled()) {
          fL.CLICKGUI_OPEN.play(var1.getVolume().getCurrentValue(), 1.0F);
       }
-
+      if (this.i != null) {
+         this.i.clear();
+         this.i.setFocused(false);
+      }
+      if (cK.LAST_FIELD != null) cK.LAST_FIELD.setFocused(false);
       Mytheria.getInstance().getFileManager().writeFile("client");
       super.close();
    }

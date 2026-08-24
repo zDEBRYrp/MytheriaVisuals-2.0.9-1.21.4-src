@@ -192,8 +192,11 @@ public class di extends dg {
    private final fO h = new fO();
    private final EventListener<S> i = event -> {
       if (event.getPacket() instanceof GameMessageS2CPacket var2) {
-         String var11 = var2.content().getString().replaceAll("\\n", " ").replaceAll("[^\\p{L}\\p{N}\\s\\[\\]:.-]", "").replaceAll("\\s{2,}", " ").trim();
-         if (var11.contains("До следующего ивента") || var11.contains("до следующего ивента")) {
+         String raw = var2.content().getString();
+         String var11 = raw.replaceAll("\\n", " ").replaceAll("[^\\p{L}\\p{N}\\s\\[\\]:.-]", "").replaceAll("\\s{2,}", " ").trim();
+         String lowerRaw = raw.toLowerCase();
+         String lowerVar = var11.toLowerCase();
+         if (var11.contains("До следующего ивента") || lowerVar.contains("до следующего ивента")) {
             Matcher var4 = Pattern.compile("(\\d+)\\s*мин\\s*(\\d+)\\s*сек").matcher(var11);
             if (var4.find()) {
                int var5 = Integer.parseInt(var4.group(1));
@@ -204,14 +207,25 @@ public class di extends dg {
             }
          }
 
-         if (var2.content().getString().contains("Появился")) {
-            Matcher var12 = Pattern.compile("\\[([^\\]]+)\\]").matcher(var11);
-            Matcher var15 = Pattern.compile("координатах\\s+(-?\\d+)\\s+(-?\\d+)\\s+(-?\\d+)").matcher(var11);
-            if (var12.find() && var15.find()) {
-               String var18 = var12.group(1);
-
+         java.util.regex.Pattern coordPat = java.util.regex.Pattern.compile("координат[аы]?\\s*:?\\s*\\[?\\s*(-?\\d+)\\s+(-?\\d+)\\s+(-?\\d+)\\s*\\]?", java.util.regex.Pattern.CASE_INSENSITIVE | java.util.regex.Pattern.UNICODE_CASE);
+         if (raw.contains("Появился")) {
+            Matcher var15 = coordPat.matcher(var11);
+            if (var15.find()) {
+               String sx = var15.group(1), sy = var15.group(2), sz = var15.group(3);
+               // пробуем найти тип ивента по содержимому сообщения (учитываем разные скобки <<< >>>, [], <>, «»)
                for (di.b var10 : di.b.values()) {
-                  if (var18.toLowerCase().contains(var10.getName().toLowerCase())) {
+                  String eventNameLower = var10.getName().toLowerCase();
+                  boolean direct = lowerVar.contains(eventNameLower);
+                  boolean keyword = false;
+                  for (String token : eventNameLower.split("\\s+")) {
+                     if (token.length() >= 4 && lowerVar.contains(token)) { keyword = true; break; }
+                  }
+                  // спец-кейсы: "Алтарь нежити" -> ALTAR, "Гейзер" -> GEYSER
+                  if (!direct && !keyword) {
+                     if (eventNameLower.contains("алтарь") && lowerVar.contains("алтарь")) keyword = true;
+                     if (eventNameLower.contains("гейзер") && lowerVar.contains("гейзер")) keyword = true;
+                  }
+                  if (direct || keyword) {
                      this.a.removeIf(e -> e.a == var10);
                      this.a.add(new di.a(var10, var10.getTime()));
                      this.d = ep.ftAn;
@@ -219,39 +233,71 @@ public class di extends dg {
                      if (Mytheria.getInstance().getWayPointsManager().isAutoWaypointOnEvent()) {
                         Mytheria.getInstance()
                            .getWayPointsManager()
-                           .add(var10.getName(), Integer.parseInt(var15.group(1)), Integer.parseInt(var15.group(2)), Integer.parseInt(var15.group(3)));
+                           .add(var10.getName(), Integer.parseInt(sx), Integer.parseInt(sy), Integer.parseInt(sz));
                      }
                      break;
                   }
                }
+               //fallback: если ни один тип не подошел но есть координаты - пытаемся через скобки старый путь
+               if (this.a.isEmpty() || true) {
+                  // дополнительно пробуем вытащить имя из любых скобок
+                  Matcher br = java.util.regex.Pattern.compile("\\[\\s*([^\\]]+?)\\s*\\]").matcher(var11);
+                  java.util.List<String> brackets = new java.util.ArrayList<>();
+                  while (br.find()) brackets.add(br.group(1));
+                  // также <<< ... >>>
+                  Matcher tri = java.util.regex.Pattern.compile("<+\\s*([^>]+?)\\s*>+").matcher(raw);
+                  while (tri.find()) brackets.add(tri.group(1));
+                  for (String bname : brackets) {
+                     String bnLower = bname.toLowerCase();
+                     for (di.b var10 : di.b.values()) {
+                        String enLower = var10.getName().toLowerCase();
+                        if (bnLower.contains(enLower) || enLower.contains(bnLower) || bnLower.contains(enLower.split(" ")[0])) {
+                           boolean already = this.a.stream().anyMatch(e -> e.a == var10);
+                           if (!already) {
+                              this.a.removeIf(e -> e.a == var10);
+                              this.a.add(new di.a(var10, var10.getTime()));
+                              this.tpsTimer.reset();
+                              if (Mytheria.getInstance().getWayPointsManager().isAutoWaypointOnEvent()) {
+                                 Mytheria.getInstance().getWayPointsManager().add(var10.getName(), Integer.parseInt(sx), Integer.parseInt(sy), Integer.parseInt(sz));
+                              }
+                           }
+                           break;
+                        }
+                     }
+                  }
+               }
             }
          } else {
+            // запоминаем последний упомянутый ивент (для формата с отдельной строкой координат)
             for (di.b var21 : di.b.values()) {
-               if (var11.equalsIgnoreCase(var21.getName())) {
+               String enLower = var21.getName().toLowerCase();
+               boolean hit = lowerVar.contains(enLower);
+               if (!hit) {
+                  for (String tok : enLower.split("\\s+")) if (tok.length()>=4 && lowerVar.contains(tok)) { hit = true; break; }
+                  if (!hit && enLower.contains("алтарь") && lowerVar.contains("алтарь")) hit = true;
+                  if (!hit && enLower.contains("гейзер") && lowerVar.contains("гейзер")) hit = true;
+               }
+               if (hit) {
                   this.c = var21.getName();
                   break;
                }
             }
-
-            if (var11.toLowerCase().startsWith("координаты")) {
-               Matcher var14 = Pattern.compile("координаты:?\\s*(-?\\d+)\\s+(-?\\d+)\\s+(-?\\d+)", 2).matcher(var11);
-               if (var14.find() && this.c != null) {
-                  for (di.b var23 : di.b.values()) {
-                     if (this.c.equalsIgnoreCase(var23.getName())) {
-                        this.a.removeIf(e -> e.a == var23);
-                        this.a.add(new di.a(var23, var23.getTime()));
-                        this.tpsTimer.reset();
-                        if (Mytheria.getInstance().getWayPointsManager().isAutoWaypointOnEvent()) {
-                           Mytheria.getInstance()
-                              .getWayPointsManager()
-                              .add(var23.getName(), Integer.parseInt(var14.group(1)), Integer.parseInt(var14.group(2)), Integer.parseInt(var14.group(3)));
-                        }
-                        break;
+            Matcher var14 = coordPat.matcher(var11);
+            if (var14.find() && this.c != null) {
+               for (di.b var23 : di.b.values()) {
+                  if (this.c.equalsIgnoreCase(var23.getName())) {
+                     this.a.removeIf(e -> e.a == var23);
+                     this.a.add(new di.a(var23, var23.getTime()));
+                     this.tpsTimer.reset();
+                     if (Mytheria.getInstance().getWayPointsManager().isAutoWaypointOnEvent()) {
+                        Mytheria.getInstance()
+                           .getWayPointsManager()
+                           .add(var23.getName(), Integer.parseInt(var14.group(1)), Integer.parseInt(var14.group(2)), Integer.parseInt(var14.group(3)));
                      }
+                     break;
                   }
-
-                  this.c = null;
                }
+               this.c = null;
             }
          }
       }
@@ -352,6 +398,7 @@ public class di extends dg {
          case CONTAINER -> new eb(141.0F, 99.0F, 184.0F);
          case GRUZ -> new eb(41.0F, 253.0F, 5.0F);
          case MYSTERIOUS_SHIP -> new eb(90.0F, 158.0F, 152.0F);
+         case GEYSER -> new eb(0.0F, 200.0F, 200.0F);
       };
    }
 
@@ -386,7 +433,8 @@ public class di extends dg {
       BOSS("Босс", 180000L),
       CONTAINER("Контейнер", 180000L),
       GRUZ("Груз", 180000L),
-      MYSTERIOUS_SHIP("Таинственный корабль", 300000L);
+      MYSTERIOUS_SHIP("Таинственный корабль", 300000L),
+      GEYSER("Гейзер", 300000L);
 
       final String a;
       final long b;
