@@ -349,16 +349,15 @@ public final class fj implements IMinecraft, IWindow {
          matrices.pop();
       } else {
          a.use();
-         a.findUniform("Size").set(width, height);
-         a.findUniform("Radius")
-            .set(
+         a.setUniform("Size", width, height);
+         a.setUniform("Radius", 
                borderRadius.topLeftRadius() * squirt / 2.0F,
                borderRadius.bottomLeftRadius() * squirt / 2.0F,
                borderRadius.topRightRadius() * squirt / 2.0F,
                borderRadius.bottomRightRadius() * squirt / 2.0F
             );
-         a.findUniform("Smoothness").set(var9);
-         a.findUniform("CornerSmoothness").set(squirt);
+         a.setUniform("Smoothness", var9);
+         a.setUniform("CornerSmoothness", squirt);
          drawSetup();
          float var18 = -var9 / 2.0F + var9 * 2.0F;
          float var12 = var9 / 2.0F + var9;
@@ -382,13 +381,12 @@ public final class fj implements IMinecraft, IWindow {
       Matrix4f var8 = matrices.peek().getPositionMatrix();
       float var9 = 0.5F;
       e.use();
-      e.findUniform("Size").set(width, height);
-      e.findUniform("Radius")
-         .set(borderRadius.topLeftRadius(), borderRadius.bottomLeftRadius(), borderRadius.topRightRadius(), borderRadius.bottomRightRadius());
-      e.findUniform("Smoothness").set(var9);
-      e.findUniform("Progress").set(progress);
-      e.findUniform("StripeWidth").set(0.0F);
-      e.findUniform("Fade").set(0.5F);
+      e.setUniform("Size", width, height);
+      e.setUniform("Radius", borderRadius.topLeftRadius(), borderRadius.bottomLeftRadius(), borderRadius.topRightRadius(), borderRadius.bottomRightRadius());
+      e.setUniform("Smoothness", var9);
+      e.setUniform("Progress", progress);
+      e.setUniform("StripeWidth", 0.0F);
+      e.setUniform("Fade", 0.5F);
       drawSetup();
       float var10 = -var9 / 2.0F + var9 * 2.0F;
       float var11 = var9 / 2.0F + var9;
@@ -429,19 +427,18 @@ public final class fj implements IMinecraft, IWindow {
       RenderSystem.disableCull();
       RenderSystem.setShaderTexture(0, clean ? mc.getFramebuffer().getColorAttachment() : BlurProgram.getTexture());
       f.use();
-      f.findUniform("GlobalAlpha").set(globalAlpha);
-      f.findUniform("Size").set(width, height);
-      f.findUniform("Radius")
-         .set(borderRadius.topLeftRadius(), borderRadius.bottomLeftRadius(), borderRadius.topRightRadius(), borderRadius.bottomRightRadius());
-      f.findUniform("Smoothness").set(0.5F);
-      f.findUniform("FresnelPower").set(fresnelPower);
-      f.findUniform("FresnelColor").set(ff.getRGBf(fresnelColor.getRGB()));
-      f.findUniform("FresnelAlpha").set(ff.alphaf(fresnelColor.getRGB()));
-      f.findUniform("BaseAlpha").set(baseAlpha);
-      f.findUniform("FresnelInvert").set(fresnelInvert ? 1 : 0);
-      f.findUniform("FresnelMix").set(fresnelMix);
-      f.findUniform("DistortStrength").set(distortStrength);
-      f.findUniform("CornerSmoothness").set(squirt);
+      f.setUniform("GlobalAlpha", globalAlpha);
+      f.setUniform("Size", width, height);
+      f.setUniform("Radius", borderRadius.topLeftRadius(), borderRadius.bottomLeftRadius(), borderRadius.topRightRadius(), borderRadius.bottomRightRadius());
+      f.setUniform("Smoothness", 0.5F);
+      f.setUniform("FresnelPower", fresnelPower);
+      f.setUniform("FresnelColor", ff.getRGBf(fresnelColor.getRGB()));
+      f.setUniform("FresnelAlpha", ff.alphaf(fresnelColor.getRGB()));
+      f.setUniform("BaseAlpha", baseAlpha);
+      f.setUniform("FresnelInvert", fresnelInvert ? 1 : 0);
+      f.setUniform("FresnelMix", fresnelMix);
+      f.setUniform("DistortStrength", distortStrength);
+      f.setUniform("CornerSmoothness", squirt);
       int var17 = mw.getScaledWidth();
       int var18 = mw.getScaledHeight();
       float var19 = x / var17;
@@ -479,10 +476,9 @@ public final class fj implements IMinecraft, IWindow {
          matrices.pop();
       } else {
          rectangleProgram.use();
-         rectangleProgram.findUniform("Size").set(width, height);
-         rectangleProgram.findUniform("Radius")
-            .set(borderRadius.topLeftRadius(), borderRadius.bottomLeftRadius(), borderRadius.topRightRadius(), borderRadius.bottomRightRadius());
-         rectangleProgram.findUniform("Smoothness").set(var8);
+         rectangleProgram.setUniform("Size", width, height);
+         rectangleProgram.setUniform("Radius", borderRadius.topLeftRadius(), borderRadius.bottomLeftRadius(), borderRadius.topRightRadius(), borderRadius.bottomRightRadius());
+         rectangleProgram.setUniform("Smoothness", var8);
          drawSetup();
          float var17 = -var8 / 2.0F + var8 * 2.0F;
          float var11 = var8 / 2.0F + var8;
@@ -508,16 +504,13 @@ public final class fj implements IMinecraft, IWindow {
       Matrix4f var10 = matrices.peek().getPositionMatrix();
       float var11 = 0.5F;
       g.use();
-      g.findUniform("Size").set(width, height);
-      g.findUniform("Radius")
-         .set(borderRadius.topLeftRadius(), borderRadius.bottomLeftRadius(), borderRadius.topRightRadius(), borderRadius.bottomRightRadius());
-      g.findUniform("Smoothness").set(var11);
-      g.findUniform("TopLeftColor").set(color1.getRed() / 255.0F, color1.getGreen() / 255.0F, color1.getBlue() / 255.0F, color1.getAlpha() / 255.0F);
-      g.findUniform("BottomLeftColor")
-         .set(color2.getRed() / 255.0F, color2.getGreen() / 255.0F, color2.getBlue() / 255.0F, color2.getAlpha() / 255.0F);
-      g.findUniform("BottomRightColor")
-         .set(color3.getRed() / 255.0F, color3.getGreen() / 255.0F, color3.getBlue() / 255.0F, color3.getAlpha() / 255.0F);
-      g.findUniform("TopRightColor").set(color4.getRed() / 255.0F, color4.getGreen() / 255.0F, color4.getBlue() / 255.0F, color4.getAlpha() / 255.0F);
+      g.setUniform("Size", width, height);
+      g.setUniform("Radius", borderRadius.topLeftRadius(), borderRadius.bottomLeftRadius(), borderRadius.topRightRadius(), borderRadius.bottomRightRadius());
+      g.setUniform("Smoothness", var11);
+      g.setUniform("TopLeftColor", color1.getRed() / 255.0F, color1.getGreen() / 255.0F, color1.getBlue() / 255.0F, color1.getAlpha() / 255.0F);
+      g.setUniform("BottomLeftColor", color2.getRed() / 255.0F, color2.getGreen() / 255.0F, color2.getBlue() / 255.0F, color2.getAlpha() / 255.0F);
+      g.setUniform("BottomRightColor", color3.getRed() / 255.0F, color3.getGreen() / 255.0F, color3.getBlue() / 255.0F, color3.getAlpha() / 255.0F);
+      g.setUniform("TopRightColor", color4.getRed() / 255.0F, color4.getGreen() / 255.0F, color4.getBlue() / 255.0F, color4.getAlpha() / 255.0F);
       drawSetup();
       float var12 = -var11 / 2.0F + var11 * 2.0F;
       float var13 = var11 / 2.0F + var11;
@@ -570,9 +563,8 @@ public final class fj implements IMinecraft, IWindow {
          matrices.pop();
       } else {
          rectangleProgram.use();
-         rectangleProgram.findUniform("Size").set(width, height);
-         rectangleProgram.findUniform("Radius")
-            .set(borderRadius.topLeftRadius(), borderRadius.bottomLeftRadius(), borderRadius.topRightRadius(), borderRadius.bottomRightRadius());
+         rectangleProgram.setUniform("Size", width, height);
+         rectangleProgram.setUniform("Radius", borderRadius.topLeftRadius(), borderRadius.bottomLeftRadius(), borderRadius.topRightRadius(), borderRadius.bottomRightRadius());
       }
    }
 
@@ -584,9 +576,8 @@ public final class fj implements IMinecraft, IWindow {
       float var9 = 0.5F;
       float var10 = 1.0F;
       d.use();
-      d.findUniform("Size").set(width, height);
-      d.findUniform("Radius")
-         .set(borderRadius.topLeftRadius(), borderRadius.bottomLeftRadius(), borderRadius.topRightRadius(), borderRadius.bottomRightRadius());
+      d.setUniform("Size", width, height);
+      d.setUniform("Radius", borderRadius.topLeftRadius(), borderRadius.bottomLeftRadius(), borderRadius.topRightRadius(), borderRadius.bottomRightRadius());
    }
 
    public static void drawTextureSmooth(MatrixStack matrices, Identifier identifier, float x, float y, float width, float height, eb textureColor) {
@@ -713,10 +704,9 @@ public final class fj implements IMinecraft, IWindow {
       float var9 = 0.5F;
       b.use();
       RenderSystem.setShaderTexture(0, identifier);
-      b.findUniform("Size").set(width, height);
-      b.findUniform("Radius")
-         .set(borderRadius.topLeftRadius(), borderRadius.bottomLeftRadius(), borderRadius.topRightRadius(), borderRadius.bottomRightRadius());
-      b.findUniform("Smoothness").set(var9);
+      b.setUniform("Size", width, height);
+      b.setUniform("Radius", borderRadius.topLeftRadius(), borderRadius.bottomLeftRadius(), borderRadius.topRightRadius(), borderRadius.bottomRightRadius());
+      b.setUniform("Smoothness", var9);
       drawSetup();
       float var10 = -var9 / 2.0F + var9 * 2.0F;
       float var11 = var9 / 2.0F + var9;
@@ -752,15 +742,14 @@ public final class fj implements IMinecraft, IWindow {
          var17.vertex(var8, var13 + var15, var14, 0.0F).color(color.getRGB());
       } else {
          rectangleProgram.use();
-         rectangleProgram.findUniform("Size").set(width, height);
-         rectangleProgram.findUniform("Radius")
-            .set(
+         rectangleProgram.setUniform("Size", width, height);
+         rectangleProgram.setUniform("Radius", 
                borderRadius.topLeftRadius() * 3.0F,
                borderRadius.bottomLeftRadius() * 3.0F,
                borderRadius.topRightRadius() * 3.0F,
                borderRadius.bottomRightRadius() * 3.0F
             );
-         rectangleProgram.findUniform("Smoothness").set(softness);
+         rectangleProgram.setUniform("Smoothness", softness);
          drawSetup();
          float var18 = -softness / 2.0F + softness * 2.0F;
          float var19 = softness / 2.0F + softness;
@@ -790,16 +779,15 @@ public final class fj implements IMinecraft, IWindow {
          blurProgram.setBlurOffset(2.0F);
          c.use();
          RenderSystem.setShaderTexture(0, BlurProgram.getTexture());
-         c.findUniform("Size").set(width, height);
-         c.findUniform("Radius")
-            .set(
+         c.setUniform("Size", width, height);
+         c.setUniform("Radius", 
                borderRadius.topLeftRadius() * squirt / 2.0F,
                borderRadius.bottomLeftRadius() * squirt / 2.0F,
                borderRadius.topRightRadius() * squirt / 2.0F,
                borderRadius.bottomRightRadius() * squirt / 2.0F
             );
-         c.findUniform("Smoothness").set(0.1F);
-         c.findUniform("CornerSmoothness").set(squirt);
+         c.setUniform("Smoothness", 0.1F);
+         c.setUniform("CornerSmoothness", squirt);
          drawSetup();
          float var11 = -var10 / 2.0F + var10 * 2.0F;
          float var12 = var10 / 2.0F + var10;
@@ -833,10 +821,9 @@ public final class fj implements IMinecraft, IWindow {
          blurProgram.setBlurOffset(2.0F);
          b.use();
          RenderSystem.setShaderTexture(0, BlurProgram.getTexture());
-         b.findUniform("Size").set(width, height);
-         b.findUniform("Radius")
-            .set(borderRadius.topLeftRadius(), borderRadius.bottomLeftRadius(), borderRadius.topRightRadius(), borderRadius.bottomRightRadius());
-         b.findUniform("Smoothness").set(0.01F);
+         b.setUniform("Size", width, height);
+         b.setUniform("Radius", borderRadius.topLeftRadius(), borderRadius.bottomLeftRadius(), borderRadius.topRightRadius(), borderRadius.bottomRightRadius());
+         b.setUniform("Smoothness", 0.01F);
          drawSetup();
          int var9 = mc.getWindow().getScaledWidth();
          int var10 = mc.getWindow().getScaledHeight();
@@ -928,10 +915,9 @@ public final class fj implements IMinecraft, IWindow {
       float var13 = 0.5F;
       b.use();
       RenderSystem.setShaderTexture(0, identifier);
-      b.findUniform("Size").set(width, height);
-      b.findUniform("Radius")
-         .set(borderRadius.topLeftRadius(), borderRadius.bottomLeftRadius(), borderRadius.topRightRadius(), borderRadius.bottomRightRadius());
-      b.findUniform("Smoothness").set(var13);
+      b.setUniform("Size", width, height);
+      b.setUniform("Radius", borderRadius.topLeftRadius(), borderRadius.bottomLeftRadius(), borderRadius.topRightRadius(), borderRadius.bottomRightRadius());
+      b.setUniform("Smoothness", var13);
       drawSetup();
       float var14 = -var13 / 2.0F + var13 * 2.0F;
       float var15 = var13 / 2.0F + var13;

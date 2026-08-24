@@ -194,8 +194,8 @@ public class fu extends fo {
       RenderSystem.defaultBlendFunc();
       RenderSystem.disableCull();
       this.a.use();
-      this.a.findUniform("Smoothness").set(0.5F);
-      this.a.findUniform("CornerSmoothness").set(this.c);
+      this.a.setUniform("Smoothness", 0.5F);
+      this.a.setUniform("CornerSmoothness", this.c);
       BuiltBuffer var1 = this.getBuilder().endNullable();
       if (var1 != null) {
          BufferRenderer.drawWithGlobalProgram(var1);
@@ -209,8 +209,8 @@ public class fu extends fo {
    }
 
    public void add(Matrix4f matrix, float x, float y, float width, float height, float radiusTL, float radiusBL, float radiusTR, float radiusBR, int rgba) {
-      this.a.findUniform("Size").set(width, height);
-      this.a.findUniform("Radius").set(radiusTL, radiusBL, radiusTR, radiusBR);
+      this.a.setUniform("Size", width, height);
+      this.a.setUniform("Radius", radiusTL, radiusBL, radiusTR, radiusBR);
       float var11 = -0.5F / 2.0F + 0.5F * 2.0F;
       float var12 = 0.5F / 2.0F + 0.5F;
       float var13 = x - var11 / 2.0F;
