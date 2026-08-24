@@ -13,6 +13,28 @@ public abstract class CustomScreen extends Screen implements IMinecraft {
       super(Text.empty());
    }
 
+   @Override
+   public void tick() {
+      super.tick();
+      try {
+         if (mc.player != null) {
+            // если поиск/поле ввода в фокусе — не двигаемся, иначе WASD+прыжок+шифт+спринт
+            boolean searchFocused = false;
+            try {
+               if (a.uc.cK.LAST_FIELD != null && a.uc.cK.LAST_FIELD.isFocused()) searchFocused = true;
+            } catch (Exception ignored) {}
+            if (!searchFocused) {
+               long handle = mc.getWindow().getHandle();
+               net.minecraft.client.option.KeyBinding[] binds = new net.minecraft.client.option.KeyBinding[]{mc.options.forwardKey, mc.options.backKey, mc.options.leftKey, mc.options.rightKey, mc.options.jumpKey, mc.options.sneakKey, mc.options.sprintKey};
+               for (net.minecraft.client.option.KeyBinding b : binds) {
+                  int code = net.minecraft.client.util.InputUtil.fromTranslationKey(b.getBoundKeyTranslationKey()).getCode();
+                  b.setPressed(net.minecraft.client.util.InputUtil.isKeyPressed(handle, code));
+               }
+            }
+         }
+      } catch (Exception ignored) {}
+   }
+
    public abstract void render(UIContext var1);
 
    public final void render(DrawContext context, int mouseX, int mouseY, float delta) {

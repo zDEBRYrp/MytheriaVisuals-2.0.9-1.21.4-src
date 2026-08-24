@@ -22,7 +22,9 @@ public interface Module extends SettingsContainer, IMinecraft, IScaledResolution
 
    default String getDescription() {
       String var1 = "modules.descriptions.%s".formatted(this.getName().toLowerCase().replace(" ", "_"));
-      return av.translate(var1);
+      String tr = av.translate(var1);
+      if (tr.equals(var1) || tr.startsWith("modules.descriptions.")) return "";
+      return tr;
    }
 
    int getKey();

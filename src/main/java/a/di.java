@@ -180,6 +180,7 @@ import nesquik.mytheria.Mytheria;
 import nesquik.mytheria.framework.base.CustomDrawContext;
 import nesquik.mytheria.systems.event.EventListener;
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket;
+import net.minecraft.util.math.Vec3d;
 
 public class di extends dg {
    private final List<di.a> a = new ArrayList<>();
@@ -190,121 +191,131 @@ public class di extends dg {
    private final fO f = new fO();
    private final fO g = new fO();
    private final fO h = new fO();
+   private String extractEventName(String segment, String raw) {
+      // ищем последние скобки [Имя] или <<<Имя>>> перед координатами, игнорируя время и числа
+      String candidate = null;
+      java.util.regex.Pattern brPat = java.util.regex.Pattern.compile("\\[\\s*([^\\]]{3,40})\\s*\\]");
+      Matcher bm = brPat.matcher(segment);
+      while (bm.find()) {
+         String cand = bm.group(1).trim();
+         if (cand.matches("\\s*\\d+\\s*")) continue; // [1] индекс
+         if (cand.matches(".*\\d+:\\d+.*")) continue; // время
+         if (cand.matches("\\s*-?\\d+\\s+.*")) continue; // координаты
+         if (cand.equalsIgnoreCase("Ивенты") || cand.equalsIgnoreCase("Сервер")) continue;
+         candidate = cand;
+      }
+      if (candidate == null) {
+         java.util.regex.Pattern triPat = java.util.regex.Pattern.compile("<{2,}\\s*([^>]{3,40})\\s*>{2,}");
+         Matcher tm = triPat.matcher(raw);
+         String last = null;
+         while (tm.find()) last = tm.group(1).trim();
+         if (last != null && last.length() >= 3) candidate = last;
+      }
+      if (candidate == null) {
+         // fallback: ищем любой известный ивент как ключевое слово в сегменте
+         String low = segment.toLowerCase();
+         for (b t : b.values()) {
+            if (low.contains(t.getName().toLowerCase())) { candidate = t.getName(); break; }
+            for (String tok : t.getName().toLowerCase().split("\\s+")) if (tok.length()>=4 && low.contains(tok)) { candidate = t.getName(); break; }
+         }
+      }
+      if (candidate != null) {
+         candidate = candidate.replaceAll("^\\[\\d+\\]\\s*", "").trim();
+         if (candidate.startsWith("«") || candidate.startsWith("»")) candidate = candidate.replaceAll("[«»]", "").trim();
+      }
+      return candidate;
+   }
+
+   private b findMatchingType(String name) {
+      if (name == null) return null;
+      String low = name.toLowerCase();
+      for (b t : b.values()) {
+         String enLow = t.getName().toLowerCase();
+         if (low.contains(enLow) || enLow.contains(low)) return t;
+         for (String tok : enLow.split("\\s+")) if (tok.length()>=4 && low.contains(tok)) return t;
+         if (enLow.contains("алтарь") && low.contains("алтарь")) return t;
+         if (enLow.contains("гейзер") && low.contains("гейзер")) return t;
+         if (enLow.contains("маяк") && low.contains("маяк")) return t;
+      }
+      return null;
+   }
+
    private final EventListener<S> i = event -> {
       if (event.getPacket() instanceof GameMessageS2CPacket var2) {
          String raw = var2.content().getString();
-         String var11 = raw.replaceAll("\\n", " ").replaceAll("[^\\p{L}\\p{N}\\s\\[\\]:.-]", "").replaceAll("\\s{2,}", " ").trim();
-         String lowerRaw = raw.toLowerCase();
+         String var11 = raw.replaceAll("\\n", " ").replaceAll("[^\\p{L}\\p{N}\\s\\[\\]:.,\\-<>«»]", "").replaceAll("\\s{2,}", " ").trim();
          String lowerVar = var11.toLowerCase();
          if (var11.contains("До следующего ивента") || lowerVar.contains("до следующего ивента")) {
             Matcher var4 = Pattern.compile("(\\d+)\\s*мин\\s*(\\d+)\\s*сек").matcher(var11);
             if (var4.find()) {
-               int var5 = Integer.parseInt(var4.group(1));
-               int var6 = Integer.parseInt(var4.group(2));
-               this.e = (var5 * 60L + var6) * 1000L;
-               this.f.reset();
-               this.g.reset();
+               this.e = (Integer.parseInt(var4.group(1))*60L + Integer.parseInt(var4.group(2)))*1000L;
+               this.f.reset(); this.g.reset();
             }
          }
-
          java.util.regex.Pattern coordPat = java.util.regex.Pattern.compile("координат[аы]?\\s*:?\\s*\\[?\\s*(-?\\d+)\\s+(-?\\d+)\\s+(-?\\d+)\\s*\\]?", java.util.regex.Pattern.CASE_INSENSITIVE | java.util.regex.Pattern.UNICODE_CASE);
-         if (raw.contains("Появился")) {
-            Matcher var15 = coordPat.matcher(var11);
-            if (var15.find()) {
-               String sx = var15.group(1), sy = var15.group(2), sz = var15.group(3);
-               // пробуем найти тип ивента по содержимому сообщения (учитываем разные скобки <<< >>>, [], <>, «»)
-               for (di.b var10 : di.b.values()) {
-                  String eventNameLower = var10.getName().toLowerCase();
-                  boolean direct = lowerVar.contains(eventNameLower);
-                  boolean keyword = false;
-                  for (String token : eventNameLower.split("\\s+")) {
-                     if (token.length() >= 4 && lowerVar.contains(token)) { keyword = true; break; }
-                  }
-                  // спец-кейсы: "Алтарь нежити" -> ALTAR, "Гейзер" -> GEYSER
-                  if (!direct && !keyword) {
-                     if (eventNameLower.contains("алтарь") && lowerVar.contains("алтарь")) keyword = true;
-                     if (eventNameLower.contains("гейзер") && lowerVar.contains("гейзер")) keyword = true;
-                  }
-                  if (direct || keyword) {
-                     this.a.removeIf(e -> e.a == var10);
-                     this.a.add(new di.a(var10, var10.getTime()));
-                     this.d = ep.ftAn;
-                     this.tpsTimer.reset();
-                     if (Mytheria.getInstance().getWayPointsManager().isAutoWaypointOnEvent()) {
-                        Mytheria.getInstance()
-                           .getWayPointsManager()
-                           .add(var10.getName(), Integer.parseInt(sx), Integer.parseInt(sy), Integer.parseInt(sz));
-                     }
-                     break;
-                  }
-               }
-               //fallback: если ни один тип не подошел но есть координаты - пытаемся через скобки старый путь
-               if (this.a.isEmpty() || true) {
-                  // дополнительно пробуем вытащить имя из любых скобок
-                  Matcher br = java.util.regex.Pattern.compile("\\[\\s*([^\\]]+?)\\s*\\]").matcher(var11);
-                  java.util.List<String> brackets = new java.util.ArrayList<>();
-                  while (br.find()) brackets.add(br.group(1));
-                  // также <<< ... >>>
-                  Matcher tri = java.util.regex.Pattern.compile("<+\\s*([^>]+?)\\s*>+").matcher(raw);
-                  while (tri.find()) brackets.add(tri.group(1));
-                  for (String bname : brackets) {
-                     String bnLower = bname.toLowerCase();
-                     for (di.b var10 : di.b.values()) {
-                        String enLower = var10.getName().toLowerCase();
-                        if (bnLower.contains(enLower) || enLower.contains(bnLower) || bnLower.contains(enLower.split(" ")[0])) {
-                           boolean already = this.a.stream().anyMatch(e -> e.a == var10);
-                           if (!already) {
-                              this.a.removeIf(e -> e.a == var10);
-                              this.a.add(new di.a(var10, var10.getTime()));
-                              this.tpsTimer.reset();
-                              if (Mytheria.getInstance().getWayPointsManager().isAutoWaypointOnEvent()) {
-                                 Mytheria.getInstance().getWayPointsManager().add(var10.getName(), Integer.parseInt(sx), Integer.parseInt(sy), Integer.parseInt(sz));
-                              }
-                           }
-                           break;
-                        }
-                     }
-                  }
-               }
-            }
-         } else {
-            // запоминаем последний упомянутый ивент (для формата с отдельной строкой координат)
-            for (di.b var21 : di.b.values()) {
-               String enLower = var21.getName().toLowerCase();
-               boolean hit = lowerVar.contains(enLower);
-               if (!hit) {
-                  for (String tok : enLower.split("\\s+")) if (tok.length()>=4 && lowerVar.contains(tok)) { hit = true; break; }
-                  if (!hit && enLower.contains("алтарь") && lowerVar.contains("алтарь")) hit = true;
-                  if (!hit && enLower.contains("гейзер") && lowerVar.contains("гейзер")) hit = true;
-               }
-               if (hit) {
-                  this.c = var21.getName();
-                  break;
-               }
-            }
-            Matcher var14 = coordPat.matcher(var11);
-            if (var14.find() && this.c != null) {
-               for (di.b var23 : di.b.values()) {
-                  if (this.c.equalsIgnoreCase(var23.getName())) {
-                     this.a.removeIf(e -> e.a == var23);
-                     this.a.add(new di.a(var23, var23.getTime()));
-                     this.tpsTimer.reset();
-                     if (Mytheria.getInstance().getWayPointsManager().isAutoWaypointOnEvent()) {
-                        Mytheria.getInstance()
-                           .getWayPointsManager()
-                           .add(var23.getName(), Integer.parseInt(var14.group(1)), Integer.parseInt(var14.group(2)), Integer.parseInt(var14.group(3)));
-                     }
-                     break;
-                  }
-               }
+         Matcher cm = coordPat.matcher(var11);
+         boolean foundAny = false;
+         int lastEnd = 0;
+         while (cm.find()) {
+            foundAny = true;
+            String sx = cm.group(1), sy = cm.group(2), sz = cm.group(3);
+            String segment = var11.substring(lastEnd, cm.start());
+            String name = extractEventName(segment, raw);
+            if (name == null || name.isBlank()) {
+               if (this.c != null && !this.c.isBlank()) { name = this.c; this.c = null; }
+               else name = "Ивент";
+            } else {
                this.c = null;
+            }
+            b matched = findMatchingType(name);
+            if (matched != null) {
+               this.a.removeIf(e -> e.a == matched);
+               this.a.add(new a(matched, matched.getTime()));
+               this.tpsTimer.reset(); this.d = ep.ftAn;
+            }
+            if (Mytheria.getInstance().getWayPointsManager().isAutoWaypointOnEvent()) {
+               String wName = name.replaceAll("^\\[\\d+\\]\\s*", "").trim();
+               if (wName.length() > 32) wName = wName.substring(0,32);
+               if (Mytheria.getInstance().getWayPointsManager().contains(wName)) {
+                  Vec3d ex = null;
+                  for (java.util.Map.Entry<String, Vec3d> e : Mytheria.getInstance().getWayPointsManager().getEntries()) if (e.getKey().equals(wName)) { ex = e.getValue(); break; }
+                  Vec3d np = new Vec3d(Integer.parseInt(sx), Integer.parseInt(sy), Integer.parseInt(sz));
+                  if (ex != null && ex.distanceTo(np) > 5) {
+                     wName = wName + " " + sx + "_" + sz;
+                     if (Mytheria.getInstance().getWayPointsManager().contains(wName)) {
+                        int num = Mytheria.getInstance().getWayPointsManager().getNextAvailableNumber(wName + " ");
+                        wName = wName + " " + num;
+                     }
+                  } else if (ex != null && ex.distanceTo(np) <= 5) {
+                     // тот же ивент, обновляем координаты
+                  }
+               }
+               Mytheria.getInstance().getWayPointsManager().add(wName, Integer.parseInt(sx), Integer.parseInt(sy), Integer.parseInt(sz));
+            }
+            lastEnd = cm.end();
+         }
+         if (!foundAny) {
+            // нет координат в этом сообщении — возможно это строка с названием ивента, ждём след. сообщение с координатами
+            String name = extractEventName(var11, raw);
+            if (name != null && !name.isBlank() && name.length() >= 3 && !name.matches(".*\\d+:\\d+.*")) {
+               // проверяем что это похоже на ивент, а не системное сообщение
+               String low = name.toLowerCase();
+               boolean isEventLike = false;
+               for (b t : b.values()) if (low.contains(t.getName().toLowerCase().split(" ")[0]) || t.getName().toLowerCase().contains(low)) isEventLike = true;
+               if (low.contains("алтарь") || low.contains("гейзер") || low.contains("маяк") || low.contains("вулкан") || low.contains("метеорит") || low.contains("череп") || low.contains("посылка") || low.contains("босс") || low.contains("контейнер") || low.contains("груз") || low.contains("корабль")) isEventLike = true;
+               if (isEventLike || var11.matches(".*\\[\\s*\\d+\\s*\\].*") || raw.contains("<<<")) {
+                  this.c = name;
+               } else if (name.length() >= 4 && !name.equalsIgnoreCase("Ивенты")) {
+                  // generic fallback для любых кастомных ивентов
+                  this.c = name;
+               }
             }
          }
       }
    };
    private final EventListener<R> j = event -> {
       if (ep.ftAn != this.d) {
-         this.a.forEach(e -> Mytheria.getInstance().getWayPointsManager().del(e.type().getName()));
+         this.a.forEach(e -> Mytheria.getInstance().getWayPointsManager().delSilent(e.type().getName()));
          this.a.clear();
          this.d = ep.ftAn;
       }
@@ -352,7 +363,7 @@ public class di extends dg {
    public void draw(CustomDrawContext context) {
       this.a.removeIf(event -> {
          if (this.tpsTimer.getElapsedTimeTPS() >= event.type().getTime()) {
-            Mytheria.getInstance().getWayPointsManager().del(event.type().getName());
+            Mytheria.getInstance().getWayPointsManager().delSilent(event.type().getName());
             return true;
          } else {
             return false;

@@ -393,22 +393,6 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       this.l.update(this.i.isFocused() ? 1.0F : 0.0F);
       this.n.setEasing(this.m ? Easing.BAKEK : Easing.BAKEK_BACK);
       this.n.update(this.m);
-      this.pollMovement();
-   }
-
-   private void pollMovement() {
-      if (mc.player != null && !this.isSearchFocused()) {
-         long handle = mc.getWindow().getHandle();
-         KeyBinding[] binds = new KeyBinding[]{mc.options.forwardKey, mc.options.backKey, mc.options.leftKey, mc.options.rightKey, mc.options.jumpKey, mc.options.sneakKey, mc.options.sprintKey};
-         for (KeyBinding b : binds) {
-            int code = InputUtil.fromTranslationKey(b.getBoundKeyTranslationKey()).getCode();
-            b.setPressed(InputUtil.isKeyPressed(handle, code));
-         }
-      }
-   }
-
-   private boolean isSearchFocused() {
-      return this.i != null && this.i.isFocused();
    }
 
    @Override
@@ -1015,16 +999,16 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
          float var13 = x + (this.b.getWidth() - var12) / 2.0F;
          fu var14 = new fu(5.0F);
 
-         for (dL var16 : this.f) {
-            if (var16.getCategory() == this.d) {
-               var16.setY(var7 - scroll);
-               int var18 = 0;
+          for (dL var16 : this.f) {
+             if (var16.getCategory() == this.d || this.isSearchActive()) {
+                var16.setY(var7 - scroll);
+                int var18 = 0;
 
-               for (dN var20 : var16.getModules()) {
-                  boolean var21 = !this.c(var20);
-                  var20.getVisible().update(var21);
-                  var20.getOffset().update(var21);
-                  if (this.b(var20) && !this.a(var20)) {
+                for (dN var20 : var16.getModules()) {
+                   boolean var21 = !this.c(var20);
+                   var20.getVisible().update(var21);
+                   var20.getOffset().update(var21);
+                   if (this.b(var20) && !this.a(var20)) {
                      var20.set(var13 + var8, y + var7, var9, 28.0F);
                      boolean var22 = var20.getY() >= y + 30.0F && var20.getY() + var20.getHeight() <= y + this.b.getHeight() - 55.0F;
                      if (var22) {
@@ -1056,50 +1040,50 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
          var14.draw();
          ft var26 = new ft();
 
-         for (dL var17 : this.f) {
-            if (var17.getCategory() == this.d) {
-               for (dN var37 : var17.getModules()) {
-                  if (!this.a(var37) && this.b(var37)) {
-                     boolean var42 = var37.getY() >= y + 30.0F && var37.getY() + var37.getHeight() <= y + this.b.getHeight() - 55.0F;
-                     if (var42) {
-                        var37.renderRounds(context);
-                     }
-                  }
-               }
-            }
-         }
+          for (dL var17 : this.f) {
+             if (var17.getCategory() == this.d || this.isSearchActive()) {
+                for (dN var37 : var17.getModules()) {
+                   if (!this.a(var37) && this.b(var37)) {
+                      boolean var42 = var37.getY() >= y + 30.0F && var37.getY() + var37.getHeight() <= y + this.b.getHeight() - 55.0F;
+                      if (var42) {
+                         var37.renderRounds(context);
+                      }
+                   }
+                }
+             }
+          }
 
-         var26.draw();
-         ft var28 = new ft();
+          var26.draw();
+          ft var28 = new ft();
 
-         for (dL var33 : this.f) {
-            if (var33.getCategory() == this.d) {
-               for (dN var43 : var33.getModules()) {
-                  if (!this.a(var43) && this.b(var43)) {
-                     boolean var47 = var43.getY() >= y + 30.0F && var43.getY() + var43.getHeight() <= y + this.b.getHeight() - 55.0F;
-                     if (var47) {
-                        var43.renderInto(context);
-                     }
-                  }
-               }
-            }
-         }
+          for (dL var33 : this.f) {
+             if (var33.getCategory() == this.d || this.isSearchActive()) {
+                for (dN var43 : var33.getModules()) {
+                   if (!this.a(var43) && this.b(var43)) {
+                      boolean var47 = var43.getY() >= y + 30.0F && var43.getY() + var43.getHeight() <= y + this.b.getHeight() - 55.0F;
+                      if (var47) {
+                         var43.renderInto(context);
+                      }
+                   }
+                }
+             }
+          }
 
-         var28.draw();
-         fq var30 = new fq(VertexFormats.POSITION_TEXTURE_COLOR, Fonts.MEDIUM);
+          var28.draw();
+          fq var30 = new fq(VertexFormats.POSITION_TEXTURE_COLOR, Fonts.MEDIUM);
 
-         for (dL var39 : this.f) {
-            if (var39.getCategory() == this.d) {
-               for (dN var48 : var39.getModules()) {
-                  if (!this.a(var48) && this.b(var48)) {
-                     boolean var50 = var48.getY() >= y + 30.0F && var48.getY() + var48.getHeight() <= y + this.b.getHeight() - 55.0F;
-                     if (var50) {
-                        var48.renderMedium(context);
-                     }
-                  }
-               }
-            }
-         }
+          for (dL var39 : this.f) {
+             if (var39.getCategory() == this.d || this.isSearchActive()) {
+                for (dN var48 : var39.getModules()) {
+                   if (!this.a(var48) && this.b(var48)) {
+                      boolean var50 = var48.getY() >= y + 30.0F && var48.getY() + var48.getHeight() <= y + this.b.getHeight() - 55.0F;
+                      if (var50) {
+                         var48.renderMedium(context);
+                      }
+                   }
+                }
+             }
+          }
 
          var30.draw();
 
@@ -1108,7 +1092,7 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
             fp var45 = new fp(VertexFormats.POSITION_TEXTURE_COLOR, Fonts.REGULAR, 0.9F, 1.0F, var9 - 30.0F, var40, context.getMatrices().peek().getPositionMatrix());
 
             for (dL var51 : this.f) {
-               if (var51.getCategory() == this.d) {
+               if (var51.getCategory() == this.d || this.isSearchActive()) {
                   for (dN var24 : var51.getModules()) {
                      if (!this.a(var24) && this.b(var24) && var24.getX() >= var40 - 1.0F && var24.getX() <= var40 + 1.0F) {
                         boolean var25 = var24.getY() >= y + 30.0F && var24.getY() + var24.getHeight() <= y + this.b.getHeight() - 55.0F;
@@ -1137,7 +1121,21 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
 
    private boolean b(dN component) {
       cK var2 = this.i;
-      return var2 != null && !var2.getBuiltText().isBlank() ? component.getModule().getName().toLowerCase().contains(var2.getBuiltText().toLowerCase()) : true;
+      if (var2 == null || var2.getBuiltText().isBlank()) return true;
+      String search = var2.getBuiltText().toLowerCase().trim();
+      String name = component.getModule().getName().toLowerCase();
+      String nameNoSpaces = name.replace(" ", "");
+      // также ищем по описанию, но если описание это ключ modules.descriptions... — игнорируем
+      String desc = "";
+      try {
+         desc = component.getModule().getDescription().toLowerCase();
+         if (desc.startsWith("modules.descriptions.")) desc = "";
+      } catch (Exception ignored) {}
+      return name.contains(search) || nameNoSpaces.contains(search) || (!desc.isEmpty() && desc.contains(search));
+   }
+
+   private boolean isSearchActive() {
+      return this.i != null && !this.i.getBuiltText().isBlank();
    }
 
    private boolean c(dN component) {
@@ -1366,9 +1364,9 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
                   return;
                }
             }
-         } else {
+          } else {
             for (dL var82 : this.f) {
-               if (var82.getCategory() == this.d) {
+               if (var82.getCategory() == this.d || this.isSearchActive()) {
                   for (dN var85 : var82.getModules()) {
                      boolean var86 = var85.getY() >= var7 + 30.0F && var85.getY() + var85.getHeight() <= var7 + this.b.getHeight() - 55.0F;
                      if (!var85.getModule().isHidden()

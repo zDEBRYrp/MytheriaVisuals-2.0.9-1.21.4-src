@@ -212,7 +212,7 @@ public class r implements IMinecraft, IScaledResolution {
       return f.begin("waypoint")
          .aliases("way")
          .desc("Метки")
-         .param("action", p -> p.literal("add", "del", "clear", "mode", "mainmenu"))
+         .param("action", p -> p.literal("add", "del", "clear", "mode"))
          .param("name", p -> p.optional().validator(ValidationResult::ok))
          .param("x", p -> p.optional().validator(this::a))
          .param("y", p -> p.optional().validator(this::a))
@@ -274,18 +274,6 @@ public class r implements IMinecraft, IScaledResolution {
             } else {
                eg.error(Text.of("Неизвестный режим. Доступно: CLASSIC, BEACON, DOT, TRACER, BOTH"));
             }
-            break;
-         case "mainmenu":
-            try {
-               java.io.File f = new java.io.File(ar.DIRECTORY, "disable_custom_menu");
-               if (f.exists()) {
-                  if (f.delete()) eg.info(Text.of("Кастомное меню включено (перезайди в главное меню)"));
-                  else eg.error(Text.of("Не удалось включить кастомное меню"));
-               } else {
-                  f.createNewFile();
-                  eg.info(Text.of("Кастомное меню отключено (перезайди в главное меню)"));
-               }
-            } catch (Exception e) { eg.error(Text.of("Ошибка: " + e.getMessage())); }
             break;
       }
    }

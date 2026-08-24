@@ -273,9 +273,11 @@ public class cv implements IMinecraft {
       if (this.a.remove(name) != null) {
          eg.info(Text.of(av.translate("modules.waypoints.deleted", name)));
          this.b();
-      } else {
-         eg.info(Text.of(av.translate("modules.waypoints.not_found", name)));
       }
+   }
+
+   public void delSilent(String name) {
+      if (this.a.remove(name) != null) this.b();
    }
 
    public void clear() {

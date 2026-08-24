@@ -188,6 +188,7 @@ import nesquik.mytheria.systems.modules.api.ModuleInfo;
 
 @ModuleInfo(name = "Menu", category = ax.VISUALS, key = 344, desc = "modules.descriptions.menu")
 public class bN extends aJ {
+   private final ch customMainMenu = new ch(this, "modules.settings.menu.custom_main_menu").enabled(true);
    private static final dv a = new dv();
 
    @Override
@@ -213,5 +214,9 @@ public class bN extends aJ {
       }
 
       super.onDisable();
+   }
+
+   public boolean isCustomMainMenuEnabled() {
+      return this.customMainMenu.isEnabled();
    }
 }
