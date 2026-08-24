@@ -387,17 +387,12 @@ public class dw extends dt implements IMinecraft, IScaledResolution {
       if (mc.player != null && !this.b()) {
          long var1 = mc.getWindow().getHandle();
          KeyBinding[] var3 = new KeyBinding[]{
-            mc.options.forwardKey, mc.options.backKey, mc.options.leftKey, mc.options.rightKey, mc.options.jumpKey
+            mc.options.forwardKey, mc.options.backKey, mc.options.leftKey, mc.options.rightKey, mc.options.jumpKey, mc.options.sneakKey, mc.options.sprintKey
          };
 
          for (KeyBinding var7 : var3) {
             int var8 = InputUtil.fromTranslationKey(var7.getBoundKeyTranslationKey()).getCode();
             var7.setPressed(InputUtil.isKeyPressed(var1, var8));
-         }
-
-         if (mc.player.getAbilities().flying) {
-            int var9 = InputUtil.fromTranslationKey(mc.options.sneakKey.getBoundKeyTranslationKey()).getCode();
-            mc.options.sneakKey.setPressed(InputUtil.isKeyPressed(var1, var9));
          }
       }
    }
