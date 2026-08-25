@@ -189,11 +189,13 @@ import nesquik.mytheria.systems.modules.api.ModuleInfo;
 @ModuleInfo(name = "Menu", category = ax.VISUALS, key = 344, desc = "modules.descriptions.menu")
 public class bN extends aJ {
    private final ch customMainMenu = new ch(this, "modules.settings.menu.custom_main_menu").enabled(true);
+   private net.minecraft.client.gui.screen.Screen prevScreen = null;
    private static final dv a = new dv();
 
    @Override
    public void onEnable() {
       if (!(mc.currentScreen instanceof dt)) {
+         this.prevScreen = mc.currentScreen;
          dP var1 = new dP();
          Mytheria.getInstance().setMenuScreen(var1);
          mc.setScreen(var1);
@@ -209,8 +211,14 @@ public class bN extends aJ {
    @Override
    public void onDisable() {
       if (mc.currentScreen instanceof dt) {
-         mc.setScreen(null);
          Mytheria.getInstance().getMenuScreen().setClosing(true);
+         if (this.prevScreen != null && !(this.prevScreen instanceof dt)) {
+            mc.setScreen(this.prevScreen);
+            this.prevScreen = null;
+         } else {
+            mc.setScreen(null);
+            this.prevScreen = null;
+         }
       }
 
       super.onDisable();
