@@ -203,6 +203,7 @@ public class bN extends aJ {
             refreshMainMenu();
         }
     }.enabled(true);
+    private final ch transparent = new ch(this, "modules.settings.menu.transparent");
     private net.minecraft.client.gui.screen.Screen prevScreen = null;
     private static final dv a = new dv();
 
@@ -255,7 +256,11 @@ public class bN extends aJ {
        }
     }
 
-   public boolean isCustomMainMenuEnabled() {
-      return this.customMainMenu.isEnabled();
-   }
+    public boolean isCustomMainMenuEnabled() {
+       return this.customMainMenu.isEnabled();
+    }
+
+    public boolean isBackgroundTransparent() {
+       return this.transparent.isEnabled();
+    }
 }

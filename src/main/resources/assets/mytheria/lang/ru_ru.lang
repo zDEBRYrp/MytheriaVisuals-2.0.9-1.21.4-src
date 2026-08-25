@@ -1049,3 +1049,4 @@ hud.armor.vertical=Вертикально
 # Настройки Dynamic Island
 hud.dynamic_island.show_side_icons=Показывать боковые иконки
 modules.settings.menu.custom_main_menu=Кастовное главное меню
+modules.settings.menu.transparent=Прозрачность

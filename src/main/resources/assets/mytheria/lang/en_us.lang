@@ -11,7 +11,7 @@ modules.descriptions.auto_sprint=Enables automatic sprinting
 modules.descriptions.menu=Client features menu
 modules.descriptions.ambience=Changes the world's ambiance
 modules.descriptions.swing_animation=Changes hand swing animations
-modules.descriptions.sound_esp=Shows where a trident or TNT sound was played
+modules.descriptions.sound_esp=Shows where a sound was played
 modules.descriptions.tnt_timer=Displays the time until TNT explodes
 modules.descriptions.view_model=Changes the viewmodel position
 modules.descriptions.trap_esp=Highlights traps
@@ -23,7 +23,7 @@ modules.descriptions.auto_eat=Automatically eats food at a certain hunger level
 modules.descriptions.player_utils=Helper functions for the player
 modules.descriptions.item_pickup=Notifies you when picking up a donor item
 modules.descriptions.object_info=Shows information about traps and structures in the world
-modules.descriptions.fast_exp=Быстрое бросание бутылок опыта
+modules.descriptions.fast_exp=Fast experience bottle usage while holding right click
 
 # Object Info
 modules.settings.object_info.particle_mode=Particle Mode
@@ -59,7 +59,7 @@ modules.descriptions.sounds=Adds sounds to the client
 modules.descriptions.kill_effects=A beautiful effect on entity death
 modules.descriptions.friend_markers=Visually marks friends
 modules.descriptions.friend_marker=Displays a crystal above friends' heads
-modules.descriptions.chat_helper=Chat improvements
+modules.descriptions.chat_helper=Improves chat functionality
 
 # Chat Helper
 modules.settings.chat_helper.chat_history=Chat History
@@ -587,22 +587,16 @@ hud.inventory=Inventory
 # Additional modules
 modules.descriptions.debug_shift=Fixes item use interruption when pressing Shift
 modules.descriptions.particle_effects=Custom particles for various events
-modules.descriptions.sound_esp=Shows where a sound was played
 modules.descriptions.coord_invite=Sends coordinates to a player via keybind
 modules.descriptions.spec_bind=Sends !Spec command with your nickname to chat via keybind
 modules.descriptions.assist=Helper for different servers
 modules.descriptions.tape_mouse=Tape Mouse
-modules.descriptions.fast_exp=Fast experience bottle usage while holding right click
 
 # Module settings with hardcode
-modules.settings.shifttap.interval.description=How long to hold shift in ticks
 modules.settings.invutils.item_scroller=Item scroller
 modules.settings.invutils.slot_lock=Slot lock
 modules.settings.fast_exp.delay=Delay
 modules.settings.custom_hitbox.entity_types.items=Items
-modules.settings.custom_hitbox.fill=Fill
-modules.settings.custom_hitbox.show_eye_height=Show eye height
-modules.settings.custom_hitbox.show_look_vector=Show look vector
 modules.settings.interface.themeMode=Theme mode
 
 # AspectRatio
@@ -621,11 +615,6 @@ modules.settings.custom_hitbox.entity_types.mobs=Mobs
 modules.settings.invutils.delay=Delay
 
 # Chinahat
-modules.settings.chinahat.height_offset=Height offset
-modules.settings.chinahat.width=Width
-modules.settings.chinahat.height=Height
-modules.settings.chinahat.color=Color
-modules.settings.chinahat.alpha=Transparency
 
 # Interface colors
 modules.settings.interface.clientColor=Client color
@@ -726,7 +715,6 @@ modules.settings.better_minecraft.smooth_screens=Smooth Screens
 modules.settings.better_minecraft.smooth_f5=Smooth F5
 
 # Blink
-modules.descriptions.blink=Creates a last position effect behind the player
 modules.settings.blink.style=Style
 modules.settings.blink.style.box=Box
 modules.settings.blink.style.player=Player
@@ -743,10 +731,7 @@ modules.settings.blink.hit_snapshot_count=Models on Hit
 modules.settings.blink.hit_spacing=Hit Spacing
 
 # Chat Helper
-modules.descriptions.chat_helper=Improves chat functionality
-modules.settings.chat_helper.chat_history=Chat History
 modules.settings.chat_helper.chat_history.description=Prevents server from clearing chat history
-modules.settings.chat_helper.anti_spam=Anti-Spam
 modules.settings.chat_helper.anti_spam.description=Groups identical messages with counter [x2], [x3], etc.
 
 # Crosshair
@@ -844,9 +829,9 @@ modules.settings.swing_animation.speed.description=Swing animation duration in t
 
 # Waypoints GUI
 waypoints.title=Waypoints
-waypoints.gui.name=Waypoint name
-waypoints.gui.edit=Edit waypoint
-waypoints.gui.add=New waypoint
+waypoints.gui.name=Name
+waypoints.gui.edit=Edit Waypoint
+waypoints.gui.add=Add Waypoint
 waypoints.gui.add_button=Add
 waypoints.gui.save=Save
 waypoints.gui.clear=Clear
@@ -861,36 +846,12 @@ modules.waypoints.death_name=Death Location
 modules.waypoints.death_created=Created death waypoint "%s"
 
 # Waypoints GUI
-waypoints.title=Waypoints
-waypoints.gui.name=Name
 waypoints.gui.search=Search...
-waypoints.gui.edit=Edit Waypoint
-waypoints.gui.add=Add Waypoint
-waypoints.gui.save=Save
-waypoints.gui.add_button=Add
-waypoints.gui.clear=Clear
 
 modules.descriptions.fogblur=Adds a blurred fog effect at distance
 modules.descriptions.hands=Applies shader effects to hands and items
 
 # FogBlur
-modules.settings.fogblur.fog_strength=Blur Strength
-modules.settings.fogblur.fog_distance=Fog Distance
-modules.settings.fogblur.linear_sampling=Linear Sampling
-modules.settings.fogblur.fog_rgb_puke=RGB Effect
-modules.settings.fogblur.fog_rgb_puke_opacity=RGB Opacity
-modules.settings.fogblur.fog_rgb_puke_saturation=RGB Saturation
-modules.settings.fogblur.fog_rgb_puke_brightness=RGB Brightness
-
-# Hands
-modules.settings.hands.mode=Mode
-modules.settings.hands.solid_color=First Color
-modules.settings.hands.solid_color2=Second Color
-modules.settings.hands.gradient_speed=Gradient Speed
-modules.settings.hands.blur_strength=Blur Strength
-
-# FogBlur
-modules.descriptions.fogblur=Adds a blurred fog effect at distance
 modules.settings.fogblur.fog_strength=Fog Strength
 modules.settings.fogblur.fog_distance=Fog Distance
 modules.settings.fogblur.linear_sampling=Linear Sampling
@@ -900,12 +861,15 @@ modules.settings.fogblur.fog_rgb_puke_saturation=RGB Saturation
 modules.settings.fogblur.fog_rgb_puke_brightness=RGB Brightness
 
 # Hands
-modules.descriptions.hands=Applies shader effects to hands and items
 modules.settings.hands.mode=Mode
 modules.settings.hands.solid_color=Color 1
 modules.settings.hands.solid_color2=Color 2
 modules.settings.hands.gradient_speed=Gradient Speed
 modules.settings.hands.blur_strength=Blur Strength
+
+# FogBlur
+
+# Hands
 
 # HandsModule additional modes
 modules.settings.hands.mode.plasma=Plasma
@@ -924,3 +888,4 @@ hud.armor.vertical=Vertical
 # Dynamic Island Settings
 hud.dynamic_island.show_side_icons=Show Side Icons
 modules.settings.menu.custom_main_menu=Custom Main Menu
+modules.settings.menu.transparent=Transparency

@@ -402,24 +402,28 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       this.menuAnimation.update(this.closing ? 0.0F : 1.0F);
       this.menuAnimation.setEasing(!this.closing ? Easing.BAKEK : Easing.BAKEK_BACK);
       this.menuAnimation.setDuration(400L);
+      bN var100 = (bN)Mytheria.getInstance().getModuleManager().getModule(bN.class);
+      boolean transparent = var100 != null && var100.isBackgroundTransparent();
       if (mc.world == null) {
          mc.getFramebuffer().beginWrite(true);
          RenderSystem.clearColor(0.0F, 0.0F, 0.0F, 1.0F);
          RenderSystem.clear(16640);
 
-         try {
-            if (this.backgroundMenu == null) {
-               var varMenu = new TitleScreen() {
-                  public void b() {
-                     this.init(mc, mc.getWindow().getScaledWidth(), mc.getWindow().getScaledHeight());
-                  }
-               };
-               varMenu.b();
-               this.backgroundMenu = varMenu;
-            }
+         if (transparent) {
+            try {
+               if (this.backgroundMenu == null) {
+                  var varMenu = new TitleScreen() {
+                     public void b() {
+                        this.init(mc, mc.getWindow().getScaledWidth(), mc.getWindow().getScaledHeight());
+                     }
+                  };
+                  varMenu.b();
+                  this.backgroundMenu = varMenu;
+               }
 
-            this.backgroundMenu.render(context, context.getMouseX(), context.getMouseY(), context.getDelta());
-         } catch (Exception var99) {
+               this.backgroundMenu.render(context, context.getMouseX(), context.getMouseY(), context.getDelta());
+            } catch (Exception var99) {
+            }
          }
 
          fj.blurProgram.draw();
@@ -456,7 +460,7 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
             bJ.getBackgroundColor().withAlpha((int)(255.0F * (0.8F - 0.6F * bJ.glass()) * var3))
          );
       } else {
-         context.drawRoundedRect(this.b.getX(), this.b.getY(), this.b.getWidth(), this.b.getHeight(), BorderRadius.all(12.0F), bJ.getBackgroundColor().withAlpha((int)(255.0F * 0.2F * var3)));
+          context.drawRoundedRect(this.b.getX(), this.b.getY(), this.b.getWidth(), this.b.getHeight(), BorderRadius.all(12.0F), transparent ? bJ.getBackgroundColor().withAlpha((int)(255.0F * 0.2F * var3)) : bJ.getBackgroundColor());
       }
 
       float var5 = this.b.getX();

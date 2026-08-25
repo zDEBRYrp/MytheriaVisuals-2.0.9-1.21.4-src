@@ -228,6 +228,8 @@ public class dO extends CustomComponent {
       boolean var3 = Mytheria.getInstance().getMenuScreen().getMenuAnimation().getValue()
          == Mytheria.getInstance().getMenuScreen().getMenuAnimation().getTargetValue();
       boolean var4 = Mytheria.getInstance().getThemeManager().getCurrentTheme() == ct.DARK;
+      bN varTransMenu = (bN)Mytheria.getInstance().getModuleManager().getModule(bN.class);
+      boolean transparentBg = varTransMenu != null && varTransMenu.isBackgroundTransparent();
       this.c.setEasing(this.d ? Easing.QUARTIC_OUT : Easing.BAKEK_BACK);
       float var5 = eI.interpolate(this.a.getX(), this.x, var2);
       float var6 = eI.interpolate(this.a.getY(), this.y, var2);
@@ -266,7 +268,7 @@ public class dO extends CustomComponent {
             );
          }
 
-          context.drawRoundedRect(var5, var6, var7, var8, BorderRadius.all(6.0F + 5.0F * var2), bJ.getBackgroundColor().withAlpha((int)(255.0F * 0.25F * var2)));
+           context.drawRoundedRect(var5, var6, var7, var8, BorderRadius.all(6.0F + 5.0F * var2), transparentBg ? bJ.getBackgroundColor().withAlpha((int)(255.0F * 0.25F * var2)) : bJ.getBackgroundColor());
       }
 
       if (this.d && var3) {
