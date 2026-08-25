@@ -210,12 +210,12 @@ public class dN extends CustomComponent {
    private boolean k;
    private boolean l;
 
-   @Override
-   public void renderComponent(UIContext context) {
-      this.d.setEasing(Easing.QUARTIC_OUT);
-      this.d.update(this.e.isEnabled());
-      this.c.update(this.isHovered(context.getMouseX(), context.getMouseY()));
-      this.i.update(this.k);
+    @Override
+    public void renderComponent(UIContext context) {
+       this.d.setEasing(Easing.QUARTIC_OUT);
+       this.d.update(this.e.isEnabled());
+       this.c.update(this.isHovered(context.getMouseX(), context.getMouseY()));
+       this.i.update(this.k);
       this.j.update(this.k ? new eb(255.0F, 150.0F, 150.0F) : Mytheria.getInstance().getThemeManager().getCurrentTheme().getTextColor());
       this.h.update(this.k ? (this.l ? 1.0F : -1.0F) : 0.0F);
       if (this.i.getValue() == 1.0F) {
@@ -398,9 +398,13 @@ public class dN extends CustomComponent {
       }
    }
 
-   public boolean isBinding() {
-      return false;
-   }
+    public boolean isBinding() {
+       return false;
+    }
+
+    public void updateHover(float mouseX, float mouseY) {
+       this.c.update(this.isHovered(mouseX, mouseY));
+    }
 
    @Generated
    public dN(Module module, dL category) {
