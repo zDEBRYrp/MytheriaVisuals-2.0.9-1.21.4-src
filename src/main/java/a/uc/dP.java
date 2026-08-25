@@ -152,6 +152,7 @@ import a.e;
 import a.fw;
 import a.dq;
 import a.ds;
+import net.minecraft.client.gui.screen.TitleScreen;
 import a.fn;
 import a.fi;
 import a.ax;
@@ -230,6 +231,7 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
    private final List<dZ> t = new ArrayList<>();
    private cy u = null;
    private cz v = null;
+   private TitleScreen backgroundMenu = null;
 
    public dP() {
       float var1 = 500.0F;
@@ -404,6 +406,22 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
          mc.getFramebuffer().beginWrite(true);
          RenderSystem.clearColor(0.0F, 0.0F, 0.0F, 1.0F);
          RenderSystem.clear(16640);
+
+         try {
+            if (this.backgroundMenu == null) {
+               var varMenu = new TitleScreen() {
+                  public void b() {
+                     this.init(mc, mc.getWindow().getScaledWidth(), mc.getWindow().getScaledHeight());
+                  }
+               };
+               varMenu.b();
+               this.backgroundMenu = varMenu;
+            }
+
+            this.backgroundMenu.render(context, context.getMouseX(), context.getMouseY(), context.getDelta());
+         } catch (Exception var99) {
+         }
+
          fj.blurProgram.draw();
       }
 
