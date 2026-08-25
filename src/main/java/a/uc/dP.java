@@ -205,7 +205,11 @@ import nesquik.mytheria.utility.interfaces.IScaledResolution;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferRenderer;
+import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.render.VertexFormat.DrawMode;
 import net.minecraft.client.util.InputUtil;
 
 public class dP extends dt implements IMinecraft, IScaledResolution {
@@ -232,6 +236,8 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
    private cy u = null;
    private cz v = null;
    private TitleScreen backgroundMenu = null;
+   private fh backgroundSnapshot = null;
+   private boolean snapshotTaken = false;
 
    public dP() {
       float var1 = 500.0F;
@@ -405,12 +411,42 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       bN var100 = (bN)Mytheria.getInstance().getModuleManager().getModule(bN.class);
       boolean transparent = var100 != null && var100.isBackgroundTransparent();
       if (mc.world == null) {
+         if (!this.snapshotTaken) {
+            this.snapshotTaken = true;
+
+            try {
+               bN varMenuModule = (bN)Mytheria.getInstance().getModuleManager().getModule(bN.class);
+               Screen varPrev = varMenuModule != null ? varMenuModule.getPrevScreen() : null;
+               if (varPrev != null) {
+                  mc.currentScreen = varPrev;
+                  fh varSnap = new fh(false).setLinear().setDownscale(1.0F);
+                  varSnap.setup();
+                  varSnap.beginWrite(true);
+                  varPrev.render(context, context.getMouseX(), context.getMouseY(), context.getDelta());
+                  varSnap.stop();
+                  mc.currentScreen = this;
+                  this.backgroundSnapshot = varSnap;
+               }
+            } catch (Exception var98) {
+               mc.currentScreen = this;
+            }
+         }
+
          mc.getFramebuffer().beginWrite(true);
          RenderSystem.clearColor(0.0F, 0.0F, 0.0F, 1.0F);
          RenderSystem.clear(16640);
 
          try {
-            if (this.backgroundMenu == null) {
+            if (this.backgroundSnapshot != null) {
+               RenderSystem.setShaderTexture(0, this.backgroundSnapshot.getColorAttachment());
+               BufferBuilder varB = RenderSystem.renderThreadTesselator().begin(DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
+               varB.vertex(0.0F, 0.0F, 0.0F).texture(0.0F, 1.0F).color(-1);
+               varB.vertex(0.0F, (float)mc.getWindow().getScaledHeight(), 0.0F).texture(0.0F, 0.0F).color(-1);
+               varB.vertex((float)mc.getWindow().getScaledWidth(), (float)mc.getWindow().getScaledHeight(), 0.0F).texture(1.0F, 0.0F).color(-1);
+               varB.vertex((float)mc.getWindow().getScaledWidth(), 0.0F, 0.0F).texture(1.0F, 1.0F).color(-1);
+               BufferRenderer.drawWithGlobalProgram(varB.end());
+               RenderSystem.setShaderTexture(0, 0);
+            } else if (this.backgroundMenu == null) {
                var varMenu = new TitleScreen() {
                   public void b() {
                      this.init(mc, mc.getWindow().getScaledWidth(), mc.getWindow().getScaledHeight());
@@ -418,9 +454,10 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
                };
                varMenu.b();
                this.backgroundMenu = varMenu;
+               this.backgroundMenu.render(context, context.getMouseX(), context.getMouseY(), context.getDelta());
+            } else {
+               this.backgroundMenu.render(context, context.getMouseX(), context.getMouseY(), context.getDelta());
             }
-
-            this.backgroundMenu.render(context, context.getMouseX(), context.getMouseY(), context.getDelta());
          } catch (Exception var99) {
          }
 
