@@ -230,10 +230,14 @@ public class bN extends aJ {
           Screen next;
           if (this.prevScreen == null) {
              next = null;
-          } else if (this.customMainMenu.isEnabled()) {
-             next = this.prevScreen instanceof ds ? this.prevScreen : new ds();
+          } else if (this.prevScreen instanceof TitleScreen || this.prevScreen instanceof ds) {
+             if (this.customMainMenu.isEnabled()) {
+                next = this.prevScreen instanceof ds ? this.prevScreen : new ds();
+             } else {
+                next = this.prevScreen instanceof TitleScreen ? this.prevScreen : new TitleScreen();
+             }
           } else {
-             next = this.prevScreen instanceof TitleScreen ? this.prevScreen : new TitleScreen();
+             next = this.prevScreen;
           }
 
           this.prevScreen = null;
