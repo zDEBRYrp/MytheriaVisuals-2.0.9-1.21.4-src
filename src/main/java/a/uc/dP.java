@@ -410,27 +410,17 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
          RenderSystem.clear(16640);
 
          try {
-            bN varMenuModule = (bN)Mytheria.getInstance().getModuleManager().getModule(bN.class);
-            Screen varPrev = varMenuModule != null ? varMenuModule.getPrevScreen() : null;
-            if (varPrev instanceof ds) {
-               varPrev = null;
+            if (this.backgroundMenu == null) {
+               var varMenu = new TitleScreen() {
+                  public void b() {
+                     this.init(mc, mc.getWindow().getScaledWidth(), mc.getWindow().getScaledHeight());
+                  }
+               };
+               varMenu.b();
+               this.backgroundMenu = varMenu;
             }
 
-            if (varPrev != null) {
-               varPrev.render(context, context.getMouseX(), context.getMouseY(), context.getDelta());
-            } else {
-               if (this.backgroundMenu == null) {
-                  var varMenu = new TitleScreen() {
-                     public void b() {
-                        this.init(mc, mc.getWindow().getScaledWidth(), mc.getWindow().getScaledHeight());
-                     }
-                  };
-                  varMenu.b();
-                  this.backgroundMenu = varMenu;
-               }
-
-               this.backgroundMenu.render(context, context.getMouseX(), context.getMouseY(), context.getDelta());
-            }
+            this.backgroundMenu.render(context, context.getMouseX(), context.getMouseY(), context.getDelta());
          } catch (Exception var99) {
          }
 
