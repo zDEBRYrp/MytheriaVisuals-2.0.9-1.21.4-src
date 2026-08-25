@@ -381,7 +381,7 @@ public class dO extends CustomComponent {
       fm.pop();
       RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, var2);
       this.height = Math.min(200.0F, var10 + 28.0F + 5.0F);
-       this.e.setMax(Math.max(0.0F, var10 - (var8 - 24.0F - 4.0F - 5.0F)));
+        this.e.setMax((double)var8 - 32.0 - (double)var10);
       if (!this.d || !var3) {
          fl.end(context.getMatrices());
       }

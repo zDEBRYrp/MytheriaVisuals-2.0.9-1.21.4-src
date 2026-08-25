@@ -404,6 +404,7 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
          mc.getFramebuffer().beginWrite(true);
          RenderSystem.clearColor(0.0F, 0.0F, 0.0F, 1.0F);
          RenderSystem.clear(16640);
+         new ds().render(context);
          fj.blurProgram.draw();
       }
 
@@ -438,7 +439,7 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
             bJ.getBackgroundColor().withAlpha((int)(255.0F * (0.8F - 0.6F * bJ.glass()) * var3))
          );
       } else {
-         context.drawRoundedRect(this.b.getX(), this.b.getY(), this.b.getWidth(), this.b.getHeight(), BorderRadius.all(12.0F), bJ.getBackgroundColor());
+         context.drawRoundedRect(this.b.getX(), this.b.getY(), this.b.getWidth(), this.b.getHeight(), BorderRadius.all(12.0F), bJ.getBackgroundColor().withAlpha((int)(255.0F * 0.8F * var3)));
       }
 
       float var5 = this.b.getX();
