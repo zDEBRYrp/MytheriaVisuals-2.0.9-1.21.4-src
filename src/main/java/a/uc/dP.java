@@ -400,6 +400,10 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       this.menuAnimation.update(this.closing ? 0.0F : 1.0F);
       this.menuAnimation.setEasing(!this.closing ? Easing.BAKEK : Easing.BAKEK_BACK);
       this.menuAnimation.setDuration(400L);
+      if (mc.world == null) {
+         fj.blurProgram.draw();
+      }
+
       this.c.update();
       float var2 = (float)(-this.c.getValue());
       float var3 = Math.min(1.0F, this.menuAnimation.getValue());
@@ -1341,6 +1345,10 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
                if (var43.getCategory() != this.d) {
                   this.d = var43.getCategory();
                   this.c.setValue(0.0);
+                  if (this.i != null) {
+                     this.i.clear();
+                     this.i.setFocused(false);
+                  }
                   if (var43.getPenis() != null) {
                      var43.getPenis().playOnce();
                   }
