@@ -269,4 +269,8 @@ public class bN extends aJ {
     public boolean isBackgroundTransparent() {
        return this.transparent.isEnabled();
     }
+
+    public Screen getPrevScreen() {
+       return this.prevScreen;
+    }
 }
