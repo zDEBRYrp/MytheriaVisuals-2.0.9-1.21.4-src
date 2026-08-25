@@ -1492,8 +1492,11 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       return false;
    }
 
-   public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-   }
+    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
+        if (mc.world == null) {
+            context.fill(0, 0, (int)sr.getScaledWidth(), (int)sr.getScaledHeight(), 0xFF000000);
+        }
+    }
 
    public boolean shouldCloseOnEsc() {
       return true;
