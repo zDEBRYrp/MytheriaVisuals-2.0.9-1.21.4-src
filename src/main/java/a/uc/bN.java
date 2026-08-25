@@ -228,7 +228,9 @@ public class bN extends aJ {
        if (mc.currentScreen instanceof dt) {
           Mytheria.getInstance().getMenuScreen().setClosing(true);
           Screen next;
-          if (this.customMainMenu.isEnabled()) {
+          if (this.prevScreen == null) {
+             next = null;
+          } else if (this.customMainMenu.isEnabled()) {
              next = this.prevScreen instanceof ds ? this.prevScreen : new ds();
           } else {
              next = this.prevScreen instanceof TitleScreen ? this.prevScreen : new TitleScreen();
