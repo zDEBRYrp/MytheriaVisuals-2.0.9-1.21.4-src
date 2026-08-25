@@ -318,7 +318,7 @@ public class dO extends CustomComponent {
 
       float var9 = 28.0F;
       float var10 = 0.0F;
-      fm.push(context.getMatrices(), var5, var6 + 28.0F, var7, var8 - 28.0F - 5.0F);
+       fm.push(context.getMatrices(), var5, var6 + 28.0F, var7, var8 - 28.0F);
       this.j.update(this.a.getModule().isEnabled() ? 1.0F : 0.75F);
       this.k.update(this.a.getModule().isEnabled() ? 1.0F : 0.0F);
       this.l.update(this.a.getModule().isEnabled() ? a() : Mytheria.getInstance().getThemeManager().getCurrentTheme().getAdditionalColor().mix(eb.BLACK, 0.3F));
@@ -381,7 +381,7 @@ public class dO extends CustomComponent {
       fm.pop();
       RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, var2);
       this.height = Math.min(200.0F, var10 + 28.0F + 5.0F);
-      this.e.setMax(-var10 + var8 - 24.0F - 4.0F - 5.0F);
+       this.e.setMax(Math.max(0.0F, var10 - (var8 - 24.0F - 4.0F - 5.0F)));
       if (!this.d || !var3) {
          fl.end(context.getMatrices());
       }
