@@ -409,21 +409,19 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
          RenderSystem.clearColor(0.0F, 0.0F, 0.0F, 1.0F);
          RenderSystem.clear(16640);
 
-         if (transparent) {
-            try {
-               if (this.backgroundMenu == null) {
-                  var varMenu = new TitleScreen() {
-                     public void b() {
-                        this.init(mc, mc.getWindow().getScaledWidth(), mc.getWindow().getScaledHeight());
-                     }
-                  };
-                  varMenu.b();
-                  this.backgroundMenu = varMenu;
-               }
-
-               this.backgroundMenu.render(context, context.getMouseX(), context.getMouseY(), context.getDelta());
-            } catch (Exception var99) {
+         try {
+            if (this.backgroundMenu == null) {
+               var varMenu = new TitleScreen() {
+                  public void b() {
+                     this.init(mc, mc.getWindow().getScaledWidth(), mc.getWindow().getScaledHeight());
+                  }
+               };
+               varMenu.b();
+               this.backgroundMenu = varMenu;
             }
+
+            this.backgroundMenu.render(context, context.getMouseX(), context.getMouseY(), context.getDelta());
+         } catch (Exception var99) {
          }
 
          fj.blurProgram.draw();
