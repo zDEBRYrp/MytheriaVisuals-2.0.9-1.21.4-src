@@ -266,7 +266,7 @@ public class dO extends CustomComponent {
             );
          }
 
-         context.drawRoundedRect(var5, var6, var7, var8, BorderRadius.all(6.0F + 5.0F * var2), bJ.getBackgroundColor());
+          context.drawRoundedRect(var5, var6, var7, var8, BorderRadius.all(6.0F + 5.0F * var2), bJ.getBackgroundColor().withAlpha((int)(255.0F * 0.25F * var2)));
       }
 
       if (this.d && var3) {

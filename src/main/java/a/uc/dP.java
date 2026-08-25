@@ -439,7 +439,7 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
             bJ.getBackgroundColor().withAlpha((int)(255.0F * (0.8F - 0.6F * bJ.glass()) * var3))
          );
       } else {
-         context.drawRoundedRect(this.b.getX(), this.b.getY(), this.b.getWidth(), this.b.getHeight(), BorderRadius.all(12.0F), bJ.getBackgroundColor().withAlpha((int)(255.0F * 0.8F * var3)));
+         context.drawRoundedRect(this.b.getX(), this.b.getY(), this.b.getWidth(), this.b.getHeight(), BorderRadius.all(12.0F), bJ.getBackgroundColor().withAlpha((int)(255.0F * 0.2F * var3)));
       }
 
       float var5 = this.b.getX();
