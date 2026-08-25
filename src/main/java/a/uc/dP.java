@@ -404,6 +404,7 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
          mc.getFramebuffer().beginWrite(true);
          RenderSystem.clearColor(0.0F, 0.0F, 0.0F, 1.0F);
          RenderSystem.clear(16640);
+         context.drawTexture(Mytheria.id("image/mainmenu/mainmenu.png"), 0.0F, 0.0F, (float)sr.getScaledWidth(), (float)sr.getScaledHeight(), eb.WHITE);
          fj.blurProgram.draw();
       }
 
