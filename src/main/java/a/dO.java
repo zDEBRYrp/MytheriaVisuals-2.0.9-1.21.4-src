@@ -370,12 +370,10 @@ public class dO extends CustomComponent {
          var20.setX(var5);
          var20.setY((float)(var6 + var9 + var10 - this.e.getValue()));
          var20.setWidth(var7);
-         if (er.isHovered(var5, var6 - var20.getHeight(), var7, var8 + var20.getHeight(), var20.getX(), var20.getY())) {
-            context.pushMatrix();
-            context.getMatrices().translate(0.0F, (-var20.getHeight() + var20.getHeight() * var20.getOpacity()) / 2.0F, 0.0F);
-            var20.render(context);
-            context.popMatrix();
-         }
+          context.pushMatrix();
+          context.getMatrices().translate(0.0F, (-var20.getHeight() + var20.getHeight() * var20.getOpacity()) / 2.0F, 0.0F);
+          var20.render(context);
+          context.popMatrix();
 
          var10 += var20.getHeight() * var20.getOpacity();
       }

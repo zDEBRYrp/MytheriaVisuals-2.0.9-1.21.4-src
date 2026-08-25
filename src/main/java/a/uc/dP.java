@@ -401,6 +401,9 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       this.menuAnimation.setEasing(!this.closing ? Easing.BAKEK : Easing.BAKEK_BACK);
       this.menuAnimation.setDuration(400L);
       if (mc.world == null) {
+         mc.getFramebuffer().beginWrite(true);
+         RenderSystem.clearColor(0.0F, 0.0F, 0.0F, 1.0F);
+         RenderSystem.clear(16640);
          fj.blurProgram.draw();
       }
 
