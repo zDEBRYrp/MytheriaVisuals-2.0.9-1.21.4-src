@@ -923,3 +923,4 @@ hud.armor.vertical=Vertical
 
 # Dynamic Island Settings
 hud.dynamic_island.show_side_icons=Show Side Icons
+modules.settings.menu.custom_main_menu=Custom Main Menu
