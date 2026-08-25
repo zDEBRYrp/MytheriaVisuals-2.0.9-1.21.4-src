@@ -404,7 +404,6 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
          mc.getFramebuffer().beginWrite(true);
          RenderSystem.clearColor(0.0F, 0.0F, 0.0F, 1.0F);
          RenderSystem.clear(16640);
-         new ds().render(context);
          fj.blurProgram.draw();
       }
 
