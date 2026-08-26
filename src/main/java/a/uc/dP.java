@@ -178,7 +178,6 @@ import a.bj;
 import a.ar;
 import a.am;
 import a.bb;
-import a.fh;
 import a.dp;
 import a.co;
 import a.cm;
@@ -236,8 +235,6 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
    private cy u = null;
    private cz v = null;
    private TitleScreen backgroundMenu = null;
-   private fh backgroundSnapshot = null;
-   private boolean snapshotTaken = false;
 
    public dP() {
       float var1 = 500.0F;
@@ -412,8 +409,29 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       boolean transparent = var100 != null && var100.isBackgroundTransparent();
       if (mc.world == null) {
          mc.getFramebuffer().beginWrite(true);
-         RenderSystem.clearColor(1.0F, 0.0F, 0.0F, 1.0F);
+         RenderSystem.clearColor(0.0F, 0.0F, 0.0F, 1.0F);
          RenderSystem.clear(16640);
+
+         try {
+            bN varMenuModule = (bN)Mytheria.getInstance().getModuleManager().getModule(bN.class);
+            Screen varPrev = varMenuModule != null ? varMenuModule.getPrevScreen() : null;
+            if (varPrev != null) {
+               varPrev.render(context, context.getMouseX(), context.getMouseY(), context.getDelta());
+            } else if (this.backgroundMenu == null) {
+               var varMenu = new TitleScreen() {
+                  public void b() {
+                     this.init(mc, mc.getWindow().getScaledWidth(), mc.getWindow().getScaledHeight());
+                  }
+               };
+               varMenu.b();
+               this.backgroundMenu = varMenu;
+               this.backgroundMenu.render(context, context.getMouseX(), context.getMouseY(), context.getDelta());
+            } else {
+               this.backgroundMenu.render(context, context.getMouseX(), context.getMouseY(), context.getDelta());
+            }
+         } catch (Exception var99) {
+         }
+
          fj.blurProgram.draw();
       }
 
