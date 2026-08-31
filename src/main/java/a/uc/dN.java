@@ -209,14 +209,18 @@ public class dN extends CustomComponent {
    private final ea j = new ea(500L, eb.WHITE, Easing.FIGMA_EASE_IN_OUT);
    private boolean k;
    private boolean l;
+   private float marqueeOffset = 0.0F;
+   private long marqueeStart = 0L;
+   private boolean marqueeActive = false;
 
-    @Override
-    public void renderComponent(UIContext context) {
-       this.d.setEasing(Easing.QUARTIC_OUT);
-       this.d.update(this.e.isEnabled());
-       this.c.update(this.isHovered(context.getMouseX(), context.getMouseY()));
-       this.i.update(this.k);
-      this.j.update(this.k ? new eb(255.0F, 150.0F, 150.0F) : Mytheria.getInstance().getThemeManager().getCurrentTheme().getTextColor());
+     @Override
+     public void renderComponent(UIContext context) {
+        this.d.setEasing(Easing.QUARTIC_OUT);
+        this.d.update(this.e.isEnabled());
+        boolean hovered = this.isHovered(context.getMouseX(), context.getMouseY());
+        this.c.update(hovered);
+        this.i.update(this.k);
+       this.j.update(this.k ? new eb(255.0F, 150.0F, 150.0F) : Mytheria.getInstance().getThemeManager().getCurrentTheme().getTextColor());
       this.h.update(this.k ? (this.l ? 1.0F : -1.0F) : 0.0F);
       if (this.i.getValue() == 1.0F) {
          this.k = false;
@@ -228,6 +232,31 @@ public class dN extends CustomComponent {
 
       if (this.h.getValue() == -1.0F) {
          this.l = true;
+      }
+
+      float textWidth = Fonts.MEDIUM.getFont(7.0F).width(this.e.getName());
+      float availableWidth = this.width - 7.0F - 25.0F - 7.0F;
+      if (hovered && textWidth > availableWidth) {
+         if (!this.marqueeActive) {
+            this.marqueeActive = true;
+            this.marqueeStart = System.currentTimeMillis();
+            this.marqueeOffset = 0.0F;
+         }
+         float elapsed = (System.currentTimeMillis() - this.marqueeStart) / 1000.0F;
+         float scrollRange = textWidth - availableWidth + 10.0F;
+         float cycleDuration = 2.0F + scrollRange / 40.0F;
+         float pauseDuration = 0.8F;
+         float totalCycle = pauseDuration + cycleDuration;
+         float cyclePos = elapsed % totalCycle;
+         if (cyclePos < pauseDuration) {
+            this.marqueeOffset = 0.0F;
+         } else {
+            float scrollPos = (cyclePos - pauseDuration) / cycleDuration;
+            this.marqueeOffset = -scrollRange * (1.0F - scrollPos);
+         }
+      } else {
+         this.marqueeActive = false;
+         this.marqueeOffset = 0.0F;
       }
 
       boolean var2 = Mytheria.getInstance().getThemeManager().getCurrentTheme() == ct.DARK;
@@ -265,26 +294,33 @@ public class dN extends CustomComponent {
       );
    }
 
-   public void renderMedium(UIContext context) {
-      int var2 = this.e.getKey();
-      String var3;
-      if (var2 == -1) {
-         var3 = av.translate("menu.binding");
-      } else {
-         var3 = av.translate("key") + ": " + ej.getKeyName(var2);
-      }
+    public void renderMedium(UIContext context) {
+       int var2 = this.e.getKey();
+       String var3;
+       if (var2 == -1) {
+          var3 = av.translate("menu.binding");
+       } else {
+          var3 = av.translate("key") + ": " + ej.getKeyName(var2);
+       }
 
-      context.drawText(
-         Fonts.MEDIUM.getFont(7.0F),
-         this.g ? var3 : this.e.getName(),
-         this.x + 7.0F + this.h.getValue(),
-         this.y + 8.0F,
-         this.j
-            .getColor()
-            .mulAlpha(RenderSystem.getShaderColor()[3] * 0.75F + 0.25F * this.d.getValue() + 0.25F * this.c.getValue())
-            .mulAlpha(this.a.getValue())
-      );
-   }
+       String text = this.g ? var3 : this.e.getName();
+       float textX = this.x + 7.0F + this.h.getValue() + this.marqueeOffset;
+       float textY = this.y + 8.0F;
+       float clipX = this.x + 2.0F;
+       float clipWidth = this.width - 27.0F;
+       fm.push(context.getMatrices(), clipX, this.y, clipWidth, this.height);
+       context.drawText(
+          Fonts.MEDIUM.getFont(7.0F),
+          text,
+          textX,
+          textY,
+          this.j
+             .getColor()
+             .mulAlpha(RenderSystem.getShaderColor()[3] * 0.75F + 0.25F * this.d.getValue() + 0.25F * this.c.getValue())
+             .mulAlpha(this.a.getValue())
+       );
+       fm.pop();
+    }
 
    public void renderRegular(UIContext context) {
       context.drawText(

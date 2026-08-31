@@ -669,12 +669,12 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
     * разделителей, иконок и подписей вкладок.
     */
    private void a(UIContext context, float x, float y, boolean dark, float alpha) {
-      float topBarHeight = 30.0F;
+      float topBarHeight = 36.0F;
       float iconSize = 12.0F;
       float padding = 6.0F;
       float separatorGap = 10.0F;
 
-      renderTopBarButtons(context, x, y, alpha);
+      renderTopBarButtons(context, x, y, topBarHeight, alpha);
 
       float[] layout = computeTabBarLayout(x, y, topBarHeight, iconSize, padding, separatorGap);
       float totalWidth = layout[0];
@@ -718,10 +718,10 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
    /**
     * Рисует кнопки верхней панели: пипетку吸取 цвета, иконку поиска и кнопку закрытия.
     */
-   private void renderTopBarButtons(UIContext context, float x, float y, float alpha) {
+   private void renderTopBarButtons(UIContext context, float x, float y, float topBarHeight, float alpha) {
       float pipetteSize = 8.0F;
       float pipetteX = x + this.b.getWidth() - pipetteSize - 46.0F;
-      float pipetteY = y + 9.0F;
+      float pipetteY = y + (topBarHeight - pipetteSize) / 2.0F;
       context.drawTexture(Mytheria.id("icons/colorpicker/pipette.png"), pipetteX, pipetteY, pipetteSize, pipetteSize);
       if (er.isHovered(pipetteX, pipetteY, pipetteSize, pipetteSize, context)) {
          eo.set(en.HAND);
@@ -729,7 +729,7 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
 
       float searchSize = 10.0F;
       float searchX = x + this.b.getWidth() - searchSize - 30.0F;
-      float searchY = y + 8.0F;
+      float searchY = y + (topBarHeight - searchSize) / 2.0F;
       RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
       fj.drawAnimationSprite(context.getMatrices(), this.j.getCurrentSprite(), searchX, searchY, searchSize, searchSize, ec.WHITE);
       if (er.isHovered(searchX, searchY, searchSize, searchSize, context)) {
@@ -738,7 +738,7 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
 
       float closeSize = 8.0F;
       float closeX = x + this.b.getWidth() - closeSize - 15.0F;
-      float closeY = y + 9.0F;
+      float closeY = y + (topBarHeight - closeSize) / 2.0F;
       RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
       context.drawTexture(Mytheria.id("icons/close.png"), closeX, closeY, closeSize, closeSize, ec.getTextColor());
       if (er.isHovered(closeX, closeY, closeSize, closeSize, context)) {
@@ -1168,7 +1168,7 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
      * Проверяет, находится ли модуль в пределах видимой области сетки.
      */
     private boolean isModuleVisible(dN module, float y) {
-       return module.getY() >= y + 30.0F && module.getY() + module.getHeight() <= y + this.b.getHeight() - 55.0F;
+       return module.getY() >= y + 36.0F && module.getY() + module.getHeight() <= y + this.b.getHeight() - 61.0F;
     }
 
     /**
@@ -1194,7 +1194,7 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
      * @return высота содержимого для расчёта границ прокрутки
      */
     private float layoutAndRenderModules(UIContext context, float x, float y, float scroll, float alpha) {
-       float cursorY = scroll + 35.0F;
+        float cursorY = scroll + 41.0F;
        float cursorX = 0.0F;
        float moduleWidth = 155.0F;
        float gap = 7.5F;
@@ -1352,7 +1352,7 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
      */
     private void a(UIContext context, float x, float y, float scroll, boolean dark, float alpha) {
        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
-       fm.push(context.getMatrices(), this.b.getX(), this.b.getY() + 30.0F, this.b.getWidth(), this.b.getHeight() - 85.0F);
+       fm.push(context.getMatrices(), this.b.getX(), this.b.getY() + 36.0F, this.b.getWidth(), this.b.getHeight() - 91.0F);
        if (this.d == du.OTHER && this.a(this.o)) {
           this.a(context, x, y, scroll, alpha);
           fm.pop();
@@ -1428,7 +1428,7 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
 
           float var62 = 10.0F;
           float var64 = var6 + this.b.getWidth() - var62 - 30.0F;
-          float var67 = var7 + 8.0F;
+          float var67 = var7 + 13.0F;
           if (er.isHovered(var64, var67, var62, var62, mouseX, mouseY)) {
              this.i.setFocused(!this.i.isFocused());
              return;
@@ -1593,7 +1593,7 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
 
     /** Рендерит сетку элементов HUD вкладки OTHER. */
     private void a(UIContext context, float x, float y, float scroll, float alpha) {
-      float var6 = scroll + 35.0F;
+      float var6 = scroll + 41.0F;
       float var7 = 0.0F;
       float var8 = 155.0F;
       float var9 = 7.5F;
@@ -1609,7 +1609,7 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
          var16.getVisible().update(var17);
          var16.getOffset().update(var17);
          var16.set(var12 + var7, y + var6, var8, 28.0F);
-         boolean var18 = var16.getY() >= y + 30.0F && var16.getY() + var16.getHeight() <= y + this.b.getHeight() - 55.0F;
+         boolean var18 = var16.getY() >= y + 36.0F && var16.getY() + var16.getHeight() <= y + this.b.getHeight() - 61.0F;
          if (var18) {
             var16.render(context);
             if (er.isHovered(var16.getX(), var16.getY(), var16.getWidth(), var16.getHeight(), context)) {
@@ -1630,7 +1630,7 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       ft var24 = new ft();
 
       for (dQ var27 : this.q) {
-         boolean var30 = var27.getY() >= y + 30.0F && var27.getY() + var27.getHeight() <= y + this.b.getHeight() - 55.0F;
+         boolean var30 = var27.getY() >= y + 36.0F && var27.getY() + var27.getHeight() <= y + this.b.getHeight() - 61.0F;
          if (var30) {
             var27.renderRounds(context);
          }
@@ -1640,7 +1640,7 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       ft var26 = new ft();
 
       for (dQ var31 : this.q) {
-         boolean var19 = var31.getY() >= y + 30.0F && var31.getY() + var31.getHeight() <= y + this.b.getHeight() - 55.0F;
+         boolean var19 = var31.getY() >= y + 36.0F && var31.getY() + var31.getHeight() <= y + this.b.getHeight() - 61.0F;
          if (var19) {
             var31.renderInto(context);
          }
@@ -1650,7 +1650,7 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       fq var29 = new fq(VertexFormats.POSITION_TEXTURE_COLOR, Fonts.MEDIUM);
 
       for (dQ var35 : this.q) {
-         boolean var20 = var35.getY() >= y + 30.0F && var35.getY() + var35.getHeight() <= y + this.b.getHeight() - 55.0F;
+         boolean var20 = var35.getY() >= y + 36.0F && var35.getY() + var35.getHeight() <= y + this.b.getHeight() - 61.0F;
          if (var20) {
             var35.renderMedium(context);
          }
@@ -1664,7 +1664,7 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
 
          for (dQ var22 : this.q) {
             if (var22.getX() >= var36 - 1.0F && var22.getX() <= var36 + 1.0F) {
-               boolean var23 = var22.getY() >= y + 30.0F && var22.getY() + var22.getHeight() <= y + this.b.getHeight() - 55.0F;
+               boolean var23 = var22.getY() >= y + 36.0F && var22.getY() + var22.getHeight() <= y + this.b.getHeight() - 61.0F;
                if (var23) {
                   var22.renderRegular(context);
                }
@@ -1871,7 +1871,7 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
     private boolean handleCategoryTabClick(double mouseX, double mouseY) {
        float var6 = this.b.getX();
        float var7 = this.b.getY();
-       float var33 = 30.0F;
+        float var33 = 36.0F;
        float var34 = 12.0F;
        float var35 = 5.0F;
        float var36 = 10.0F;
@@ -1946,7 +1946,7 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
           for (dL var82 : this.f) {
              if (var82.getCategory() == this.d || this.isSearchActive()) {
                 for (dN var85 : var82.getModules()) {
-                   boolean var86 = var85.getY() >= var7 + 30.0F && var85.getY() + var85.getHeight() <= var7 + this.b.getHeight() - 55.0F;
+                   boolean var86 = var85.getY() >= var7 + 36.0F && var85.getY() + var85.getHeight() <= var7 + this.b.getHeight() - 61.0F;
                    if (!var85.getModule().isHidden()
                       && this.b(var85)
                       && var86
