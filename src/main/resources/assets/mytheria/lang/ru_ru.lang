@@ -859,8 +859,14 @@ modules.settings.tape_mouse.button.right=Правая кнопка
 modules.settings.tape_mouse.delay=Задержка
 
 # Fast Exp
-modules.descriptions.fast_exp=Быстрое использование бутылок опыта при зажатии ПКМ
+modules.descriptions.fastexp=Быстрое использование бутылок опыта при зажатии ПКМ
 modules.settings.fast_exp.delay=Задержка
+
+# Healing Helper
+modules.descriptions.healing_helper=Подсказывает, что лучше съесть или выпить для восстановления здоровья
+
+# PvP Save
+modules.descriptions.pvp_save=Блокирует выход, пока активен PvP
 
 # Crosshair
 modules.descriptions.crosshair=Заменяет стандартный прицел на кастомный

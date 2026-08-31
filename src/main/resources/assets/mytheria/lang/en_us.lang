@@ -23,7 +23,13 @@ modules.descriptions.auto_eat=Automatically eats food at a certain hunger level
 modules.descriptions.player_utils=Helper functions for the player
 modules.descriptions.item_pickup=Notifies you when picking up a donor item
 modules.descriptions.object_info=Shows information about traps and structures in the world
-modules.descriptions.fast_exp=Fast experience bottle usage while holding right click
+modules.descriptions.fastexp=Fast experience bottle usage while holding right click
+
+# Healing Helper
+modules.descriptions.healing_helper=Suggests what to eat or drink to restore health
+
+# PvP Save
+modules.descriptions.pvp_save=Blocks leaving while PvP is active
 
 # Object Info
 modules.settings.object_info.particle_mode=Particle Mode
