@@ -1509,6 +1509,9 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
 
       if (this.i.isFocused() && !this.isBindingModule()) {
          this.i.onKeyPressed(keyCode, scanCode, modifiers);
+         if (keyCode == 259 || keyCode == 261) {
+            this.c.setValue(0.0);
+         }
       }
 
       for (dL var11 : this.f) {
@@ -1530,6 +1533,7 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
 
       if (this.i.isFocused() && !this.isBindingModule()) {
          this.i.charTyped(chr, modifiers);
+         this.c.setValue(0.0);
       }
 
       for (dL var8 : this.f) {
