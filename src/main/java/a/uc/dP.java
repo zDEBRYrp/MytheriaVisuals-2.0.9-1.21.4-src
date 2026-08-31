@@ -685,8 +685,8 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       renderTabBarBackground(context, startX, barY, totalWidth, barHeight, alpha);
       renderActiveTabIndicator(context, startX, barY, totalWidth, barHeight, iconSize, padding, separatorGap, alpha);
       renderTabSeparators(context, startX, barY, iconSize, padding, separatorGap);
-      renderTabIcons(context, startX, barY, iconSize, padding, separatorGap);
-      renderTabLabels(context, startX, barY, iconSize, padding, separatorGap, alpha);
+      renderTabIcons(context, startX, barY, barHeight, iconSize, padding, separatorGap);
+      renderTabLabels(context, startX, barY, barHeight, iconSize, padding, separatorGap, alpha);
    }
 
    /**
@@ -817,8 +817,10 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
     * Рисует иконки категорий: анимированные спрайты для тех, у кого есть анимация, и статичные спрайты для остальных.
     * Также обрабатывает подсветку при наведении курсора.
     */
-   private void renderTabIcons(UIContext context, float startX, float barY, float iconSize, float padding, float separatorGap) {
+   private void renderTabIcons(UIContext context, float startX, float barY, float barHeight, float iconSize, float padding, float separatorGap) {
       float iconLabelPad = 5.0F;
+      float iconCenterOffset = (barHeight - iconSize) / 2.0F;
+      float iconY = barY + iconCenterOffset;
 
       fr animatedBatch = new fr(VertexFormats.POSITION_TEXTURE_COLOR, context.getMatrices());
       float cursorX = startX + padding;
@@ -830,7 +832,7 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
                context.getMatrices(),
                cat.getPenis().getCurrentSprite(),
                cursorX,
-               barY,
+               iconY,
                iconSize,
                iconSize,
                ec.getTextColor().mix(ec.WHITE, cat.getSelected().getValue())
@@ -854,7 +856,7 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       for (int i = 0; i < this.f.size(); i++) {
          dL cat = this.f.get(i);
          if (cat.getPenis() == null) {
-            context.drawSprite(cat.getCategory().getMenuSprite(), cursorX, barY, iconSize, iconSize, ec.getTextColor().mix(ec.WHITE, cat.getSelected().getValue()));
+            context.drawSprite(cat.getCategory().getMenuSprite(), cursorX, iconY, iconSize, iconSize, ec.getTextColor().mix(ec.WHITE, cat.getSelected().getValue()));
          }
 
          String label = this.b(cat);
@@ -876,8 +878,9 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
    /**
     * Рисует текстовые подписи названий категорий рядом с их иконками.
     */
-   private void renderTabLabels(UIContext context, float startX, float barY, float iconSize, float padding, float separatorGap, float alpha) {
+   private void renderTabLabels(UIContext context, float startX, float barY, float barHeight, float iconSize, float padding, float separatorGap, float alpha) {
       float iconLabelPad = 5.0F;
+      float iconCenterOffset = (barHeight - iconSize) / 2.0F;
       fq batch = new fq(VertexFormats.POSITION_TEXTURE_COLOR, Fonts.REGULAR);
       float cursorX = startX + padding;
 
@@ -886,7 +889,7 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
          String label = this.b(cat);
          float labelWidth = Fonts.REGULAR.getFont(6.5F).width(label);
          float textX = cursorX + iconSize + iconLabelPad;
-         float textY = barY + iconSize / 2.0F - Fonts.REGULAR.getFont(6.5F).height() / 2.0F;
+         float textY = barY + iconCenterOffset + iconSize / 2.0F - Fonts.REGULAR.getFont(6.5F).height() / 2.0F;
          float textAlpha = 0.5F + 0.5F * cat.getSelected().getValue();
          context.drawText(Fonts.REGULAR.getFont(6.5F), label, textX, textY, ec.getTextColor().mulAlpha(textAlpha));
 

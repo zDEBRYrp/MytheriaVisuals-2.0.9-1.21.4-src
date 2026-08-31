@@ -256,11 +256,39 @@ public class bs extends aJ {
       this.c();
    }
 
-   /** Возвращает true, если активен PvP-режим */
-   public boolean isPvpActive() {
-      this.a();
-      return this.d;
-   }
+    /** Возвращает true, если активен PvP-режим */
+    public boolean isPvpActive() {
+       this.a();
+       return this.d;
+    }
+
+    /** Блокирует выход из игры во время PvP */
+    public boolean shouldBlockDisconnect() {
+       try {
+          this.a();
+       } catch (Exception var2) {
+          return false;
+       }
+       if (this.d && mc.player != null) {
+          long var3 = System.currentTimeMillis();
+          if (this.g > var3) {
+             this.g = -1L;
+             return false;
+          }
+          this.g = var3 + 5000L;
+          try {
+             mc.player.sendMessage(
+                Text.literal("[Mytheria] ")
+                   .withColor(10190335)
+                   .append(Text.literal("Вы в PvP! Подождите завершения боя. Нажмите еще раз для подтверждения.")),
+                false
+             );
+          } catch (Exception var6) {
+          }
+          return true;
+       }
+       return false;
+    }
 
    /** Проверяет и блокирует команду /hub во время PvP */
    public boolean shouldBlockHubCommand(String command) {

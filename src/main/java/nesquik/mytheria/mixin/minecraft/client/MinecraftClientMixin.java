@@ -4,6 +4,8 @@ import a.uc.K;
 import a.c;
 import a.cw;
 import a.fy;
+import a.bs;
+import a.uc.dY;
 import nesquik.mytheria.Mytheria;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.RunArgs;
@@ -87,7 +89,17 @@ public class MinecraftClientMixin {
       c.updateTitle(cir);
    }
 
-   @Inject(method = "doItemUse()V", at = @At("HEAD"))
-   public void onItemUse(CallbackInfo ci) {
-   }
+    @Inject(method = "doItemUse()V", at = @At("HEAD"))
+    public void onItemUse(CallbackInfo ci) {
+    }
+
+    @Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("HEAD"), cancellable = true)
+    public void onDisconnect(net.minecraft.client.gui.screen.Screen screen, CallbackInfo ci) {
+       if (dY.isInitialized()) {
+          bs var3 = Mytheria.getInstance().getModuleManager().getModuleSafe(bs.class);
+          if (var3 != null && var3.isEnabled() && var3.shouldBlockDisconnect()) {
+             ci.cancel();
+          }
+       }
+    }
 }
