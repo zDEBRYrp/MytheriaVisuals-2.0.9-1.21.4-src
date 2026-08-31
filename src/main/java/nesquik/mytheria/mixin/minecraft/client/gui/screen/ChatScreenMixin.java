@@ -63,7 +63,7 @@ public class ChatScreenMixin extends Screen implements IMinecraft {
 
       mytheria$hoveredMsgIndex = mytheria$getHoveredMessageIndex(mouseX, mouseY);
 
-      if (dY.isInitialized() && mytheria$hoveredMsgIndex >= 0) {
+       if (dY.isInitialized() && mytheria$hoveredMsgIndex >= 0) {
          if (fQ.isChatCopyEnabled()) {
             ChatHud chatHud = mc.inGameHud.getChatHud();
             double chatScale = chatHud.getChatScale();
@@ -73,7 +73,9 @@ public class ChatScreenMixin extends Screen implements IMinecraft {
             int lineIndex = MathHelper.floor(chatLineY + ((ChatHudAccessor) chatHud).getScrolledLines());
             if (lineIndex >= 0 && lineIndex < ((ChatHudAccessor) chatHud).getVisibleMessages().size()) {
                int screenY = (int) (scaledHeight - 40.0 - (lineIndex - ((ChatHudAccessor) chatHud).getScrolledLines()) * lineHeight * chatScale - lineHeight * chatScale);
-               int screenX = (int) (4.0 * chatScale);
+               int scaleFactor = (int) mc.getWindow().getScaleFactor();
+               int chatRightX = (int) ((4.0 * scaleFactor + chatHud.getWidth()) / chatScale);
+               int screenX = chatRightX - 15;
 
                float alpha = 0.6f;
                context.fill(screenX, screenY, screenX + 14, screenY + lineHeight, (int)(alpha * 255) << 24);

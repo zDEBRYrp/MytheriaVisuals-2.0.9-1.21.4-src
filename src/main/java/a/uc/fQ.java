@@ -3,6 +3,7 @@ package a.uc;
 import a.TextFormatUtils;
 import a.ax;
 import a.ch;
+import a.cg;
 import a.ck;
 import a.ej;
 import a.an;
@@ -17,6 +18,7 @@ public class fQ extends aJ {
     private static fQ instance;
     private final ch a = new ch(this, "modules.settings.copy_helper.chat_copy").enabled(true);
     private final ch b = new ch(this, "modules.settings.copy_helper.item_copy").enabled(true);
+    private final cg itemCopyKey = new cg(this, "modules.settings.copy_helper.item_copy_key").key(GLFW.GLFW_KEY_DELETE);
     private final ck c = new ck(this, "modules.settings.copy.format");
     private final ck.a d = new ck.a(this.c, "&#RRGGBB").select();
     private final ck.a e = new ck.a(this.c, "<#RRGGBB>");
@@ -25,7 +27,7 @@ public class fQ extends aJ {
 
     private final EventListener<an> h = event -> {
         if (!isItemCopyEnabled()) return;
-        if (event.getKey() != GLFW.GLFW_KEY_DELETE) return;
+        if (event.getKey() != instance.itemCopyKey.getKey()) return;
         if (event.getAction() != 1) return;
         if (mc.currentScreen != null) return;
         if (mc.player == null) return;

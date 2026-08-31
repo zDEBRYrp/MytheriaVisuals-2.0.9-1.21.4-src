@@ -1061,5 +1061,11 @@ modules.settings.menu.transparent_percent=Процент прозрачност�
 # Copy Helper
 modules.descriptions.copy_helper=Помощник копирования: копирует сообщения из чата и названия предметов с цветами
 modules.settings.copy_helper.chat_copy=Копировать чат
-modules.settings.copy_helper.item_copy=Копировать предмет (Delete)
+modules.settings.copy_helper.item_copy=Копировать предмет
+modules.settings.copy_helper.item_copy_key=Клавиша копирования предмета
 modules.settings.copy.format=Формат цвета
+
+# Auction Helper
+modules.descriptions.auction_helper=Помощник аукциона: подсвечивает самые выгодные товары на аукционе
+modules.settings.auction_helper.show_highlights=Подсвечивать топ-3
+modules.settings.auction_helper.show_stats=Показывать статистику

@@ -900,5 +900,11 @@ modules.settings.menu.transparent_percent=Transparency Percent
 # Copy Helper
 modules.descriptions.copy_helper=Copy helper: copies chat messages and item names with colors
 modules.settings.copy_helper.chat_copy=Chat Copy
-modules.settings.copy_helper.item_copy=Item Copy (Delete)
+modules.settings.copy_helper.item_copy=Item Copy
+modules.settings.copy_helper.item_copy_key=Item Copy Key
 modules.settings.copy.format=Color Format
+
+# Auction Helper
+modules.descriptions.auction_helper=Auction helper: highlights cheapest items and shows stats
+modules.settings.auction_helper.show_highlights=Show Top 3 Highlights
+modules.settings.auction_helper.show_stats=Show Statistics

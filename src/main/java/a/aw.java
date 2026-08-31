@@ -10,6 +10,8 @@ import a.uc.aQ;
 import a.uc.eR;
 import a.uc.eW;
 import a.uc.fO;
+import a.uc.fQ;
+import a.uc.fR;
 import a.uc.dY;
 import a.uc.eP;
 import a.uc.cN;
@@ -279,7 +281,8 @@ public class aw {
       this.register(new bK());
       this.register(new bE());
       this.register(new bG());
-      this.register(new fQ());
+       this.register(new fQ());
+       this.register(new fR());
    }
 
    @CompileBytecode

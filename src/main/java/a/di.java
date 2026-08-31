@@ -305,7 +305,7 @@ public class di extends dg {
                String low = name.toLowerCase();
                boolean isEventLike = false;
                for (b t : b.values()) if (low.contains(t.getName().toLowerCase().split(" ")[0]) || t.getName().toLowerCase().contains(low)) isEventLike = true;
-               if (low.contains("алтарь") || low.contains("гейзер") || low.contains("маяк") || low.contains("вулкан") || low.contains("метеорит") || low.contains("череп") || low.contains("посылка") || low.contains("босс") || low.contains("контейнер") || low.contains("груз") || low.contains("корабль")) isEventLike = true;
+                if (low.contains("алтарь") || low.contains("гейзер") || low.contains("маяк") || low.contains("вулкан") || low.contains("метеорит") || low.contains("череп") || low.contains("посылка") || low.contains("босс") || low.contains("контейнер") || low.contains("груз") || low.contains("корабль") || low.contains("аир-дроп") || low.contains("драп")) isEventLike = true;
                if (isEventLike || var11.matches(".*\\[\\s*\\d+\\s*\\].*") || raw.contains("<<<")) {
                   this.c = name;
                } else if (name.length() >= 4 && !name.equalsIgnoreCase("Ивенты")) {
@@ -412,7 +412,8 @@ public class di extends dg {
          case CONTAINER -> new eb(141.0F, 99.0F, 184.0F);
          case GRUZ -> new eb(41.0F, 253.0F, 5.0F);
          case MYSTERIOUS_SHIP -> new eb(90.0F, 158.0F, 152.0F);
-         case GEYSER -> new eb(0.0F, 200.0F, 200.0F);
+          case GEYSER -> new eb(0.0F, 200.0F, 200.0F);
+          case AIR_DROP -> new eb(255.0F, 85.0F, 85.0F);
       };
    }
 
@@ -448,7 +449,8 @@ public class di extends dg {
       CONTAINER("Контейнер", 180000L),
       GRUZ("Груз", 180000L),
       MYSTERIOUS_SHIP("Таинственный корабль", 300000L),
-      GEYSER("Гейзер", 300000L);
+       GEYSER("Гейзер", 300000L),
+       AIR_DROP("Аир-дроп", 300000L);
 
       final String a;
       final long b;
