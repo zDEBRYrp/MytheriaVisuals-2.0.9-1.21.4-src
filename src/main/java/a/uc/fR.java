@@ -3,8 +3,8 @@ package a.uc;
 import a.ax;
 import a.ch;
 import a.ck;
+import nesquik.mytheria.systems.setting.settings.SliderSetting;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 
@@ -21,25 +21,29 @@ public class fR extends aJ {
     private static fR instance;
 
     private static final Pattern PRICE_PATTERN = Pattern.compile("(\\d[\\d\\s,._]{0,20})");
-    private static final String[] BUY_TRIGGERS = {"купить", "buy", "auction"};
-    private static final String[] PRICE_TRIGGERS = {"цена", "price", "стоимость"};
+    private static final String[] BUY_TRIGGERS = {"\u043a\u0443\u043f\u0438\u0442\u044c", "buy", "auction"};
+    private static final String[] PRICE_TRIGGERS = {"\u0446\u0435\u043d\u0430", "price", "\u0441\u0442\u043e\u0438\u043c\u043e\u0441\u0442\u044c"};
     private static final long MAX_REASONABLE_PRICE = 10_000_000_000L;
 
     public final ch a = new ch(this, "modules.settings.auction_helper.show_highlights").enabled(true);
     public final ch b = new ch(this, "modules.settings.auction_helper.show_stats").enabled(true);
+    public final SliderSetting topCount = new SliderSetting(this, "modules.settings.auction_helper.top_count").min(1.0F).max(15.0F).step(1.0F).currentValue(3.0F);
 
-    public static final int RANK_1_COLOR = 0xFF00AA00;
-    public static final int RANK_2_COLOR = 0xFF5555FF;
-    public static final int RANK_3_COLOR = 0xFFFFAA00;
+    private static final int COLOR_GREEN = 0xFF00CC00;
+    private static final int COLOR_ORANGE = 0xFFCC8800;
+    private static final int COLOR_YELLOW = 0xFFCCCC00;
+    private static final int COLOR_RED = 0xFFCC0000;
 
-    public static final int RANK_1_BORDER = 0xCC00AA00;
-    public static final int RANK_2_BORDER = 0xCC5555FF;
-    public static final int RANK_3_BORDER = 0xCCFFAA00;
+    private static final int BORDER_GREEN = 0xCC00CC00;
+    private static final int BORDER_ORANGE = 0xCCCC8800;
+    private static final int BORDER_YELLOW = 0xCCCCCC00;
+    private static final int BORDER_RED = 0xCCCC0000;
 
     private final Map<Slot, AuctionEntry> cachedEntries = new HashMap<>();
     private List<AuctionEntry> topEntries = List.of();
     private AuctionStats cachedStats = null;
     private HandledScreen<?> lastScreen = null;
+    private boolean isAuctionScreen = false;
 
     public fR() {
         instance = this;
@@ -55,6 +59,14 @@ public class fR extends aJ {
 
     public static boolean isStatsEnabled() {
         return instance != null && instance.isEnabled() && instance.b.isEnabled();
+    }
+
+    public boolean isAuctionDetected() {
+        return isAuctionScreen;
+    }
+
+    public int getTopCount() {
+        return (int) topCount.getCurrentValue();
     }
 
     public List<AuctionEntry> getTopEntries() {
@@ -74,6 +86,7 @@ public class fR extends aJ {
             topEntries = List.of();
             cachedStats = null;
             lastScreen = screen;
+            isAuctionScreen = false;
         }
 
         cachedEntries.clear();
@@ -97,6 +110,8 @@ public class fR extends aJ {
             allEntries.add(entry);
         }
 
+        isAuctionScreen = !allEntries.isEmpty();
+
         if (allEntries.isEmpty()) {
             topEntries = List.of();
             cachedStats = null;
@@ -107,9 +122,10 @@ public class fR extends aJ {
                 .thenComparingLong(AuctionEntry::totalPrice)
                 .thenComparingInt(AuctionEntry::count));
 
-        topEntries = allEntries.size() <= 3
+        int limit = getTopCount();
+        topEntries = allEntries.size() <= limit
                 ? List.copyOf(allEntries)
-                : List.copyOf(allEntries.subList(0, 3));
+                : List.copyOf(allEntries.subList(0, limit));
 
         long minTotal = allEntries.stream().mapToLong(AuctionEntry::totalPrice).min().orElse(0);
         long minUnit = allEntries.stream().mapToLong(e -> Math.round(e.unitPrice())).min().orElse(0);
@@ -119,19 +135,6 @@ public class fR extends aJ {
         cachedStats = new AuctionStats(allEntries.size(), minTotal, minUnit, avgTotal, avgUnit);
     }
 
-    private boolean detectAuctionItem(List<Text> tooltip) {
-        for (Text line : tooltip) {
-            String text = line.getString().toLowerCase(java.util.Locale.ROOT);
-            for (String trigger : BUY_TRIGGERS) {
-                if (text.contains(trigger)) return true;
-            }
-            for (String trigger : PRICE_TRIGGERS) {
-                if (text.contains(trigger)) return true;
-            }
-        }
-        return false;
-    }
-
     private long detectPrice(List<Text> tooltip) {
         for (Text line : tooltip) {
             String text = line.getString().toLowerCase(java.util.Locale.ROOT);
@@ -139,8 +142,10 @@ public class fR extends aJ {
             for (String trigger : PRICE_TRIGGERS) {
                 if (text.contains(trigger)) { hasPriceTrigger = true; break; }
             }
-            for (String trigger : BUY_TRIGGERS) {
-                if (text.contains(trigger)) { hasPriceTrigger = true; break; }
+            if (!hasPriceTrigger) {
+                for (String trigger : BUY_TRIGGERS) {
+                    if (text.contains(trigger)) { hasPriceTrigger = true; break; }
+                }
             }
 
             if (hasPriceTrigger) {
@@ -185,20 +190,30 @@ public class fR extends aJ {
         return -1;
     }
 
-    public static int rankBorderColor(int rank) {
-        return switch (rank) {
-            case 0 -> RANK_1_BORDER;
-            case 1 -> RANK_2_BORDER;
-            default -> RANK_3_BORDER;
-        };
+    private static int[] getRankColors(int rank, int total) {
+        if (total <= 3) {
+            return switch (rank) {
+                case 0 -> new int[]{COLOR_GREEN, BORDER_GREEN};
+                case 1 -> new int[]{COLOR_YELLOW, BORDER_YELLOW};
+                default -> new int[]{COLOR_RED, BORDER_RED};
+            };
+        }
+        int orangeThreshold = Math.max(1, total / 4);
+        if (rank == 0) return new int[]{COLOR_GREEN, BORDER_GREEN};
+        if (rank < orangeThreshold) return new int[]{COLOR_ORANGE, BORDER_ORANGE};
+        if (rank < total - Math.max(1, total / 4)) return new int[]{COLOR_YELLOW, BORDER_YELLOW};
+        return new int[]{COLOR_RED, BORDER_RED};
     }
 
-    public static int rankFillColor(int rank) {
-        return switch (rank) {
-            case 0 -> (RANK_1_COLOR & 0x00FFFFFF) | 0x20000000;
-            case 1 -> (RANK_2_COLOR & 0x00FFFFFF) | 0x20000000;
-            default -> (RANK_3_COLOR & 0x00FFFFFF) | 0x20000000;
-        };
+    public int rankBorderColor(int rank) {
+        int total = topEntries.size();
+        return getRankColors(rank, total)[1];
+    }
+
+    public int rankFillColor(int rank) {
+        int total = topEntries.size();
+        int base = getRankColors(rank, total)[0];
+        return (base & 0x00FFFFFF) | 0x20000000;
     }
 
     public record AuctionEntry(Slot slot, long totalPrice, double unitPrice, int count) {}

@@ -55,7 +55,7 @@ public abstract class HandledScreenMixin implements IMinecraft {
        }
 
        fR auctionModule = Mytheria.getInstance().getModuleManager().getModule(fR.class);
-       if (auctionModule != null && auctionModule.isEnabled() && mc.player != null) {
+       if (auctionModule != null && auctionModule.isEnabled() && auctionModule.isAuctionDetected() && mc.player != null) {
           HandledScreen<?> screen = (HandledScreen<?>) (Object) this;
           auctionModule.refresh(screen);
           if (fR.isHighlightsEnabled()) {
@@ -67,8 +67,8 @@ public abstract class HandledScreenMixin implements IMinecraft {
                 if (rank < 0) continue;
                 int slotX = screenX + slot.x;
                 int slotY = screenY + slot.y;
-                context.fill(slotX - 1, slotY - 1, slotX + 17, slotY + 17, fR.rankBorderColor(rank));
-                context.fill(slotX, slotY, slotX + 16, slotY + 16, fR.rankFillColor(rank));
+                context.fill(slotX - 1, slotY - 1, slotX + 17, slotY + 17, auctionModule.rankBorderColor(rank));
+                context.fill(slotX, slotY, slotX + 16, slotY + 16, auctionModule.rankFillColor(rank));
              }
           }
           if (fR.isStatsEnabled() && auctionModule.getCachedStats() != null) {

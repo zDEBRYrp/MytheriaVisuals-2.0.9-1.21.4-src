@@ -196,6 +196,7 @@ public class TextFormatUtils {
             case 1 -> toFormat2(text);
             case 2 -> toFormat3(text);
             case 3 -> toFormat4(text);
+            case 4 -> toPlain(text);
             default -> toFormat1(text);
         };
     }
@@ -206,7 +207,21 @@ public class TextFormatUtils {
             case 1 -> toFormat2(text);
             case 2 -> toFormat3(text);
             case 3 -> toFormat4(text);
+            case 4 -> toPlain(text);
             default -> toFormat1(text);
         };
+    }
+
+    public static String toPlain(Text text) {
+        return text.getString();
+    }
+
+    public static String toPlain(OrderedText text) {
+        StringBuilder sb = new StringBuilder();
+        text.accept((index, style, codePoint) -> {
+            sb.appendCodePoint(codePoint);
+            return true;
+        });
+        return sb.toString();
     }
 }

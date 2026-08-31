@@ -908,3 +908,4 @@ modules.settings.copy.format=Color Format
 modules.descriptions.auction_helper=Auction helper: highlights cheapest items and shows stats
 modules.settings.auction_helper.show_highlights=Show Top 3 Highlights
 modules.settings.auction_helper.show_stats=Show Statistics
+modules.settings.auction_helper.top_count=Top Positions
