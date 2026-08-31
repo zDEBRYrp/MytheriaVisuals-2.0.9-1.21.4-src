@@ -1079,12 +1079,12 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
                          var20.updateHover(context.getMouseX(), context.getMouseY());
                       }
 
-                     var18++;
-                     var8 += (var20.getWidth() + var10) * var20.getOffset().getValue();
-                     if (var18 >= var11) {
-                        var7 += 34.0F * var20.getOffset().getValue();
-                        var8 = 0.0F;
-                        var18 = 0;
+                      var18++;
+                      var8 += var20.getWidth() + var10;
+                      if (var18 >= var11) {
+                         var7 += 34.0F;
+                         var8 = 0.0F;
+                         var18 = 0;
                      }
                   }
                }
