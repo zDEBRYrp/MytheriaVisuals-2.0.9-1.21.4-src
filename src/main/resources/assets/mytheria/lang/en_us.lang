@@ -896,3 +896,10 @@ hud.dynamic_island.show_side_icons=Show Side Icons
 modules.settings.menu.custom_main_menu=Custom Main Menu
 modules.settings.menu.transparent=Transparency
 modules.settings.menu.transparent_percent=Transparency Percent
+
+# Chat Copy
+modules.descriptions.chat_copy=Copies chat message with colors (Ctrl+C while hovering over message)
+modules.descriptions.item_name_copy=Copies item name with colors (Delete key)
+
+# Copy format
+modules.settings.copy.format=Format

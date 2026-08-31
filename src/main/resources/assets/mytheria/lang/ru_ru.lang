@@ -1057,3 +1057,10 @@ hud.dynamic_island.show_side_icons=Показывать боковые икон�
 modules.settings.menu.custom_main_menu=Кастовное главное меню
 modules.settings.menu.transparent=Прозрачность
 modules.settings.menu.transparent_percent=Процент прозрачности
+
+# Chat Copy
+modules.descriptions.chat_copy=Копирует сообщение из чата с цветами (Ctrl+C при наведении на сообщение)
+modules.descriptions.item_name_copy=Копирует название предмета с цветами (Delete)
+
+# Copy format
+modules.settings.copy.format=Формат

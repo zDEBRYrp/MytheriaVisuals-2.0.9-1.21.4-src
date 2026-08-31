@@ -8,6 +8,7 @@
   "client": [
     "accessors.BipedEntityModelAccessor",
     "accessors.BossBarHudAccessor",
+    "accessors.ChatHudAccessor",
     "accessors.DrawContextAccessor",
     "accessors.FramebufferAccessor",
     "accessors.GameRendererAccessor",
