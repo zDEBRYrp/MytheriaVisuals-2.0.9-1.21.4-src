@@ -676,7 +676,7 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
 
       renderTopBarButtons(context, x, y, alpha);
 
-      float[] layout = computeTabBarLayout(x, topBarHeight, iconSize, padding, separatorGap);
+      float[] layout = computeTabBarLayout(x, y, topBarHeight, iconSize, padding, separatorGap);
       float totalWidth = layout[0];
       float startX = layout[1];
       float barY = layout[2];
@@ -694,7 +694,7 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
     *
     * @return массив [totalWidth, startX, barY, barHeight]
     */
-   private float[] computeTabBarLayout(float x, float topBarHeight, float iconSize, float padding, float separatorGap) {
+   private float[] computeTabBarLayout(float x, float y, float topBarHeight, float iconSize, float padding, float separatorGap) {
       float iconLabelPad = 5.0F;
       float totalWidth = 0.0F;
 
@@ -708,9 +708,9 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
          }
       }
 
-      float startX = x + (this.b.getWidth() - totalWidth) / 2.0F;
-      float barY = (topBarHeight - iconSize) / 2.0F;
-      float barHeight = iconSize + padding;
+       float startX = x + (this.b.getWidth() - totalWidth) / 2.0F;
+       float barY = y + (topBarHeight - iconSize) / 2.0F;
+       float barHeight = iconSize + padding;
 
       return new float[]{totalWidth, startX, barY, barHeight};
    }
