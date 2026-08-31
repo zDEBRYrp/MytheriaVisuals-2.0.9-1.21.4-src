@@ -200,6 +200,7 @@ public class bl extends aJ {
       }
    };
 
+   /** Подсвечивает на хотбаре лучший предмет для лечения */
    public void renderHotbarHighlights(DrawContext context) {
       if (mc.player != null) {
          bl.a var2 = this.a();
@@ -223,6 +224,7 @@ public class bl extends aJ {
       }
    }
 
+   /** Определяет оптимальный тип лечения на основе здоровья и сытости */
    private bl.a a() {
       if (mc.player == null) {
          return null;
@@ -313,6 +315,7 @@ public class bl extends aJ {
       HEALING_POTION,
       GOLDEN_CARROT;
 
+      /** Проверяет, соответствует ли предмет данному типу лечения */
       boolean a(ItemStack stack) {
          Item var2 = stack.getItem();
 

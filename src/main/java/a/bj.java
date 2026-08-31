@@ -202,6 +202,7 @@ public class bj extends aJ {
       }
    };
 
+   /** Запускает автоматическое использование опыта при правом клике */
    public void onRightClickPress() {
       if (mc.player != null && mc.player.getMainHandStack().getItem() == Items.EXPERIENCE_BOTTLE) {
          this.c = true;
@@ -209,10 +210,12 @@ public class bj extends aJ {
       }
    }
 
+   /** Останавливает автоматическое использование опыта при отпускании кнопки */
    public void onRightClickRelease() {
       this.c = false;
    }
 
+   /** Сбрасывает состояние при отключении модуля */
    @Override
    public void onDisable() {
       this.c = false;

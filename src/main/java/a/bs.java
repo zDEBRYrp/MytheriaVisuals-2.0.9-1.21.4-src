@@ -244,21 +244,25 @@ public class bs extends aJ {
       }
    };
 
+   /** Конструктор, сохраняет единственный экземпляр модуля */
    public bs() {
       INSTANCE = this;
    }
 
+   /** Сбрасывает состояние PvP при отключении модуля */
    @Override
    public void onDisable() {
       super.onDisable();
       this.c();
    }
 
+   /** Возвращает true, если активен PvP-режим */
    public boolean isPvpActive() {
       this.a();
       return this.d;
    }
 
+   /** Проверяет и блокирует команду /hub во время PvP */
    public boolean shouldBlockHubCommand(String command) {
       try {
          this.a();
@@ -298,6 +302,7 @@ public class bs extends aJ {
       }
    }
 
+   /** Обрабатывает информацию о bossbar для определения PvP-режима */
    void a(String bossBarName, UUID bossBarUuid) {
       if (this.a(bossBarName)) {
          if (this.b(bossBarName)) {
@@ -396,6 +401,7 @@ public class bs extends aJ {
       }
    }
 
+   /** Вычисляет задержку на основе пинга игрока */
    int b() {
       int var1 = 200;
       if (mc.getNetworkHandler() != null && mc.player != null) {

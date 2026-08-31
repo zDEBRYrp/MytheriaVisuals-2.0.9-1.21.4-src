@@ -1058,6 +1058,17 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
          float var13 = x + (this.b.getWidth() - var12) / 2.0F;
          fu var14 = new fu(5.0F);
 
+          if (this.isSearchActive()) {
+             for (dL varSearchCat : this.f) {
+                for (dN varSearchMod : varSearchCat.getModules()) {
+                   if (this.b(varSearchMod) && !varSearchMod.getModule().isHidden()) {
+                      varSearchMod.getOffset().setValue(1.0F);
+                      varSearchMod.getVisible().setValue(1.0F);
+                   }
+                }
+             }
+          }
+
           for (dL var16 : this.f) {
              if (var16.getCategory() == this.d || this.isSearchActive()) {
                 var16.setY(var7 - scroll);
@@ -1176,10 +1187,11 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       }
    }
 
-    /** Проверяет, скрыт ли компонент модуля (смещение 0 или модуль скрыт). */
+    /** Проверяет, скрыт ли компонент модуля (смещение 0 или модуль скрыт). При поиске — только isHidden. */
     private boolean a(dN component) {
-      return component.getOffset().getValue() == 0.0F || component.getModule().isHidden();
-   }
+       if (this.isSearchActive()) return component.getModule().isHidden();
+       return component.getOffset().getValue() == 0.0F || component.getModule().isHidden();
+    }
 
     /** Проверяет, соответствует ли модуль поисковому запросу по имени или описанию. */
     private boolean b(dN component) {
