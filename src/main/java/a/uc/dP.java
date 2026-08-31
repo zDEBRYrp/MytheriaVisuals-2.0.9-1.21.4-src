@@ -417,12 +417,39 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
     */
    @Override
    public void render(UIContext context) {
-      this.menuAnimation.update(this.closing ? 0.0F : 1.0F);
-      this.menuAnimation.setEasing(!this.closing ? Easing.BAKEK : Easing.BAKEK_BACK);
-      this.menuAnimation.setDuration(400L);
-       bN var100 = (bN)Mytheria.getInstance().getModuleManager().getModule(bN.class);
-       boolean transparent = var100 != null && var100.isBackgroundTransparent();
-       float transparentAlpha = transparent ? var100.getTransparentPercent() / 100.0F : 1.0F;
+      this.renderGuiBackground(context);
+      this.applyMenuTransform(context);
+
+      bN var100 = (bN)Mytheria.getInstance().getModuleManager().getModule(bN.class);
+      boolean transparent = var100 != null && var100.isBackgroundTransparent();
+      float transparentAlpha = transparent ? var100.getTransparentPercent() / 100.0F : 1.0F;
+      boolean dark = Mytheria.getInstance().getThemeManager().getCurrentTheme() == ct.DARK;
+      float alpha = Math.min(1.0F, this.menuAnimation.getValue());
+      float scrollOffset = (float)(-this.c.getValue());
+
+      this.renderWindowBackground(context, alpha, transparent, transparentAlpha);
+
+      float var5 = this.b.getX();
+      float var6 = this.b.getY();
+      this.a(context, var5, var6, dark, alpha);
+      this.a(context, var5, var6, scrollOffset, dark, alpha);
+      this.b(context, var5, var6, dark, alpha);
+      this.c(context, var5, var6, dark, alpha);
+      this.a(context, var5, var6, alpha);
+      fl.end(context.getMatrices());
+      RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+
+      this.renderFloatingElements(context);
+      this.handleColorPickerClosed();
+      this.handleConfirmDialogClosed();
+      this.cleanupDeadElements();
+      this.renderEyedropperTooltip(context);
+   }
+
+   /**
+    * Очищает фреймбуфер и рендерит предыдущий экран или TitleScreen, затем применяет размытие.
+    */
+   private void renderGuiBackground(UIContext context) {
       if (mc.world == null) {
          mc.getFramebuffer().beginWrite(true);
          RenderSystem.clearColor(0.0F, 0.0F, 0.0F, 1.0F);
@@ -450,18 +477,30 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
 
          fj.blurProgram.draw();
       }
+   }
 
+   /**
+    * Обновляет анимацию панели, вычисляет прозрачность и тему, применяет преобразование масштабирования.
+    */
+   private void applyMenuTransform(UIContext context) {
+      this.menuAnimation.update(this.closing ? 0.0F : 1.0F);
+      this.menuAnimation.setEasing(!this.closing ? Easing.BAKEK : Easing.BAKEK_BACK);
+      this.menuAnimation.setDuration(400L);
       this.c.update();
-      float var2 = (float)(-this.c.getValue());
-      float var3 = Math.min(1.0F, this.menuAnimation.getValue());
-      boolean var4 = Mytheria.getInstance().getThemeManager().getCurrentTheme() == ct.DARK;
-      RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, var3);
+      float alpha = Math.min(1.0F, this.menuAnimation.getValue());
+      RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
       fl.scale(
          context.getMatrices(),
          this.b.getX() + this.b.getWidth() / 2.0F,
          this.b.getY() + this.b.getHeight() / 2.0F,
          0.5F + 0.5F * this.menuAnimation.getValue()
       );
+   }
+
+   /**
+    * Рисует основное фоновое окно со скруглёнными углами (стекло или сплошной цвет).
+    */
+   private void renderWindowBackground(UIContext context, float alpha, boolean transparent, float transparentAlpha) {
       if (bJ.showGlass()) {
          context.drawLiquidGlass(
             this.b.getX(),
@@ -471,7 +510,7 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
             5.0F,
             bJ.getDistortion(),
             BorderRadius.all(12.0F),
-            ec.getLiquidGlassColor().mulAlpha(var3 * bJ.glass())
+            ec.getLiquidGlassColor().mulAlpha(alpha * bJ.glass())
          );
          context.drawRoundedRect(
             this.b.getX(),
@@ -479,22 +518,17 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
             this.b.getWidth(),
             this.b.getHeight(),
             BorderRadius.all(12.0F),
-            bJ.getBackgroundColor().withAlpha((int)(255.0F * (0.8F - 0.6F * bJ.glass()) * var3))
+            bJ.getBackgroundColor().withAlpha((int)(255.0F * (0.8F - 0.6F * bJ.glass()) * alpha))
          );
       } else {
-          context.drawRoundedRect(this.b.getX(), this.b.getY(), this.b.getWidth(), this.b.getHeight(), BorderRadius.all(12.0F), transparent ? bJ.getBackgroundColor().withAlpha((int)(255.0F * transparentAlpha * var3)) : bJ.getBackgroundColor());
+          context.drawRoundedRect(this.b.getX(), this.b.getY(), this.b.getWidth(), this.b.getHeight(), BorderRadius.all(12.0F), transparent ? bJ.getBackgroundColor().withAlpha((int)(255.0F * transparentAlpha * alpha)) : bJ.getBackgroundColor());
       }
+   }
 
-      float var5 = this.b.getX();
-      float var6 = this.b.getY();
-      this.a(context, var5, var6, var4, var3);
-      this.a(context, var5, var6, var2, var4, var3);
-      this.b(context, var5, var6, var4, var3);
-      this.c(context, var5, var6, var4, var3);
-      this.a(context, var5, var6, var3);
-      fl.end(context.getMatrices());
-      RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-
+   /**
+    * Рендерит плавающие окна, пикеры цвета и диалог подтверждения.
+    */
+   private void renderFloatingElements(UIContext context) {
       for (dO var8 : this.g) {
          var8.render(context);
       }
@@ -506,7 +540,12 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       if (this.v != null) {
          this.v.render(context);
       }
+   }
 
+   /**
+    * Обрабатывает закрытие основного пикера цвета: сохраняет пресет и обновляет цвет клиента.
+    */
+   private void handleColorPickerClosed() {
       if (this.u != null && !this.u.isShowing() && this.u.getAnimation().getValue() == 0.0F) {
          eb var12 = this.u.built();
          boolean var16 = false;
@@ -531,7 +570,12 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
 
          this.u = null;
       }
+   }
 
+   /**
+    * Обрабатывает закрытие диалога подтверждения: сохраняет выбранный цвет или отменяет действие.
+    */
+   private void handleConfirmDialogClosed() {
       if (this.v != null && !this.v.isShowing() && this.v.getAnimation().getValue() == 0.0F) {
          if (this.v.isConfirmed()) {
             eb var13 = this.v.getBuiltColor();
@@ -558,9 +602,20 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
 
          this.v = null;
       }
+   }
 
+   /**
+    * Удаляет мёртвые окна и пикеры цвета, чья анимация завершена и которые не отображаются.
+    */
+   private void cleanupDeadElements() {
       this.g.removeIf(window -> window.getAnimation().getValue() == 0.0F && !window.isShowing());
       this.e.removeIf(colorPickerx -> colorPickerx.getAnimation().getValue() == 0.0F && !colorPickerx.isShowing());
+   }
+
+   /**
+    * Рендерит всплывающую подсказку пипетки с образцом цвета и текстом.
+    */
+   private void renderEyedropperTooltip(UIContext context) {
       if (this.n.getValue() > 0.0F) {
          eb var14 = eb.fromPixel(
             (float)(context.getMouseX() * sr.getScaleFactor()), (float)(mc.getWindow().getHeight() - context.getMouseY() * sr.getScaleFactor())
@@ -610,171 +665,239 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
    }
 
    /**
-    * Рендерит категорию модулей с иконкой, названием и списком модулей внутри.
+    * Рендерит верхнюю панель с вкладками категорий: делегирует отрисовку кнопок, фона, индикатора,
+    * разделителей, иконок и подписей вкладок.
     */
    private void a(UIContext context, float x, float y, boolean dark, float alpha) {
-      float var6 = 30.0F;
-      float var7 = 8.0F;
-      float var8 = x + this.b.getWidth() - var7 - 46.0F;
-      float var9 = y + 9.0F;
-      context.drawTexture(Mytheria.id("icons/colorpicker/pipette.png"), var8, var9, var7, var7);
-      if (er.isHovered(var8, var9, var7, var7, context)) {
-         eo.set(en.HAND);
-      }
+      float topBarHeight = 30.0F;
+      float iconSize = 12.0F;
+      float padding = 6.0F;
+      float separatorGap = 10.0F;
 
-      float var10 = 10.0F;
-      float var11 = x + this.b.getWidth() - var10 - 30.0F;
-      float var12 = y + 8.0F;
-      RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-      fj.drawAnimationSprite(context.getMatrices(), this.j.getCurrentSprite(), var11, var12, var10, var10, ec.WHITE);
-      if (er.isHovered(var11, var12, var10, var10, context)) {
-         eo.set(en.HAND);
-      }
+      renderTopBarButtons(context, x, y, alpha);
 
-      float var13 = 8.0F;
-      float var14 = x + this.b.getWidth() - var13 - 15.0F;
-      float var15 = y + 9.0F;
-      RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
-      context.drawTexture(Mytheria.id("icons/close.png"), var14, var15, var13, var13, ec.getTextColor());
-      if (er.isHovered(var14, var15, var13, var13, context)) {
-         eo.set(en.HAND);
-      }
+      float[] layout = computeTabBarLayout(x, topBarHeight, iconSize, padding, separatorGap);
+      float totalWidth = layout[0];
+      float startX = layout[1];
+      float barY = layout[2];
+      float barHeight = layout[3];
 
-      float var16 = 12.0F;
-      float var17 = 5.0F;
-      float var18 = 10.0F;
-      float var19 = 6.0F;
-      float var20 = 0.0F;
+      renderTabBarBackground(context, startX, barY, totalWidth, barHeight, alpha);
+      renderActiveTabIndicator(context, startX, barY, totalWidth, barHeight, iconSize, padding, separatorGap, alpha);
+      renderTabSeparators(context, startX, barY, iconSize, padding, separatorGap);
+      renderTabIcons(context, startX, barY, iconSize, padding, separatorGap);
+      renderTabLabels(context, startX, barY, iconSize, padding, separatorGap, alpha);
+   }
 
-      for (int var21 = 0; var21 < this.f.size(); var21++) {
-         dL var22 = this.f.get(var21);
-         String var23 = this.b(var22);
-         float var24 = Fonts.REGULAR.getFont(6.5F).width(var23);
-         var20 += var16 + var17 + var24 + var19 * 2.0F;
-         if (var21 < this.f.size() - 1) {
-            var20 += var18;
+   /**
+    * Вычисляет параметры компоновки панели вкладок: общую ширину, начальную позицию и размеры фона.
+    *
+    * @return массив [totalWidth, startX, barY, barHeight]
+    */
+   private float[] computeTabBarLayout(float x, float topBarHeight, float iconSize, float padding, float separatorGap) {
+      float iconLabelPad = 5.0F;
+      float totalWidth = 0.0F;
+
+      for (int i = 0; i < this.f.size(); i++) {
+         dL cat = this.f.get(i);
+         String label = this.b(cat);
+         float labelWidth = Fonts.REGULAR.getFont(6.5F).width(label);
+         totalWidth += iconSize + iconLabelPad + labelWidth + padding * 2.0F;
+         if (i < this.f.size() - 1) {
+            totalWidth += separatorGap;
          }
       }
 
-      float var38 = x + (this.b.getWidth() - var20) / 2.0F;
-      float var39 = y + (var6 - var16) / 2.0F;
-      float var40 = var16 + var19;
-      float var41 = var39 - var19 / 2.0F;
-      RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
-      context.drawRoundedRect(var38, var41, var20, var40, BorderRadius.all(6.0F), ec.getTextColor().withAlpha(10.0F));
-      float var25 = var38;
+      float startX = x + (this.b.getWidth() - totalWidth) / 2.0F;
+      float barY = (topBarHeight - iconSize) / 2.0F;
+      float barHeight = iconSize + padding;
 
-      for (int var26 = 0; var26 < this.f.size(); var26++) {
-         dL var27 = this.f.get(var26);
-         boolean var28 = var27.getCategory() == this.d;
-         String var29 = this.b(var27);
-         float var30 = Fonts.REGULAR.getFont(6.5F).width(var29);
-         float var31 = var16 + var17 + var30 + var19 * 2.0F;
-         float var32 = var25;
-         var27.getSelected().update(var28);
-         if (var27.getSelected().getValue() > 0.0F) {
-            float var33 = 4.0F;
-            float var34 = var31 - var33 * 2.0F;
-            float var35 = 2.0F;
-            float var36 = var32 + var33;
-            float var37 = var41 + var40 - 0.5F;
+      return new float[]{totalWidth, startX, barY, barHeight};
+   }
+
+   /**
+    * Рисует кнопки верхней панели: пипетку吸取 цвета, иконку поиска и кнопку закрытия.
+    */
+   private void renderTopBarButtons(UIContext context, float x, float y, float alpha) {
+      float pipetteSize = 8.0F;
+      float pipetteX = x + this.b.getWidth() - pipetteSize - 46.0F;
+      float pipetteY = y + 9.0F;
+      context.drawTexture(Mytheria.id("icons/colorpicker/pipette.png"), pipetteX, pipetteY, pipetteSize, pipetteSize);
+      if (er.isHovered(pipetteX, pipetteY, pipetteSize, pipetteSize, context)) {
+         eo.set(en.HAND);
+      }
+
+      float searchSize = 10.0F;
+      float searchX = x + this.b.getWidth() - searchSize - 30.0F;
+      float searchY = y + 8.0F;
+      RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+      fj.drawAnimationSprite(context.getMatrices(), this.j.getCurrentSprite(), searchX, searchY, searchSize, searchSize, ec.WHITE);
+      if (er.isHovered(searchX, searchY, searchSize, searchSize, context)) {
+         eo.set(en.HAND);
+      }
+
+      float closeSize = 8.0F;
+      float closeX = x + this.b.getWidth() - closeSize - 15.0F;
+      float closeY = y + 9.0F;
+      RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
+      context.drawTexture(Mytheria.id("icons/close.png"), closeX, closeY, closeSize, closeSize, ec.getTextColor());
+      if (er.isHovered(closeX, closeY, closeSize, closeSize, context)) {
+         eo.set(en.HAND);
+      }
+   }
+
+   /**
+    * Рисует полупрозрачный фон под панелью вкладок категорий.
+    */
+   private void renderTabBarBackground(UIContext context, float startX, float barY, float totalWidth, float barHeight, float alpha) {
+      RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
+      context.drawRoundedRect(startX, barY, totalWidth, barHeight, BorderRadius.all(6.0F), ec.getTextColor().withAlpha(10.0F));
+   }
+
+   /**
+    * Рисует подсветку-подчёркивание (bloom) под активной вкладкой категории.
+    */
+   private void renderActiveTabIndicator(UIContext context, float startX, float barY, float totalWidth, float barHeight, float iconSize, float padding, float separatorGap, float alpha) {
+      float iconLabelPad = 5.0F;
+      float cursorX = startX;
+
+      for (int i = 0; i < this.f.size(); i++) {
+         dL cat = this.f.get(i);
+         boolean isActive = cat.getCategory() == this.d;
+         String label = this.b(cat);
+         float labelWidth = Fonts.REGULAR.getFont(6.5F).width(label);
+         float tabWidth = iconSize + iconLabelPad + labelWidth + padding * 2.0F;
+         float tabX = cursorX;
+         cat.getSelected().update(isActive);
+
+         if (cat.getSelected().getValue() > 0.0F) {
+            float inset = 4.0F;
+            float indicatorWidth = tabWidth - inset * 2.0F;
+            float indicatorHeight = 2.0F;
+            float indicatorX = tabX + inset;
+            float indicatorY = barY + barHeight - 0.5F;
             context.drawTexture(
-               Mytheria.id("textures/bloom.png"), var36, var37, var34, var35, ec.getAccentColor().withAlpha(255.0F * var27.getSelected().getValue())
+               Mytheria.id("textures/bloom.png"), indicatorX, indicatorY, indicatorWidth, indicatorHeight,
+               ec.getAccentColor().withAlpha(255.0F * cat.getSelected().getValue())
             );
          }
 
-         var25 += var31;
-         if (var26 < this.f.size() - 1) {
-            var25 += var18;
+         cursorX += tabWidth;
+         if (i < this.f.size() - 1) {
+            cursorX += separatorGap;
+         }
+      }
+   }
+
+   /**
+    * Рисует вертикальные разделители-пайпы между вкладками категорий.
+    */
+   private void renderTabSeparators(UIContext context, float startX, float barY, float iconSize, float padding, float separatorGap) {
+      float iconLabelPad = 5.0F;
+      fq batch = new fq(VertexFormats.POSITION_TEXTURE_COLOR, Fonts.REGULAR);
+      float cursorX = startX;
+
+      for (int i = 0; i < this.f.size(); i++) {
+         dL cat = this.f.get(i);
+         String label = this.b(cat);
+         float labelWidth = Fonts.REGULAR.getFont(6.5F).width(label);
+         float tabWidth = iconSize + iconLabelPad + labelWidth + padding * 2.0F;
+         cursorX += tabWidth;
+
+         if (i < this.f.size() - 1) {
+            context.drawText(Fonts.REGULAR.getFont(8.0F), "|", cursorX + separatorGap / 2.0F - 2.0F, barY + 2.0F, ec.getTextColor().mulAlpha(0.15F));
+            cursorX += separatorGap;
          }
       }
 
-      fq var46 = new fq(VertexFormats.POSITION_TEXTURE_COLOR, Fonts.REGULAR);
-      var25 = var38;
+      batch.draw();
+   }
 
-      for (int var47 = 0; var47 < this.f.size(); var47++) {
-         dL var49 = this.f.get(var47);
-         String var52 = this.b(var49);
-         float var56 = Fonts.REGULAR.getFont(6.5F).width(var52);
-         float var60 = var16 + var17 + var56 + var19 * 2.0F;
-         var25 += var60;
-         if (var47 < this.f.size() - 1) {
-            context.drawText(Fonts.REGULAR.getFont(8.0F), "|", var25 + var18 / 2.0F - 2.0F, var39 + 2.0F, ec.getTextColor().mulAlpha(0.15F));
-            var25 += var18;
-         }
-      }
+   /**
+    * Рисует иконки категорий: анимированные спрайты для тех, у кого есть анимация, и статичные спрайты для остальных.
+    * Также обрабатывает подсветку при наведении курсора.
+    */
+   private void renderTabIcons(UIContext context, float startX, float barY, float iconSize, float padding, float separatorGap) {
+      float iconLabelPad = 5.0F;
 
-      var46.draw();
-      fr var48 = new fr(VertexFormats.POSITION_TEXTURE_COLOR, context.getMatrices());
-      var25 = var38 + var19;
+      fr animatedBatch = new fr(VertexFormats.POSITION_TEXTURE_COLOR, context.getMatrices());
+      float cursorX = startX + padding;
 
-      for (int var50 = 0; var50 < this.f.size(); var50++) {
-         dL var53 = this.f.get(var50);
-         boolean var57 = var53.getCategory() == this.d;
-         if (var53.getPenis() != null) {
+      for (int i = 0; i < this.f.size(); i++) {
+         dL cat = this.f.get(i);
+         if (cat.getPenis() != null) {
             fj.drawAnimationSprite(
                context.getMatrices(),
-               var53.getPenis().getCurrentSprite(),
-               var25,
-               var39,
-               var16,
-               var16,
-               ec.getTextColor().mix(ec.WHITE, var53.getSelected().getValue())
+               cat.getPenis().getCurrentSprite(),
+               cursorX,
+               barY,
+               iconSize,
+               iconSize,
+               ec.getTextColor().mix(ec.WHITE, cat.getSelected().getValue())
             );
          }
 
-         String var61 = this.b(var53);
-         float var64 = Fonts.REGULAR.getFont(6.5F).width(var61);
-         float var67 = var16 + var17 + var64 + var19 * 2.0F;
-         var25 += var67;
-         if (var50 < this.f.size() - 1) {
-            var25 += var18;
+         String label = this.b(cat);
+         float labelWidth = Fonts.REGULAR.getFont(6.5F).width(label);
+         float tabWidth = iconSize + iconLabelPad + labelWidth + padding * 2.0F;
+         cursorX += tabWidth;
+         if (i < this.f.size() - 1) {
+            cursorX += separatorGap;
          }
       }
 
-      var48.draw();
-      fr var51 = new fr(VertexFormats.POSITION_TEXTURE_COLOR, context.getMatrices());
-      var25 = var38 + var19;
+      animatedBatch.draw();
 
-      for (int var54 = 0; var54 < this.f.size(); var54++) {
-         dL var58 = this.f.get(var54);
-         if (var58.getPenis() == null) {
-            context.drawSprite(var58.getCategory().getMenuSprite(), var25, var39, var16, var16, ec.getTextColor().mix(ec.WHITE, var58.getSelected().getValue()));
+      fr staticBatch = new fr(VertexFormats.POSITION_TEXTURE_COLOR, context.getMatrices());
+      cursorX = startX + padding;
+
+      for (int i = 0; i < this.f.size(); i++) {
+         dL cat = this.f.get(i);
+         if (cat.getPenis() == null) {
+            context.drawSprite(cat.getCategory().getMenuSprite(), cursorX, barY, iconSize, iconSize, ec.getTextColor().mix(ec.WHITE, cat.getSelected().getValue()));
          }
 
-         String var62 = this.b(var58);
-         float var65 = Fonts.REGULAR.getFont(6.5F).width(var62);
-         float var68 = var16 + var17 + var65 + var19 * 2.0F;
-         if (er.isHovered(var25 - var19, var39 - var19 / 2.0F, var68, var16 + var19, context)) {
+         String label = this.b(cat);
+         float labelWidth = Fonts.REGULAR.getFont(6.5F).width(label);
+         float tabWidth = iconSize + iconLabelPad + labelWidth + padding * 2.0F;
+         if (er.isHovered(cursorX - padding, barY - padding / 2.0F, tabWidth, iconSize + padding, context)) {
             eo.set(en.HAND);
          }
 
-         var25 += var68;
-         if (var54 < this.f.size() - 1) {
-            var25 += var18;
+         cursorX += tabWidth;
+         if (i < this.f.size() - 1) {
+            cursorX += separatorGap;
          }
       }
 
-      var51.draw();
-      fq var55 = new fq(VertexFormats.POSITION_TEXTURE_COLOR, Fonts.REGULAR);
-      var25 = var38 + var19;
+      staticBatch.draw();
+   }
 
-      for (int var59 = 0; var59 < this.f.size(); var59++) {
-         dL var63 = this.f.get(var59);
-         String var66 = this.b(var63);
-         float var69 = Fonts.REGULAR.getFont(6.5F).width(var66);
-         float var70 = var25 + var16 + var17;
-         float var71 = var39 + var16 / 2.0F - Fonts.REGULAR.getFont(6.5F).height() / 2.0F;
-         float var72 = 0.5F + 0.5F * var63.getSelected().getValue();
-         context.drawText(Fonts.REGULAR.getFont(6.5F), var66, var70, var71, ec.getTextColor().mulAlpha(var72));
-         float var73 = var16 + var17 + var69 + var19 * 2.0F;
-         var25 += var73;
-         if (var59 < this.f.size() - 1) {
-            var25 += var18;
+   /**
+    * Рисует текстовые подписи названий категорий рядом с их иконками.
+    */
+   private void renderTabLabels(UIContext context, float startX, float barY, float iconSize, float padding, float separatorGap, float alpha) {
+      float iconLabelPad = 5.0F;
+      fq batch = new fq(VertexFormats.POSITION_TEXTURE_COLOR, Fonts.REGULAR);
+      float cursorX = startX + padding;
+
+      for (int i = 0; i < this.f.size(); i++) {
+         dL cat = this.f.get(i);
+         String label = this.b(cat);
+         float labelWidth = Fonts.REGULAR.getFont(6.5F).width(label);
+         float textX = cursorX + iconSize + iconLabelPad;
+         float textY = barY + iconSize / 2.0F - Fonts.REGULAR.getFont(6.5F).height() / 2.0F;
+         float textAlpha = 0.5F + 0.5F * cat.getSelected().getValue();
+         context.drawText(Fonts.REGULAR.getFont(6.5F), label, textX, textY, ec.getTextColor().mulAlpha(textAlpha));
+
+         float tabWidth = iconSize + iconLabelPad + labelWidth + padding * 2.0F;
+         cursorX += tabWidth;
+         if (i < this.f.size() - 1) {
+            cursorX += separatorGap;
          }
       }
 
-      var55.draw();
+      batch.draw();
    }
 
     /** Рендерит нижнюю панель: аватар игрока, имя, сервер, UID и кнопки быстрого доступа. */
@@ -1041,151 +1164,209 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       }
    }
 
-    /** Рендерит сетку модулей текущей категории с прокруткой и разделителями. */
+    /**
+     * Проверяет, находится ли модуль в пределах видимой области сетки.
+     */
+    private boolean isModuleVisible(dN module, float y) {
+       return module.getY() >= y + 30.0F && module.getY() + module.getHeight() <= y + this.b.getHeight() - 55.0F;
+    }
+
+    /**
+     * При активном поиске принудительно устанавливает смещение 1.0 для совпадающих модулей.
+     */
+    private void updateSearchVisibility() {
+       if (this.isSearchActive()) {
+          for (dL cat : this.f) {
+             for (dN mod : cat.getModules()) {
+                if (this.b(mod) && !mod.getModule().isHidden()) {
+                   mod.getOffset().setValue(1.0F);
+                   mod.getVisible().setValue(1.0F);
+                }
+             }
+          }
+       }
+    }
+
+    /**
+     * Основной цикл компоновки: итерирует категории, позиционирует модули
+     * в 3-колоночной сетке и рендерит видимые элементы.
+     *
+     * @return высота содержимого для расчёта границ прокрутки
+     */
+    private float layoutAndRenderModules(UIContext context, float x, float y, float scroll, float alpha) {
+       float cursorY = scroll + 35.0F;
+       float cursorX = 0.0F;
+       float moduleWidth = 155.0F;
+       float gap = 7.5F;
+       byte colCount = 3;
+       float totalWidth = moduleWidth * colCount + gap * (colCount - 1);
+       float gridStartX = x + (this.b.getWidth() - totalWidth) / 2.0F;
+       fu batch = new fu(5.0F);
+
+       for (dL cat : this.f) {
+          if (cat.getCategory() == this.d || this.isSearchActive()) {
+             cat.setY(cursorY - scroll);
+             int colIndex = 0;
+
+             for (dN mod : cat.getModules()) {
+                boolean hasSettings = !this.c(mod);
+                mod.getVisible().update(hasSettings);
+                mod.getOffset().update(hasSettings);
+                if (this.b(mod) && !this.a(mod)) {
+                   mod.set(gridStartX + cursorX, y + cursorY, moduleWidth, 28.0F);
+                   if (this.isModuleVisible(mod, y)) {
+                      mod.render(context);
+                      if (er.isHovered(mod.getX(), mod.getY(), mod.getWidth(), mod.getHeight(), context)) {
+                         eo.set(en.HAND);
+                      }
+                   } else {
+                      mod.updateHover(context.getMouseX(), context.getMouseY());
+                   }
+
+                   colIndex++;
+                   cursorX += mod.getWidth() + gap;
+                   if (colIndex >= colCount) {
+                      cursorY += 34.0F;
+                      cursorX = 0.0F;
+                      colIndex = 0;
+                   }
+                }
+             }
+
+             if (colIndex != 0) {
+                cursorY += 34.0F;
+             }
+
+             cursorX = 0.0F;
+          }
+       }
+
+       batch.draw();
+       return cursorY;
+    }
+
+    /**
+     * Второй проход: рендерит скруглённые прямоугольники видимых модулей.
+     */
+    private void renderModuleRoundRects(UIContext context, float x, float y) {
+       ft batch = new ft();
+
+       for (dL cat : this.f) {
+          if (cat.getCategory() == this.d || this.isSearchActive()) {
+             for (dN mod : cat.getModules()) {
+                if (!this.a(mod) && this.b(mod)) {
+                   if (this.isModuleVisible(mod, y)) {
+                      mod.renderRounds(context);
+                   }
+                }
+             }
+          }
+       }
+
+       batch.draw();
+    }
+
+    /**
+     * Третий проход: рендерит оверлеи видимых модулей.
+     */
+    private void renderModuleOverlays(UIContext context, float x, float y) {
+       ft batch = new ft();
+
+       for (dL cat : this.f) {
+          if (cat.getCategory() == this.d || this.isSearchActive()) {
+             for (dN mod : cat.getModules()) {
+                if (!this.a(mod) && this.b(mod)) {
+                   if (this.isModuleVisible(mod, y)) {
+                      mod.renderInto(context);
+                   }
+                }
+             }
+          }
+       }
+
+       batch.draw();
+    }
+
+    /**
+     * Четвёртый проход: рендерит текст среднего шрифта видимых модулей.
+     */
+    private void renderModuleMediumText(UIContext context, float x, float y) {
+       fq batch = new fq(VertexFormats.POSITION_TEXTURE_COLOR, Fonts.MEDIUM);
+
+       for (dL cat : this.f) {
+          if (cat.getCategory() == this.d || this.isSearchActive()) {
+             for (dN mod : cat.getModules()) {
+                if (!this.a(mod) && this.b(mod)) {
+                   if (this.isModuleVisible(mod, y)) {
+                      mod.renderMedium(context);
+                   }
+                }
+             }
+          }
+       }
+
+       batch.draw();
+    }
+
+    /**
+     * Рисует вертикальные разделители между колонками сетки модулей.
+     */
+    private void renderColumnSeparators(UIContext context, float x, float y) {
+       float moduleWidth = 155.0F;
+       float gap = 7.5F;
+       byte colCount = 3;
+       float totalWidth = moduleWidth * colCount + gap * (colCount - 1);
+       float gridStartX = x + (this.b.getWidth() - totalWidth) / 2.0F;
+
+       for (int col = 0; col < colCount; col++) {
+          float separatorX = gridStartX + col * (moduleWidth + gap);
+          fp batch = new fp(VertexFormats.POSITION_TEXTURE_COLOR, Fonts.REGULAR, 0.9F, 1.0F, moduleWidth - 30.0F, separatorX, context.getMatrices().peek().getPositionMatrix());
+
+          for (dL cat : this.f) {
+             if (cat.getCategory() == this.d || this.isSearchActive()) {
+                for (dN mod : cat.getModules()) {
+                   if (!this.a(mod) && this.b(mod) && mod.getX() >= separatorX - 1.0F && mod.getX() <= separatorX + 1.0F) {
+                      if (this.isModuleVisible(mod, y)) {
+                         mod.renderRegular(context);
+                      }
+                   }
+                }
+             }
+          }
+
+          batch.draw();
+       }
+    }
+
+    /**
+     * Рассчитывает и устанавливает максимальное значение прокрутки по высоте содержимого.
+     */
+    private void updateScrollBounds(float scroll, float contentHeight) {
+       float visibleHeight = this.b.getHeight() - 90.0F;
+       float maxScroll = -Math.max(0.0F, contentHeight - visibleHeight);
+       this.c.setMax(maxScroll - 10.0F);
+    }
+
+    /**
+     * Рендерит сетку модулей текущей категории с прокруткой и разделителями.
+     */
     private void a(UIContext context, float x, float y, float scroll, boolean dark, float alpha) {
-      RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
-      fm.push(context.getMatrices(), this.b.getX(), this.b.getY() + 30.0F, this.b.getWidth(), this.b.getHeight() - 85.0F);
-      if (this.d == du.OTHER && this.a(this.o)) {
-         this.a(context, x, y, scroll, alpha);
-         fm.pop();
-      } else {
-         float var7 = scroll + 35.0F;
-         float var8 = 0.0F;
-         float var9 = 155.0F;
-         float var10 = 7.5F;
-         byte var11 = 3;
-         float var12 = var9 * var11 + var10 * (var11 - 1);
-         float var13 = x + (this.b.getWidth() - var12) / 2.0F;
-         fu var14 = new fu(5.0F);
-
-          if (this.isSearchActive()) {
-             for (dL varSearchCat : this.f) {
-                for (dN varSearchMod : varSearchCat.getModules()) {
-                   if (this.b(varSearchMod) && !varSearchMod.getModule().isHidden()) {
-                      varSearchMod.getOffset().setValue(1.0F);
-                      varSearchMod.getVisible().setValue(1.0F);
-                   }
-                }
-             }
-          }
-
-          for (dL var16 : this.f) {
-             if (var16.getCategory() == this.d || this.isSearchActive()) {
-                var16.setY(var7 - scroll);
-                int var18 = 0;
-
-                for (dN var20 : var16.getModules()) {
-                   boolean var21 = !this.c(var20);
-                   var20.getVisible().update(var21);
-                   var20.getOffset().update(var21);
-                    if (this.b(var20) && !this.a(var20)) {
-                      var20.set(var13 + var8, y + var7, var9, 28.0F);
-                      boolean var22 = var20.getY() >= y + 30.0F && var20.getY() + var20.getHeight() <= y + this.b.getHeight() - 55.0F;
-                      if (var22) {
-                         var20.render(context);
-                         if (er.isHovered(var20.getX(), var20.getY(), var20.getWidth(), var20.getHeight(), context)) {
-                            eo.set(en.HAND);
-                         }
-                      } else {
-                         var20.updateHover(context.getMouseX(), context.getMouseY());
-                      }
-
-                      var18++;
-                      var8 += var20.getWidth() + var10;
-                      if (var18 >= var11) {
-                         var7 += 34.0F;
-                         var8 = 0.0F;
-                         var18 = 0;
-                     }
-                  }
-               }
-
-               if (var18 != 0) {
-                  var7 += 34.0F;
-               }
-
-               var8 = 0.0F;
-               boolean var31 = false;
-            }
-         }
-
-         var14.draw();
-         ft var26 = new ft();
-
-          for (dL var17 : this.f) {
-             if (var17.getCategory() == this.d || this.isSearchActive()) {
-                for (dN var37 : var17.getModules()) {
-                   if (!this.a(var37) && this.b(var37)) {
-                      boolean var42 = var37.getY() >= y + 30.0F && var37.getY() + var37.getHeight() <= y + this.b.getHeight() - 55.0F;
-                      if (var42) {
-                         var37.renderRounds(context);
-                      }
-                   }
-                }
-             }
-          }
-
-          var26.draw();
-          ft var28 = new ft();
-
-          for (dL var33 : this.f) {
-             if (var33.getCategory() == this.d || this.isSearchActive()) {
-                for (dN var43 : var33.getModules()) {
-                   if (!this.a(var43) && this.b(var43)) {
-                      boolean var47 = var43.getY() >= y + 30.0F && var43.getY() + var43.getHeight() <= y + this.b.getHeight() - 55.0F;
-                      if (var47) {
-                         var43.renderInto(context);
-                      }
-                   }
-                }
-             }
-          }
-
-          var28.draw();
-          fq var30 = new fq(VertexFormats.POSITION_TEXTURE_COLOR, Fonts.MEDIUM);
-
-          for (dL var39 : this.f) {
-             if (var39.getCategory() == this.d || this.isSearchActive()) {
-                for (dN var48 : var39.getModules()) {
-                   if (!this.a(var48) && this.b(var48)) {
-                      boolean var50 = var48.getY() >= y + 30.0F && var48.getY() + var48.getHeight() <= y + this.b.getHeight() - 55.0F;
-                      if (var50) {
-                         var48.renderMedium(context);
-                      }
-                   }
-                }
-             }
-          }
-
-         var30.draw();
-
-         for (int var35 = 0; var35 < var11; var35++) {
-            float var40 = var13 + var35 * (var9 + var10);
-            fp var45 = new fp(VertexFormats.POSITION_TEXTURE_COLOR, Fonts.REGULAR, 0.9F, 1.0F, var9 - 30.0F, var40, context.getMatrices().peek().getPositionMatrix());
-
-            for (dL var51 : this.f) {
-               if (var51.getCategory() == this.d || this.isSearchActive()) {
-                  for (dN var24 : var51.getModules()) {
-                     if (!this.a(var24) && this.b(var24) && var24.getX() >= var40 - 1.0F && var24.getX() <= var40 + 1.0F) {
-                        boolean var25 = var24.getY() >= y + 30.0F && var24.getY() + var24.getHeight() <= y + this.b.getHeight() - 55.0F;
-                        if (var25) {
-                           var24.renderRegular(context);
-                        }
-                     }
-                  }
-               }
-            }
-
-            var45.draw();
-         }
-
-         float var36 = var7 - scroll;
-         float var41 = this.b.getHeight() - 90.0F;
-         float var46 = -Math.max(0.0F, var36 - var41);
-         this.c.setMax(var46 - 10.0F);
-         fm.pop();
-      }
-   }
+       RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
+       fm.push(context.getMatrices(), this.b.getX(), this.b.getY() + 30.0F, this.b.getWidth(), this.b.getHeight() - 85.0F);
+       if (this.d == du.OTHER && this.a(this.o)) {
+          this.a(context, x, y, scroll, alpha);
+          fm.pop();
+       } else {
+          this.updateSearchVisibility();
+          float contentHeight = this.layoutAndRenderModules(context, x, y, scroll, alpha);
+          this.renderModuleRoundRects(context, x, y);
+          this.renderModuleOverlays(context, x, y);
+          this.renderModuleMediumText(context, x, y);
+          this.renderColumnSeparators(context, x, y);
+          this.updateScrollBounds(scroll, contentHeight);
+          fm.pop();
+       }
+    }
 
     /** Проверяет, скрыт ли компонент модуля (смещение 0 или модуль скрыт). При поиске — только isHidden. */
     private boolean a(dN component) {
@@ -1222,250 +1403,43 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
     /** Обрабатывает клики мыши: выбор категорий, переключение модулей, drag окон, пипетка и пресеты цвета. */
     @Override
     public void onMouseClicked(double mouseX, double mouseY, MouseButton button) {
-      if (!Mytheria.getInstance().getHud().getIsland().handleClick((float)mouseX, (float)mouseY, button.getButtonIndex())) {
-         if (this.v != null && this.v.isShowing()) {
-            this.v.onMouseClicked(mouseX, mouseY, button);
-            return;
-         }
+       if (!Mytheria.getInstance().getHud().getIsland().handleClick((float)mouseX, (float)mouseY, button.getButtonIndex())) {
+          if (this.v != null && this.v.isShowing()) {
+             this.v.onMouseClicked(mouseX, mouseY, button);
+             return;
+          }
 
-         float var6 = this.b.getX();
-         float var7 = this.b.getY();
-         float var8 = 40.0F;
-         float var9 = var6 - var8 - 10.0F;
-         float var10 = var7;
-         float var11 = 28.0F;
-         float var12 = 6.0F;
-         float var13 = var9 + (var8 - var11) / 2.0F;
-         float var14 = var10 + 10.0F;
-         List var15 = cy.COLOR_PRESETS;
-         float var16 = var14 + var15.size() * (var11 + var12);
-         boolean var17 = er.isHovered(var13, var16, var11, var11, mouseX, mouseY);
+          if (handleColorPickerClicks(mouseX, mouseY, button)) return;
+          if (handleFloatingWindowClicks(mouseX, mouseY, button)) return;
 
-         for (cy var19 : this.e) {
-            boolean var20 = var19.isPick();
-            var19.onMouseClicked(mouseX, mouseY, button);
-            if (var19.isHovered(mouseX, mouseY) || var20) {
-               return;
-            }
+          if (button != MouseButton.MIDDLE) {
+             this.i.onMouseClicked(mouseX, mouseY, button);
+          }
 
-            if (!var17) {
-               var19.setShowing(false);
-            }
-         }
+          if (handleEyedropperClick(mouseX, mouseY, button)) return;
+          if (handlePipetteButtonClick(mouseX, mouseY)) return;
+          if (handleCloseButtonClick(mouseX, mouseY)) return;
+          if (handleQuickAccessClick(mouseX, mouseY)) return;
+          if (handlePresetClicks(mouseX, mouseY, button)) return;
+          if (handleAddPresetClick(mouseX, mouseY)) return;
 
-         for (dO var55 : this.g) {
-            var55.onMouseClicked(mouseX, mouseY, button);
-            if (var55.isHovered(mouseX, mouseY)) {
-               return;
-            }
+          float var6 = this.b.getX();
+          float var7 = this.b.getY();
 
-            if (!er.isHovered(this.b, mouseX, mouseY)) {
-               boolean var58 = true;
+          float var62 = 10.0F;
+          float var64 = var6 + this.b.getWidth() - var62 - 30.0F;
+          float var67 = var7 + 8.0F;
+          if (er.isHovered(var64, var67, var62, var62, mouseX, mouseY)) {
+             this.i.setFocused(!this.i.isFocused());
+             return;
+          }
 
-               for (dO var22 : this.g) {
-                  if (er.isHovered(var22, mouseX, mouseY)) {
-                     var58 = false;
-                  }
-               }
+          if (handleCategoryTabClick(mouseX, mouseY)) return;
+          if (handleModuleGridClick(mouseX, mouseY, button)) return;
 
-               if (var58) {
-                  var55.setShowing(false);
-               }
-            }
-         }
-
-         if (button != MouseButton.MIDDLE) {
-            this.i.onMouseClicked(mouseX, mouseY, button);
-         }
-
-         if (this.m) {
-            if (button == MouseButton.LEFT) {
-               eb var54 = eb.fromPixel((float)(mouseX * sr.getScaleFactor()), (float)(mc.getWindow().getHeight() - mouseY * sr.getScaleFactor()));
-               bJ var57 = Mytheria.getInstance().getModuleManager().getModule(bJ.class);
-               if (var57 != null) {
-                  var57.clientColor.setColor(var54);
-                  Mytheria.getInstance().getFileManager().writeFile("client");
-               }
-
-               this.m = false;
-            } else if (button == MouseButton.RIGHT) {
-               this.m = false;
-            }
-
-            return;
-         }
-
-         float var53 = 8.0F;
-         float var56 = var6 + this.b.getWidth() - var53 - 44.0F;
-         float var59 = var7 + 9.0F;
-         if (er.isHovered(var56, var59, var53, var53, mouseX, mouseY)) {
-            this.m = true;
-            return;
-         }
-
-         float var60 = 8.0F;
-         float var61 = var6 + this.b.getWidth() - var60 - 15.0F;
-         float var23 = var7 + 9.0F;
-         if (er.isHovered(var61, var23, var60, var60, mouseX, mouseY)) {
-            this.close();
-            return;
-         }
-
-         float var24 = 30.0F;
-         float var25 = 5.0F;
-         float var26 = var24 * 2.0F + var25;
-         float var27 = var7 + this.b.getHeight() + 10.0F;
-         float var28 = var6 + (this.b.getWidth() - var26) / 2.0F;
-         float var29 = var28 + var24 + var25;
-         if (er.isHovered(var29, var27, var24, var24, mouseX, mouseY)) {
-            mc.setScreen(new dX());
-            return;
-         }
-
-         var14 = var10 + 10.0F;
-
-         for (int var30 = 0; var30 < var15.size(); var30++) {
-            eb var31 = ((cy.a)var15.get(var30)).getColor();
-            if (er.isHovered(var13, var14, var11, var11, mouseX, mouseY)) {
-               if (button == MouseButton.LEFT) {
-                  this.r = var30;
-                  bJ var32 = Mytheria.getInstance().getModuleManager().getModule(bJ.class);
-                  if (var32 != null) {
-                     var32.clientColor.setColor(var31);
-                     Mytheria.getInstance().getFileManager().writeFile("client");
-                  }
-               } else if (button == MouseButton.RIGHT && cy.COLOR_PRESETS.size() > 1) {
-                  cy.COLOR_PRESETS.remove(var30);
-                  if (this.r >= cy.COLOR_PRESETS.size()) {
-                     this.r = cy.COLOR_PRESETS.size() - 1;
-                  }
-
-                  bJ var66 = Mytheria.getInstance().getModuleManager().getModule(bJ.class);
-                  if (var66 != null && this.r >= 0) {
-                     var66.clientColor.setColor(cy.COLOR_PRESETS.get(this.r).getColor());
-                     Mytheria.getInstance().getFileManager().writeFile("client");
-                  }
-               }
-
-               return;
-            }
-
-            var14 += var11 + var12;
-         }
-
-         if (var17) {
-            bJ var63 = Mytheria.getInstance().getModuleManager().getModule(bJ.class);
-            eb var65 = var63 != null ? var63.clientColor.getColor() : new eb(151.0F, 71.0F, 255.0F, 255.0F);
-
-            for (cy var71 : this.e) {
-               var71.setShowing(false);
-            }
-
-            for (dO var72 : this.g) {
-               var72.setShowing(false);
-            }
-
-            if (this.v != null) {
-               this.v.setShowing(false);
-            }
-
-            float var70 = 200.0F;
-            float var73 = 180.0F;
-            float var74 = var6 + this.b.getWidth() / 2.0F - var70 / 2.0F;
-            float var75 = var7 + this.b.getHeight() / 2.0F - var73 / 2.0F;
-            this.v = new cz(var74, var75, var65, "Выберите цвет новой темы");
-            return;
-         }
-
-         float var62 = 10.0F;
-         float var64 = var6 + this.b.getWidth() - var62 - 30.0F;
-         float var67 = var7 + 8.0F;
-         if (er.isHovered(var64, var67, var62, var62, mouseX, mouseY)) {
-            this.i.setFocused(!this.i.isFocused());
-            return;
-         }
-
-         float var33 = 30.0F;
-         float var34 = 12.0F;
-         float var35 = 5.0F;
-         float var36 = 10.0F;
-         float var37 = 6.0F;
-         float var38 = 0.0F;
-
-         for (int var39 = 0; var39 < this.f.size(); var39++) {
-            dL var40 = this.f.get(var39);
-            String var41 = this.b(var40);
-            float var42 = Fonts.REGULAR.getFont(6.5F).width(var41);
-            var38 += var34 + var35 + var42 + var37 * 2.0F;
-            if (var39 < this.f.size() - 1) {
-               var38 += var36;
-            }
-         }
-
-         float var76 = var6 + (this.b.getWidth() - var38) / 2.0F;
-         float var77 = var7 + (var33 - var34) / 2.0F;
-         float var78 = var76;
-
-         for (int var79 = 0; var79 < this.f.size(); var79++) {
-            dL var43 = this.f.get(var79);
-            String var44 = this.b(var43);
-            float var45 = Fonts.REGULAR.getFont(6.5F).width(var44);
-            float var46 = var34 + var35 + var45 + var37 * 2.0F;
-            float var47 = var34 + var37;
-            float var48 = var77 - var37 / 2.0F;
-            if (er.isHovered(var78, var48, var46, var47, mouseX, mouseY)) {
-               if (var43.getCategory() != this.d) {
-                  this.d = var43.getCategory();
-                  this.c.setValue(0.0);
-                  if (this.i != null) {
-                     this.i.clear();
-                     this.i.setFocused(false);
-                  }
-                  if (var43.getPenis() != null) {
-                     var43.getPenis().playOnce();
-                  }
-
-                  if (Mytheria.getInstance().getFileManager().getClientFile("client") instanceof as var50) {
-                     var50.setLastMenuCategory(this.d.name());
-                  }
-               }
-
-               return;
-            }
-
-            var78 += var46;
-            if (var79 < this.f.size() - 1) {
-               var78 += var36;
-            }
-         }
-
-         if (this.d == du.OTHER && this.a(this.o)) {
-            for (dQ var83 : this.q) {
-               if (er.isHovered(var83.getX(), var83.getY(), var83.getWidth(), var83.getHeight(), mouseX, mouseY)) {
-                  var83.onMouseClicked(mouseX, mouseY, button);
-                  return;
-               }
-            }
-          } else {
-            for (dL var82 : this.f) {
-               if (var82.getCategory() == this.d || this.isSearchActive()) {
-                  for (dN var85 : var82.getModules()) {
-                     boolean var86 = var85.getY() >= var7 + 30.0F && var85.getY() + var85.getHeight() <= var7 + this.b.getHeight() - 55.0F;
-                     if (!var85.getModule().isHidden()
-                        && this.b(var85)
-                        && var86
-                        && er.isHovered(var85.getX(), var85.getY(), var85.getWidth(), var85.getHeight(), mouseX, mouseY)) {
-                        var85.onMouseClicked(mouseX, mouseY, button);
-                        return;
-                     }
-                  }
-               }
-            }
-         }
-
-         super.onMouseClicked(mouseX, mouseY, button);
-      }
-   }
+          super.onMouseClicked(mouseX, mouseY, button);
+       }
+    }
 
     /** Завершает drag-операции окон, пикеров цвета и поискового поля. */
     @Override
@@ -1710,10 +1684,342 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       this.c.setMax(var39 - 10.0F);
    }
 
-   @Generated
-   public fw getMenuWindow() {
-      return this.b;
-   }
+    /**
+     * Обрабатывает клики по выборщикам цвета: пересылает клик, проверяет наведение
+     * и скрывает неактивные пикеры, если кнопка добавления пресета не наведена.
+     */
+    private boolean handleColorPickerClicks(double mouseX, double mouseY, MouseButton button) {
+       float var6 = this.b.getX();
+       float var7 = this.b.getY();
+       float var8 = 40.0F;
+       float var9 = var6 - var8 - 10.0F;
+       float var10 = var7;
+       float var11 = 28.0F;
+       float var12 = 6.0F;
+       float var13 = var9 + (var8 - var11) / 2.0F;
+       float var14 = var10 + 10.0F;
+       List var15 = cy.COLOR_PRESETS;
+       float var16 = var14 + var15.size() * (var11 + var12);
+       boolean var17 = er.isHovered(var13, var16, var11, var11, mouseX, mouseY);
+
+       for (cy var19 : this.e) {
+          boolean var20 = var19.isPick();
+          var19.onMouseClicked(mouseX, mouseY, button);
+          if (var19.isHovered(mouseX, mouseY) || var20) {
+             return true;
+          }
+
+          if (!var17) {
+             var19.setShowing(false);
+          }
+       }
+
+       return false;
+    }
+
+    /**
+     * Обрабатывает клики по плавающим окнам: пересылает клик, проверяет наведение
+     * и закрывает окно, если клик был вне его области.
+     */
+    private boolean handleFloatingWindowClicks(double mouseX, double mouseY, MouseButton button) {
+       for (dO var55 : this.g) {
+          var55.onMouseClicked(mouseX, mouseY, button);
+          if (var55.isHovered(mouseX, mouseY)) {
+             return true;
+          }
+
+          if (!er.isHovered(this.b, mouseX, mouseY)) {
+             boolean var58 = true;
+
+             for (dO var22 : this.g) {
+                if (er.isHovered(var22, mouseX, mouseY)) {
+                   var58 = false;
+                }
+             }
+
+             if (var58) {
+                var55.setShowing(false);
+             }
+          }
+       }
+
+       return false;
+    }
+
+    /**
+     * Обрабатывает клик пипетки-образца: левый клик берёт цвет с экрана,
+     * правый клик отменяет режим пипетки.
+     */
+    private boolean handleEyedropperClick(double mouseX, double mouseY, MouseButton button) {
+       if (this.m) {
+          if (button == MouseButton.LEFT) {
+             eb var54 = eb.fromPixel((float)(mouseX * sr.getScaleFactor()), (float)(mc.getWindow().getHeight() - mouseY * sr.getScaleFactor()));
+             bJ var57 = Mytheria.getInstance().getModuleManager().getModule(bJ.class);
+             if (var57 != null) {
+                var57.clientColor.setColor(var54);
+                Mytheria.getInstance().getFileManager().writeFile("client");
+             }
+
+             this.m = false;
+          } else if (button == MouseButton.RIGHT) {
+             this.m = false;
+          }
+
+          return true;
+       }
+
+       return false;
+    }
+
+    /**
+     * Обрабатывает клики по пресетам цвета: левый клик выбирает пресет,
+     * правый клик удаляет его из списка.
+     */
+    private boolean handlePresetClicks(double mouseX, double mouseY, MouseButton button) {
+       float var6 = this.b.getX();
+       float var7 = this.b.getY();
+       float var8 = 40.0F;
+       float var9 = var6 - var8 - 10.0F;
+       float var10 = var7;
+       float var11 = 28.0F;
+       float var12 = 6.0F;
+       float var13 = var9 + (var8 - var11) / 2.0F;
+       float var14 = var10 + 10.0F;
+       List var15 = cy.COLOR_PRESETS;
+
+       for (int var30 = 0; var30 < var15.size(); var30++) {
+          eb var31 = ((cy.a)var15.get(var30)).getColor();
+          if (er.isHovered(var13, var14, var11, var11, mouseX, mouseY)) {
+             if (button == MouseButton.LEFT) {
+                this.r = var30;
+                bJ var32 = Mytheria.getInstance().getModuleManager().getModule(bJ.class);
+                if (var32 != null) {
+                   var32.clientColor.setColor(var31);
+                   Mytheria.getInstance().getFileManager().writeFile("client");
+                }
+             } else if (button == MouseButton.RIGHT && cy.COLOR_PRESETS.size() > 1) {
+                cy.COLOR_PRESETS.remove(var30);
+                if (this.r >= cy.COLOR_PRESETS.size()) {
+                   this.r = cy.COLOR_PRESETS.size() - 1;
+                }
+
+                bJ var66 = Mytheria.getInstance().getModuleManager().getModule(bJ.class);
+                if (var66 != null && this.r >= 0) {
+                   var66.clientColor.setColor(cy.COLOR_PRESETS.get(this.r).getColor());
+                   Mytheria.getInstance().getFileManager().writeFile("client");
+                }
+             }
+
+             return true;
+          }
+
+          var14 += var11 + var12;
+       }
+
+       return false;
+    }
+
+    /**
+     * Обрабатывает клик по кнопке добавления нового пресета цвета:
+     * открывает диалог выбора цвета для новой темы.
+     */
+    private boolean handleAddPresetClick(double mouseX, double mouseY) {
+       float var6 = this.b.getX();
+       float var7 = this.b.getY();
+       float var8 = 40.0F;
+       float var9 = var6 - var8 - 10.0F;
+       float var10 = var7;
+       float var11 = 28.0F;
+       float var12 = 6.0F;
+       float var13 = var9 + (var8 - var11) / 2.0F;
+       float var14 = var10 + 10.0F;
+       List var15 = cy.COLOR_PRESETS;
+       float var16 = var14 + var15.size() * (var11 + var12);
+       boolean var17 = er.isHovered(var13, var16, var11, var11, mouseX, mouseY);
+
+       if (var17) {
+          bJ var63 = Mytheria.getInstance().getModuleManager().getModule(bJ.class);
+          eb var65 = var63 != null ? var63.clientColor.getColor() : new eb(151.0F, 71.0F, 255.0F, 255.0F);
+
+          for (cy var71 : this.e) {
+             var71.setShowing(false);
+          }
+
+          for (dO var72 : this.g) {
+             var72.setShowing(false);
+          }
+
+          if (this.v != null) {
+             this.v.setShowing(false);
+          }
+
+          float var70 = 200.0F;
+          float var73 = 180.0F;
+          float var74 = var6 + this.b.getWidth() / 2.0F - var70 / 2.0F;
+          float var75 = var7 + this.b.getHeight() / 2.0F - var73 / 2.0F;
+          this.v = new cz(var74, var75, var65, "Выберите цвет новой темы");
+          return true;
+       }
+
+       return false;
+    }
+
+    /**
+     * Обрабатывает клики по вкладкам категорий: определяет какая вкладка наведена,
+     * переключает категорию, сбрасывает прокрутку и поиск.
+     */
+    private boolean handleCategoryTabClick(double mouseX, double mouseY) {
+       float var6 = this.b.getX();
+       float var7 = this.b.getY();
+       float var33 = 30.0F;
+       float var34 = 12.0F;
+       float var35 = 5.0F;
+       float var36 = 10.0F;
+       float var37 = 6.0F;
+       float var38 = 0.0F;
+
+       for (int var39 = 0; var39 < this.f.size(); var39++) {
+          dL var40 = this.f.get(var39);
+          String var41 = this.b(var40);
+          float var42 = Fonts.REGULAR.getFont(6.5F).width(var41);
+          var38 += var34 + var35 + var42 + var37 * 2.0F;
+          if (var39 < this.f.size() - 1) {
+             var38 += var36;
+          }
+       }
+
+       float var76 = var6 + (this.b.getWidth() - var38) / 2.0F;
+       float var77 = var7 + (var33 - var34) / 2.0F;
+       float var78 = var76;
+
+       for (int var79 = 0; var79 < this.f.size(); var79++) {
+          dL var43 = this.f.get(var79);
+          String var44 = this.b(var43);
+          float var45 = Fonts.REGULAR.getFont(6.5F).width(var44);
+          float var46 = var34 + var35 + var45 + var37 * 2.0F;
+          float var47 = var34 + var37;
+          float var48 = var77 - var37 / 2.0F;
+          if (er.isHovered(var78, var48, var46, var47, mouseX, mouseY)) {
+             if (var43.getCategory() != this.d) {
+                this.d = var43.getCategory();
+                this.c.setValue(0.0);
+                if (this.i != null) {
+                   this.i.clear();
+                   this.i.setFocused(false);
+                }
+                if (var43.getPenis() != null) {
+                   var43.getPenis().playOnce();
+                }
+
+                if (Mytheria.getInstance().getFileManager().getClientFile("client") instanceof as var50) {
+                   var50.setLastMenuCategory(this.d.name());
+                }
+             }
+
+             return true;
+          }
+
+          var78 += var46;
+          if (var79 < this.f.size() - 1) {
+             var78 += var36;
+          }
+       }
+
+       return false;
+    }
+
+    /**
+     * Обрабатывает клики по сетке модулей: проверяет границы и наведение,
+     * пересылает клик соответствующему модулю или элементу интерфейса.
+     */
+    private boolean handleModuleGridClick(double mouseX, double mouseY, MouseButton button) {
+       float var7 = this.b.getY();
+
+       if (this.d == du.OTHER && this.a(this.o)) {
+          for (dQ var83 : this.q) {
+             if (er.isHovered(var83.getX(), var83.getY(), var83.getWidth(), var83.getHeight(), mouseX, mouseY)) {
+                var83.onMouseClicked(mouseX, mouseY, button);
+                return true;
+             }
+          }
+       } else {
+          for (dL var82 : this.f) {
+             if (var82.getCategory() == this.d || this.isSearchActive()) {
+                for (dN var85 : var82.getModules()) {
+                   boolean var86 = var85.getY() >= var7 + 30.0F && var85.getY() + var85.getHeight() <= var7 + this.b.getHeight() - 55.0F;
+                   if (!var85.getModule().isHidden()
+                      && this.b(var85)
+                      && var86
+                      && er.isHovered(var85.getX(), var85.getY(), var85.getWidth(), var85.getHeight(), mouseX, mouseY)) {
+                      var85.onMouseClicked(mouseX, mouseY, button);
+                      return true;
+                   }
+                }
+             }
+          }
+       }
+
+       return false;
+    }
+
+    /**
+     * Обрабатывает клики по кнопкам быстрого доступа: инвентарь и waypoints.
+     */
+    private boolean handleQuickAccessClick(double mouseX, double mouseY) {
+       float var6 = this.b.getX();
+       float var7 = this.b.getY();
+       float var24 = 30.0F;
+       float var25 = 5.0F;
+       float var26 = var24 * 2.0F + var25;
+       float var27 = var7 + this.b.getHeight() + 10.0F;
+       float var28 = var6 + (this.b.getWidth() - var26) / 2.0F;
+       float var29 = var28 + var24 + var25;
+       if (er.isHovered(var29, var27, var24, var24, mouseX, mouseY)) {
+          mc.setScreen(new dX());
+          return true;
+       }
+
+       return false;
+    }
+
+    /**
+     * Обрабатывает клик по кнопке пипетки: активирует режим выбора цвета с экрана.
+     */
+    private boolean handlePipetteButtonClick(double mouseX, double mouseY) {
+       float var6 = this.b.getX();
+       float var7 = this.b.getY();
+       float var53 = 8.0F;
+       float var56 = var6 + this.b.getWidth() - var53 - 44.0F;
+       float var59 = var7 + 9.0F;
+       if (er.isHovered(var56, var59, var53, var53, mouseX, mouseY)) {
+          this.m = true;
+          return true;
+       }
+
+       return false;
+    }
+
+    /**
+     * Обрабатывает клик по кнопке закрытия: закрывает текущее окно меню.
+     */
+    private boolean handleCloseButtonClick(double mouseX, double mouseY) {
+       float var6 = this.b.getX();
+       float var7 = this.b.getY();
+       float var60 = 8.0F;
+       float var61 = var6 + this.b.getWidth() - var60 - 15.0F;
+       float var23 = var7 + 9.0F;
+       if (er.isHovered(var61, var23, var60, var60, mouseX, mouseY)) {
+          this.close();
+          return true;
+       }
+
+       return false;
+    }
+
+    @Generated
+    public fw getMenuWindow() {
+       return this.b;
+    }
 
    @Generated
    public List<dL> getCategories() {
