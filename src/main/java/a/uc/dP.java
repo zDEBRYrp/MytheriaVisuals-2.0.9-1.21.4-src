@@ -236,6 +236,9 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
    private cz v = null;
    private TitleScreen backgroundMenu = null;
 
+   /**
+    * Создаёт главное окно ClickGUI: центрирует окно, инициализирует категории и модули.
+    */
    public dP() {
       float var1 = 500.0F;
       float var2 = 343.0F;
@@ -362,10 +365,16 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       }
    }
 
+   /**
+    * Сравнивает два объекта настроек (eb) по их идентификатору модуля и имени настройки.
+    */
    private boolean a(eb c1, eb c2) {
       return Math.abs(c1.getRed() - c2.getRed()) < 5.0F && Math.abs(c1.getGreen() - c2.getGreen()) < 5.0F && Math.abs(c1.getBlue() - c2.getBlue()) < 5.0F;
    }
 
+   /**
+    * Инициализирует GUI-компоненты: создаёт окна настроек для каждого модуля и элементы HUD.
+    */
    protected void init() {
       this.closing = false;
 
@@ -388,6 +397,9 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       super.init();
    }
 
+   /**
+    * Обновляет состояние анимаций, прогресс закрытия и область видимости компонентов.
+    */
    public void tick() {
       super.tick();
       if (this.i.isFocused() && !this.k) {
@@ -400,13 +412,17 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       this.n.update(this.m);
    }
 
+   /**
+    * Главный метод рендера: рисует фон (панораму/мир), панели, окна настроек, пикеры цвета и поисковое поле.
+    */
    @Override
    public void render(UIContext context) {
       this.menuAnimation.update(this.closing ? 0.0F : 1.0F);
       this.menuAnimation.setEasing(!this.closing ? Easing.BAKEK : Easing.BAKEK_BACK);
       this.menuAnimation.setDuration(400L);
-      bN var100 = (bN)Mytheria.getInstance().getModuleManager().getModule(bN.class);
-      boolean transparent = var100 != null && var100.isBackgroundTransparent();
+       bN var100 = (bN)Mytheria.getInstance().getModuleManager().getModule(bN.class);
+       boolean transparent = var100 != null && var100.isBackgroundTransparent();
+       float transparentAlpha = transparent ? var100.getTransparentPercent() / 100.0F : 1.0F;
       if (mc.world == null) {
          mc.getFramebuffer().beginWrite(true);
          RenderSystem.clearColor(0.0F, 0.0F, 0.0F, 1.0F);
@@ -466,7 +482,7 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
             bJ.getBackgroundColor().withAlpha((int)(255.0F * (0.8F - 0.6F * bJ.glass()) * var3))
          );
       } else {
-          context.drawRoundedRect(this.b.getX(), this.b.getY(), this.b.getWidth(), this.b.getHeight(), BorderRadius.all(12.0F), transparent ? bJ.getBackgroundColor().withAlpha((int)(255.0F * 0.2F * var3)) : bJ.getBackgroundColor());
+          context.drawRoundedRect(this.b.getX(), this.b.getY(), this.b.getWidth(), this.b.getHeight(), BorderRadius.all(12.0F), transparent ? bJ.getBackgroundColor().withAlpha((int)(255.0F * transparentAlpha * var3)) : bJ.getBackgroundColor());
       }
 
       float var5 = this.b.getX();
@@ -593,6 +609,9 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       }
    }
 
+   /**
+    * Рендерит категорию модулей с иконкой, названием и списком модулей внутри.
+    */
    private void a(UIContext context, float x, float y, boolean dark, float alpha) {
       float var6 = 30.0F;
       float var7 = 8.0F;
@@ -758,7 +777,8 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       var55.draw();
    }
 
-   private void b(UIContext context, float x, float y, boolean dark, float alpha) {
+    /** Рендерит нижнюю панель: аватар игрока, имя, сервер, UID и кнопки быстрого доступа. */
+    private void b(UIContext context, float x, float y, boolean dark, float alpha) {
       float var6 = 50.0F;
       float var7 = y + this.b.getHeight() - var6;
       RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
@@ -862,7 +882,8 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       }
    }
 
-   private String a() {
+    /** Возвращает название текущего сервера или «Singleplayer» для одиночной игры. */
+    private String a() {
       if (mc.getCurrentServerEntry() != null) {
          String var1 = mc.getCurrentServerEntry().address;
          if (var1.contains("funtime")) {
@@ -895,7 +916,8 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       }
    }
 
-   private void c(UIContext context, float x, float y, boolean dark, float alpha) {
+    /** Рендерит панель поискового поля с анимацией появления. */
+    private void c(UIContext context, float x, float y, boolean dark, float alpha) {
       float var6 = this.l.getValue() * alpha;
       if (!(var6 <= 0.01F)) {
          float var7 = 200.0F;
@@ -930,7 +952,8 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       }
    }
 
-   private void a(UIContext context, float x, float y, float alpha) {
+    /** Рендерит боковую панель с пресетами цветов и кнопкой добавления нового пресета. */
+    private void a(UIContext context, float x, float y, float alpha) {
       float var5 = 40.0F;
       float var6 = this.b.getHeight();
       float var7 = x - var5 - 10.0F;
@@ -1018,7 +1041,8 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       }
    }
 
-   private void a(UIContext context, float x, float y, float scroll, boolean dark, float alpha) {
+    /** Рендерит сетку модулей текущей категории с прокруткой и разделителями. */
+    private void a(UIContext context, float x, float y, float scroll, boolean dark, float alpha) {
       RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
       fm.push(context.getMatrices(), this.b.getX(), this.b.getY() + 30.0F, this.b.getWidth(), this.b.getHeight() - 85.0F);
       if (this.d == du.OTHER && this.a(this.o)) {
@@ -1152,11 +1176,13 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       }
    }
 
-   private boolean a(dN component) {
+    /** Проверяет, скрыт ли компонент модуля (смещение 0 или модуль скрыт). */
+    private boolean a(dN component) {
       return component.getOffset().getValue() == 0.0F || component.getModule().isHidden();
    }
 
-   private boolean b(dN component) {
+    /** Проверяет, соответствует ли модуль поисковому запросу по имени или описанию. */
+    private boolean b(dN component) {
       cK var2 = this.i;
       if (var2 == null || var2.getBuiltText().isBlank()) return true;
       String search = var2.getBuiltText().toLowerCase().trim();
@@ -1171,16 +1197,19 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       return name.contains(search) || nameNoSpaces.contains(search) || (!desc.isEmpty() && desc.contains(search));
    }
 
-   private boolean isSearchActive() {
+    /** Возвращает true, если поисковое поле не пустое и активно. */
+    private boolean isSearchActive() {
       return this.i != null && !this.i.getBuiltText().isBlank();
    }
 
-   private boolean c(dN component) {
+    /** Проверяет, открыто ли окно настроек для данного компонента модуля. */
+    private boolean c(dN component) {
       return this.g.stream().anyMatch(window -> window.getModule() == component);
    }
 
-   @Override
-   public void onMouseClicked(double mouseX, double mouseY, MouseButton button) {
+    /** Обрабатывает клики мыши: выбор категорий, переключение модулей, drag окон, пипетка и пресеты цвета. */
+    @Override
+    public void onMouseClicked(double mouseX, double mouseY, MouseButton button) {
       if (!Mytheria.getInstance().getHud().getIsland().handleClick((float)mouseX, (float)mouseY, button.getButtonIndex())) {
          if (this.v != null && this.v.isShowing()) {
             this.v.onMouseClicked(mouseX, mouseY, button);
@@ -1426,8 +1455,9 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       }
    }
 
-   @Override
-   public void onMouseReleased(double mouseX, double mouseY, MouseButton button) {
+    /** Завершает drag-операции окон, пикеров цвета и поискового поля. */
+    @Override
+    public void onMouseReleased(double mouseX, double mouseY, MouseButton button) {
       for (dO var7 : this.g) {
          var7.onMouseReleased(mouseX, mouseY, button);
       }
@@ -1447,8 +1477,9 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       super.onMouseReleased(mouseX, mouseY, button);
    }
 
-   @Override
-   public boolean onMouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+    /** Прокручивает список модулей и передаёт событие в плавающие окна. */
+    @Override
+    public boolean onMouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
       for (dO var10 : this.g) {
          var10.onScroll(mouseX, mouseY, horizontalAmount, verticalAmount);
       }
@@ -1460,7 +1491,8 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       return true;
    }
 
-   public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    /** Обрабатывает нажатия клавиш: Ctrl+F для поиска, привязка модулей, передача в окна. */
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
       this.c.onKeyPressed(keyCode);
       if (!this.i.isFocused() && Screen.hasControlDown() && keyCode == 70) {
          this.i.setFocused(true);
@@ -1490,7 +1522,8 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       return super.keyPressed(keyCode, scanCode, modifiers);
    }
 
-   public boolean charTyped(char chr, int modifiers) {
+    /** Передаёт ввод текста в поисковое поле и активные модули. */
+    public boolean charTyped(char chr, int modifiers) {
       for (dO var4 : this.g) {
          var4.charTyped(chr, modifiers);
       }
@@ -1510,7 +1543,8 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       return super.charTyped(chr, modifiers);
    }
 
-   public void close() {
+    /** Закрывает ClickGUI, запускает анимацию закрытия и сбрасывает состояние поиска. */
+    public void close() {
       this.closing = true;
       a.clear();
       Mytheria.getInstance().getModuleManager().getModule(bN.class).disable();
@@ -1527,21 +1561,25 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       super.close();
    }
 
-   public boolean shouldPause() {
+    /** Возвращает false — игра не ставится на паузу при открытии ClickGUI. */
+    public boolean shouldPause() {
       return false;
    }
 
-    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
+    /** Рисует чёрный фон, если мир не загружен (одиночная игра). */
+     public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
         if (mc.world == null) {
             context.fill(0, 0, (int)sr.getScaledWidth(), (int)sr.getScaledHeight(), 0xFF000000);
         }
     }
 
-   public boolean shouldCloseOnEsc() {
+    /** Возвращает true — закрытие по ESC разрешено. */
+    public boolean shouldCloseOnEsc() {
       return true;
    }
 
-   public boolean isBindingModule() {
+    /** Проверяет, находится ли хотя бы один модуль в режиме привязки клавиши. */
+    public boolean isBindingModule() {
       for (dL var2 : this.f) {
          for (dN var4 : var2.getModules()) {
             if (var4.isBinding()) {
@@ -1553,15 +1591,18 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       return false;
    }
 
-   private boolean a(dL category) {
+    /** Проверяет, является ли категория панелью HUD (OTHER). */
+    private boolean a(dL category) {
       return category == this.o;
    }
 
-   private String b(dL category) {
+    /** Возвращает отображаемое имя категории: «Hud» для OTHER или название категории. */
+    private String b(dL category) {
       return this.a(category) ? "Hud" : category.getCategory().getName();
    }
 
-   private void a(UIContext context, float x, float y, float scroll, float alpha) {
+    /** Рендерит сетку элементов HUD вкладки OTHER. */
+    private void a(UIContext context, float x, float y, float scroll, float alpha) {
       float var6 = scroll + 35.0F;
       float var7 = 0.0F;
       float var8 = 155.0F;

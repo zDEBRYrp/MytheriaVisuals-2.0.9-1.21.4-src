@@ -199,6 +199,9 @@ public class dO extends CustomComponent {
    private final dZ k = new dZ(300L, Easing.BAKEK);
    private final ea l = new ea(300L, new eb(24.0F, 24.0F, 27.0F), Easing.FIGMA_EASE_IN_OUT);
 
+   /**
+    * Создаёт окно настроек модуля.
+    */
    public dO(dN module, float x, float y, float width) {
       this.a = module;
       this.x = x;
@@ -214,6 +217,9 @@ public class dO extends CustomComponent {
       }
    }
 
+   /**
+    * Рендерит окно настроек со списком компонентов.
+    */
    @Override
    public void renderComponent(UIContext context) {
       this.c.setDuration(this.d ? 500L : 300L);
@@ -230,6 +236,7 @@ public class dO extends CustomComponent {
       boolean var4 = Mytheria.getInstance().getThemeManager().getCurrentTheme() == ct.DARK;
       bN varTransMenu = (bN)Mytheria.getInstance().getModuleManager().getModule(bN.class);
       boolean transparentBg = varTransMenu != null && varTransMenu.isBackgroundTransparent();
+      float transparentAlpha = transparentBg ? varTransMenu.getTransparentPercent() / 100.0F : 1.0F;
       this.c.setEasing(this.d ? Easing.QUARTIC_OUT : Easing.BAKEK_BACK);
       float var5 = eI.interpolate(this.a.getX(), this.x, var2);
       float var6 = eI.interpolate(this.a.getY(), this.y, var2);
@@ -268,7 +275,7 @@ public class dO extends CustomComponent {
             );
          }
 
-           context.drawRoundedRect(var5, var6, var7, var8, BorderRadius.all(6.0F + 5.0F * var2), transparentBg ? bJ.getBackgroundColor().withAlpha((int)(255.0F * 0.25F * var2)) : bJ.getBackgroundColor());
+            context.drawRoundedRect(var5, var6, var7, var8, BorderRadius.all(6.0F + 5.0F * var2), transparentBg ? bJ.getBackgroundColor().withAlpha((int)(255.0F * transparentAlpha * var2)) : bJ.getBackgroundColor());
       }
 
       if (this.d && var3) {
@@ -391,6 +398,9 @@ public class dO extends CustomComponent {
       RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
    }
 
+   /**
+    * Обрабатывает клики по компонентам и drag.
+    */
    @Override
    public void onMouseClicked(double mouseX, double mouseY, MouseButton button) {
       for (dz var7 : this.b) {
@@ -419,6 +429,9 @@ public class dO extends CustomComponent {
       super.onMouseClicked(mouseX, mouseY, button);
    }
 
+   /**
+    * Завершает drag.
+    */
    @Override
    public void onMouseReleased(double mouseX, double mouseY, MouseButton button) {
       for (dz var7 : this.b) {
@@ -431,6 +444,9 @@ public class dO extends CustomComponent {
       super.onMouseReleased(mouseX, mouseY, button);
    }
 
+   /**
+    * Прокручивает список компонентов.
+    */
    @Override
    public void onScroll(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
       for (dz var10 : this.b) {
@@ -446,6 +462,9 @@ public class dO extends CustomComponent {
       super.onScroll(mouseX, mouseY, horizontalAmount, verticalAmount);
    }
 
+   /**
+    * Передаёт нажатия клавиш в компоненты.
+    */
    @Override
    public void onKeyPressed(int keyCode, int scanCode, int modifiers) {
       for (dz var5 : this.b) {
@@ -457,6 +476,9 @@ public class dO extends CustomComponent {
       super.onKeyPressed(keyCode, scanCode, modifiers);
    }
 
+   /**
+    * Передаёт ввод текста в компоненты.
+    */
    @Override
    public boolean charTyped(char chr, int modifiers) {
       for (dz var4 : this.b) {
@@ -468,6 +490,9 @@ public class dO extends CustomComponent {
       return super.charTyped(chr, modifiers);
    }
 
+   /**
+    * Возвращает высоту окна настроек.
+    */
    @Override
    public float getHeight() {
       float var1 = 18.0F;
@@ -544,6 +569,9 @@ public class dO extends CustomComponent {
       this.d = showing;
    }
 
+   /**
+    * Создаёт дефолтный цвет темы.
+    */
    private static eb a() {
       eb var0 = ec.getAccentColor();
       return new eb(var0.getRed() * 0.6F + 102.0F, var0.getGreen() * 0.6F + 102.0F, var0.getBlue() * 0.6F + 102.0F, 255.0F);

@@ -185,18 +185,27 @@ import a.bz;
 
 import nesquik.mytheria.Mytheria;
 import nesquik.mytheria.systems.modules.api.ModuleInfo;
+import nesquik.mytheria.systems.setting.settings.SliderSetting;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 
 @ModuleInfo(name = "Menu", category = ax.VISUALS, key = 344, desc = "modules.descriptions.menu")
 public class bN extends aJ {
     private final ch customMainMenu = new ch(this, "modules.settings.menu.custom_main_menu") {
+        /**
+         * Переключает значение настройки и обновляет главное меню.
+         */
         @Override
         public void toggle() {
             super.toggle();
             refreshMainMenu();
         }
 
+        /**
+         * Устанавливает состояние настройки и обновляет главное меню.
+         *
+         * @param enabled включена ли настройка
+         */
         @Override
         public void setEnabled(boolean enabled) {
             super.setEnabled(enabled);
@@ -204,9 +213,20 @@ public class bN extends aJ {
         }
     }.enabled(true);
     private final ch transparent = new ch(this, "modules.settings.menu.transparent");
+    /**
+     * Процент прозрачности фона ClickGUI (0-100%).
+     * Отображается только когда透明ность включена.
+     */
+    private final SliderSetting transparentPercent = new SliderSetting(this,
+            "modules.settings.menu.transparent_percent",
+            () -> !this.transparent.isEnabled())
+        .min(0.0F).max(100.0F).step(1.0F).currentValue(80.0F).suffix("%");
     private net.minecraft.client.gui.screen.Screen prevScreen = null;
     private static final dv a = new dv();
 
+    /**
+     * Открывает ClickGUI при включении модуля.
+     */
     @Override
     public void onEnable() {
        if (!(mc.currentScreen instanceof dt)) {
@@ -223,6 +243,9 @@ public class bN extends aJ {
        }
     }
 
+    /**
+     * Закрывает ClickGUI и возвращает предыдущий экран.
+     */
     @Override
     public void onDisable() {
        if (mc.currentScreen instanceof dt) {
@@ -247,6 +270,9 @@ public class bN extends aJ {
        super.onDisable();
     }
 
+    /**
+     * Обновляет главное меню в соответствии с текущими настройками.
+     */
     private void refreshMainMenu() {
        Screen cur = mc.currentScreen;
        if (cur == null) {
@@ -262,14 +288,38 @@ public class bN extends aJ {
        }
     }
 
+    /**
+     * Проверяет, включена ли кастомная тема главного меню.
+     *
+     * @return {@code true}, если кастомное меню активно
+     */
     public boolean isCustomMainMenuEnabled() {
        return this.customMainMenu.isEnabled();
     }
 
+    /**
+     * Проверяет, включена ли прозрачность фона главного меню.
+     *
+     * @return {@code true}, если фон прозрачен
+     */
     public boolean isBackgroundTransparent() {
        return this.transparent.isEnabled();
     }
 
+    /**
+     * Возвращает процент прозрачности фона (0 = полностью прозрачный, 100 = полностью непрозрачный).
+     *
+     * @return значение от 0.0 до 100.0
+     */
+    public float getTransparentPercent() {
+       return this.transparentPercent.getCurrentValue();
+    }
+
+    /**
+     * Возвращает предыдущий экран, открытый до ClickGUI.
+     *
+     * @return предыдущий экран или {@code null}
+     */
     public Screen getPrevScreen() {
        return this.prevScreen;
     }

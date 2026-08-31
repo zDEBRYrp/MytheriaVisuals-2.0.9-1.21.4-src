@@ -26,12 +26,18 @@ public class BlurProgram implements IMinecraft, IWindow {
    private float blurOffset = 1.0F;
    private float blurDownscale = 0.5F;
 
+   /**
+    * Инициализирует шейдеры kawase blur (down и up).
+    */
    @Compile
    public void initShaders() {
       kawaseDownProgram = new KawaseBlurProgram(Mytheria.id("kawase_down/data"));
       kawaseUpProgram = new KawaseBlurProgram(Mytheria.id("kawase_up/data"));
    }
 
+   /**
+    * Выполняет multi-pass Kawase blur (downsample + upsample) к текущему фреймбуферу.
+    */
    public void draw() {
       if (this.timer.finished(25L)) {
          if (kawaseDownProgram == null || kawaseUpProgram == null) {
@@ -90,6 +96,9 @@ public class BlurProgram implements IMinecraft, IWindow {
       }
    }
 
+   /**
+    * Рисует текстурированный квад (POSITION_TEXTURE_COLOR).
+    */
    private void drawQuad(float x, float y, float width, float height) {
       byte var5 = -1;
       BufferBuilder var6 = RenderSystem.renderThreadTesselator().begin(DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
@@ -100,15 +109,24 @@ public class BlurProgram implements IMinecraft, IWindow {
       BufferRenderer.drawWithGlobalProgram(var6.end());
    }
 
+   /**
+    * Возвращает ID текстуры размытого буфера.
+    */
    public static int getTexture() {
       return ((fh)BUFFER.get()).getColorAttachment();
    }
 
+   /**
+    * Устанавливает смещение размытия.
+    */
    @Generated
    public void setBlurOffset(float blurOffset) {
       this.blurOffset = blurOffset;
    }
 
+   /**
+    * Устанавливает коэффициент уменьшения разрешения.
+    */
    @Generated
    public void setBlurDownscale(float blurDownscale) {
       this.blurDownscale = blurDownscale;
