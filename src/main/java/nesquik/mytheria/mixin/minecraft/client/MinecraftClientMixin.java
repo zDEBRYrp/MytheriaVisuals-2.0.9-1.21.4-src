@@ -93,8 +93,8 @@ public class MinecraftClientMixin {
     public void onItemUse(CallbackInfo ci) {
     }
 
-    @Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("HEAD"), cancellable = true)
-    public void onDisconnect(net.minecraft.client.gui.screen.Screen screen, CallbackInfo ci) {
+    @Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;Z)V", at = @At("HEAD"), cancellable = true)
+    public void onDisconnect(net.minecraft.client.gui.screen.Screen screen, boolean transferring, CallbackInfo ci) {
        if (dY.isInitialized()) {
           bs var3 = Mytheria.getInstance().getModuleManager().getModuleSafe(bs.class);
           if (var3 != null && var3.isEnabled() && var3.shouldBlockDisconnect()) {
