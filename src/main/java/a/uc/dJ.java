@@ -327,11 +327,14 @@ public class dJ extends dz<SliderSetting> {
       super.onMouseClicked(mouseX, mouseY, button);
    }
 
-   @Override
-   public void onMouseReleased(double mouseX, double mouseY, MouseButton button) {
-      this.d = false;
-      super.onMouseReleased(mouseX, mouseY, button);
-   }
+    @Override
+    public void onMouseReleased(double mouseX, double mouseY, MouseButton button) {
+       if (this.d) {
+          this.setting.autoSaveConfig();
+       }
+       this.d = false;
+       super.onMouseReleased(mouseX, mouseY, button);
+    }
 
    @Override
    public void onKeyPressed(int keyCode, int scanCode, int modifiers) {

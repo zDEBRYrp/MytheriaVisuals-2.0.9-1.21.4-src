@@ -225,7 +225,7 @@ public abstract class ce implements Setting {
       return this.c;
    }
 
-   protected void autoSaveConfig() {
+    public void autoSaveConfig() {
       try {
          Mytheria var1 = Mytheria.getInstance();
          if (var1 == null) {

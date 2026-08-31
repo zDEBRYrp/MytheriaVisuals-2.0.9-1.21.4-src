@@ -254,6 +254,7 @@ public class ck extends ce {
    public void setValue(ck.a value) {
       if (this.b != value) {
          this.b = value;
+         this.autoSaveConfig();
       }
    }
 

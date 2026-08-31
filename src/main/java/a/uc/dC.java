@@ -276,6 +276,7 @@ public class dC extends dz<ch> {
    public void onMouseClicked(double mouseX, double mouseY, MouseButton button) {
       if (this.isHovered(mouseX, mouseY) && button == MouseButton.LEFT) {
          this.setting.toggle();
+         this.setting.autoSaveConfig();
       }
 
       super.onMouseReleased(mouseX, mouseY, button);

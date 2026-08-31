@@ -262,6 +262,9 @@ public class di extends dg {
             String segment = var11.substring(lastEnd, cm.start());
             String name = extractEventName(segment, raw);
             if (name == null || name.isBlank()) {
+               name = extractEventName(var11, raw);
+            }
+            if (name == null || name.isBlank()) {
                if (this.c != null && !this.c.isBlank()) { name = this.c; this.c = null; }
                else name = "Ивент";
             } else {

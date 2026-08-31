@@ -190,12 +190,17 @@ public enum Mytheria implements IMinecraft {
       if (!this.isPanic()) {
          try {
             this.discordRpc.getAutoSavePreset().save();
+         } catch (Exception var2) {
+            LOGGER.error("Error saving autosave preset", var2);
+         }
+
+         try {
             t var4 = this.l.getConfig("autosave", false);
             if (var4 != null) {
                var4.save();
             }
-         } catch (Exception var2) {
-            LOGGER.error("Error saving autosave config", var2);
+         } catch (Exception var5) {
+            LOGGER.error("Error saving autosave config", var5);
          }
       }
 
