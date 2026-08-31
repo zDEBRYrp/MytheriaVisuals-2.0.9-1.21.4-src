@@ -64,8 +64,7 @@ public class ChatScreenMixin extends Screen implements IMinecraft {
       mytheria$hoveredMsgIndex = mytheria$getHoveredMessageIndex(mouseX, mouseY);
 
       if (dY.isInitialized() && mytheria$hoveredMsgIndex >= 0) {
-         fQ chatCopy = dY.getInstance().getModuleManager().getModuleSafe(fQ.class);
-         if (chatCopy != null && chatCopy.isChatCopyEnabled()) {
+         if (fQ.isChatCopyEnabled()) {
             ChatHud chatHud = mc.inGameHud.getChatHud();
             double chatScale = chatHud.getChatScale();
             int scaledHeight = mc.getWindow().getScaledHeight();
@@ -92,9 +91,8 @@ public class ChatScreenMixin extends Screen implements IMinecraft {
       }
 
       if (button == 0 && dY.isInitialized() && mytheria$hoveredMsgIndex >= 0) {
-         fQ chatCopy = dY.getInstance().getModuleManager().getModuleSafe(fQ.class);
-         if (chatCopy != null && chatCopy.isChatCopyEnabled()) {
-            fQ.copyChatMessage(chatCopy.getFormatIndex());
+         if (fQ.isChatCopyEnabled()) {
+            fQ.copyChatMessage(fQ.getStaticFormatIndex());
             cir.setReturnValue(true);
          }
       }

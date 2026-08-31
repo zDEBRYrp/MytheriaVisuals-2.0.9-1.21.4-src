@@ -1196,7 +1196,7 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
      *
      * @return высота содержимого для расчёта границ прокрутки
      */
-    private float layoutAndRenderModules(UIContext context, float x, float y, float scroll, float alpha) {
+     private float layoutAndRenderModules(UIContext context, float x, float y, float scroll, float alpha) {
         float cursorY = scroll + 41.0F;
        float cursorX = 0.0F;
        float moduleWidth = 155.0F;
@@ -1205,11 +1205,12 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
        float totalWidth = moduleWidth * colCount + gap * (colCount - 1);
        float gridStartX = x + (this.b.getWidth() - totalWidth) / 2.0F;
        fu batch = new fu(5.0F);
+       int sharedColIndex = 0;
 
        for (dL cat : this.f) {
           if (cat.getCategory() == this.d || this.isSearchActive()) {
              cat.setY(cursorY - scroll);
-             int colIndex = 0;
+             int colIndex = this.isSearchActive() ? sharedColIndex : 0;
 
              for (dN mod : cat.getModules()) {
                 boolean hasSettings = !this.c(mod);
@@ -1236,11 +1237,13 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
                 }
              }
 
-             if (colIndex != 0) {
-                cursorY += 34.0F;
+             if (!this.isSearchActive()) {
+                if (colIndex != 0) {
+                   cursorY += 34.0F;
+                }
+                cursorX = 0.0F;
              }
-
-             cursorX = 0.0F;
+             sharedColIndex = colIndex;
           }
        }
 

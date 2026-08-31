@@ -12,10 +12,11 @@ import nesquik.mytheria.systems.event.EventListener;
 import nesquik.mytheria.systems.modules.api.ModuleInfo;
 import org.lwjgl.glfw.GLFW;
 
-@ModuleInfo(name = "Copy Helper", category = ax.OTHER, desc = "modules.descriptions.copy_helper")
+@ModuleInfo(name = "Copy Helper", category = ax.VISUALS, desc = "modules.descriptions.copy_helper")
 public class fQ extends aJ {
-    private final ch a = new ch(this, "modules.settings.copy_helper.chat_copy");
-    private final ch b = new ch(this, "modules.settings.copy_helper.item_copy");
+    private static fQ instance;
+    private final ch a = new ch(this, "modules.settings.copy_helper.chat_copy").enabled(true);
+    private final ch b = new ch(this, "modules.settings.copy_helper.item_copy").enabled(true);
     private final ck c = new ck(this, "modules.settings.copy.format");
     private final ck.a d = new ck.a(this.c, "&#RRGGBB").select();
     private final ck.a e = new ck.a(this.c, "<#RRGGBB>");
@@ -23,7 +24,7 @@ public class fQ extends aJ {
     private final ck.a g = new ck.a(this.c, "&x&r&r&g&g&b&b");
 
     private final EventListener<an> h = event -> {
-        if (!this.b.isEnabled()) return;
+        if (!isItemCopyEnabled()) return;
         if (event.getKey() != GLFW.GLFW_KEY_DELETE) return;
         if (event.getAction() != 1) return;
         if (mc.currentScreen != null) return;
@@ -42,14 +43,19 @@ public class fQ extends aJ {
     };
 
     public fQ() {
+        instance = this;
     }
 
-    public boolean isChatCopyEnabled() {
-        return this.a.isEnabled();
+    public static boolean isChatCopyEnabled() {
+        return instance != null && instance.isEnabled() && instance.a.isEnabled();
     }
 
-    public boolean isItemCopyEnabled() {
-        return this.b.isEnabled();
+    public static boolean isItemCopyEnabled() {
+        return instance != null && instance.isEnabled() && instance.b.isEnabled();
+    }
+
+    public static int getStaticFormatIndex() {
+        return instance != null ? instance.getFormatIndex() : 0;
     }
 
     public int getFormatIndex() {
