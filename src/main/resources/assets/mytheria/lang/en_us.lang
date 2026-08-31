@@ -897,9 +897,8 @@ modules.settings.menu.custom_main_menu=Custom Main Menu
 modules.settings.menu.transparent=Transparency
 modules.settings.menu.transparent_percent=Transparency Percent
 
-# Chat Copy
-modules.descriptions.chat_copy=Copies chat message with colors (Ctrl+C while hovering over message)
-modules.descriptions.item_name_copy=Copies item name with colors (Delete key)
-
-# Copy format
-modules.settings.copy.format=Format
+# Copy Helper
+modules.descriptions.copy_helper=Copy helper: copies chat messages and item names with colors
+modules.settings.copy_helper.chat_copy=Chat Copy
+modules.settings.copy_helper.item_copy=Item Copy (Delete)
+modules.settings.copy.format=Color Format

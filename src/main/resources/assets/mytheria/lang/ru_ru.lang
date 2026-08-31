@@ -1058,9 +1058,8 @@ modules.settings.menu.custom_main_menu=Кастовное главное мен�
 modules.settings.menu.transparent=Прозрачность
 modules.settings.menu.transparent_percent=Процент прозрачности
 
-# Chat Copy
-modules.descriptions.chat_copy=Копирует сообщение из чата с цветами (Ctrl+C при наведении на сообщение)
-modules.descriptions.item_name_copy=Копирует название предмета с цветами (Delete)
-
-# Copy format
-modules.settings.copy.format=Формат
+# Copy Helper
+modules.descriptions.copy_helper=Помощник копирования: копирует сообщения из чата и названия предметов с цветами
+modules.settings.copy_helper.chat_copy=Копировать чат
+modules.settings.copy_helper.item_copy=Копировать предмет (Delete)
+modules.settings.copy.format=Формат цвета
