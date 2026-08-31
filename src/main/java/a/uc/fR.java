@@ -159,10 +159,10 @@ public class fR extends aJ {
             }
 
             String raw = line.getString().replaceAll("[^\\d]", "");
-            if (!raw.isEmpty() && raw.length() <= 11) {
+            if (raw.length() >= 2 && raw.length() <= 11) {
                 try {
                     long val = Long.parseLong(raw);
-                    if (val > 0 && val < MAX_REASONABLE_PRICE && text.length() < 20) {
+                    if (val >= 100 && val < MAX_REASONABLE_PRICE && text.length() < 30) {
                         return val;
                     }
                 } catch (NumberFormatException ignored) {}
