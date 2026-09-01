@@ -154,7 +154,7 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
                 filtered.add(m);
             }
         }
-        Collections.sort(filtered, Comparator.comparingLong(FunTimeApi.MineData::resetSecondsLeft));
+        Collections.sort(filtered, Comparator.comparingLong(FunTimeApi.MineData::resetSecondsLeft).reversed());
         return filtered;
     }
 
