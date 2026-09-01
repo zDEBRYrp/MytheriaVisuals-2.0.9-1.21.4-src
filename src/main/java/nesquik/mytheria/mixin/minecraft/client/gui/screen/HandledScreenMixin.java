@@ -71,17 +71,17 @@ public abstract class HandledScreenMixin implements IMinecraft {
                 context.fill(slotX, slotY, slotX + 16, slotY + 16, auctionModule.rankFillColor(rank));
              }
           }
-          if (auctionModule.isAuctionDetected() && auctionModule.getCachedStats() != null) {
+          if (auctionModule.isAuctionDetected() && auctionModule.showStats.isEnabled() && auctionModule.getCachedStats() != null) {
              fR.AuctionStats stats = auctionModule.getCachedStats();
              int panelX = 4;
              int panelY = 4;
              java.util.List<String> lines = new java.util.ArrayList<>();
-             lines.add("\u00A7e\u00A7lAuction Stats");
-             lines.add("\u00A77Items: \u00A7f" + stats.auctionItems());
-             lines.add("\u00A77Min: \u00A7a" + formatPrice(stats.minTotalPrice()));
-             lines.add("\u00A77Avg: \u00A7e" + formatPrice(stats.avgTotalPrice()));
-             lines.add("\u00A77Min/1: \u00A7b" + formatPrice(stats.minUnitPrice()));
-             lines.add("\u00A77Avg/1: \u00A7d" + formatPrice(stats.avgUnitPrice()));
+             lines.add("\u00A7e\u00A7l\u0421\u0442\u0430\u0442\u0438\u0441\u0442\u0438\u043a\u0430 \u0430\u0443\u043a\u0446\u0438\u043e\u043d\u0430");
+             lines.add("\u00A77\u0422\u043e\u0432\u0430\u0440\u043e\u0432: \u00A7f" + stats.auctionItems());
+             lines.add("\u00A77\u041c\u0438\u043d: \u00A7a" + formatPrice(stats.minTotalPrice()));
+             lines.add("\u00A77\u0421\u0440\u0435\u0434\u043d\u0438\u0439: \u00A7e" + formatPrice(stats.avgTotalPrice()));
+             lines.add("\u00A77\u041c\u0438\u043d/\u0448\u0442: \u00A7b" + formatPrice(stats.minUnitPrice()));
+             lines.add("\u00A77\u0421\u0440\u0435\u0434/\u0448\u0442: \u00A7d" + formatPrice(stats.avgUnitPrice()));
              int maxWidth = 0;
              for (String line : lines) {
                 int w = mc.textRenderer.getWidth(line.replaceAll("\u00A7.", ""));

@@ -1,6 +1,7 @@
 package a.uc;
 
 import a.ax;
+import a.ch;
 import nesquik.mytheria.systems.setting.settings.SliderSetting;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.screen.slot.Slot;
@@ -17,8 +18,9 @@ public class fR extends aJ {
     private static fR instance;
 
     private static final long MAX_REASONABLE_PRICE = 10_000_000_000L;
-    private static final String[] PRICE_TRIGGERS = {"цена", "price", "стоимость", "купить", "buy", "auction"};
+    private static final String[] PRICE_TRIGGERS = {"цена", "price", "стоимость"};
 
+    public final ch showStats = new ch(this, "modules.settings.auction_helper.show_stats").enabled(true);
     public final SliderSetting topCount = new SliderSetting(this, "modules.settings.auction_helper.top_count").min(1.0F).max(15.0F).step(1.0F).currentValue(3.0F);
 
     private static final int COLOR_GREEN = 0xFF00CC00;
