@@ -167,6 +167,7 @@ import a.cz;
 import a.ay;
 import a.eq;
 import a.dz;
+import a.evA;
 import a.ev;
 import a.ba;
 import a.u;
@@ -348,11 +349,12 @@ public class dX extends CustomScreen implements IMinecraft, IScaledResolution {
    private void a(UIContext context, float x, float y, float alpha) {
       float var5 = 30.0F;
       float var6 = 5.0F;
-      float var7 = var5 * 2.0F + var6;
+      float var7 = var5 * 3.0F + var6 * 2.0F;
       float var8 = x + (this.a.getWidth() - var7) / 2.0F;
       float var9 = y + this.a.getHeight() + 10.0F;
       float var10 = var8;
       float var11 = var8 + var5 + var6;
+      float var11b = var11 + var5 + var6;
       if (bJ.showGlass()) {
          context.drawLiquidGlass(
             var10,
@@ -401,6 +403,31 @@ public class dX extends CustomScreen implements IMinecraft, IScaledResolution {
       var14 = var9 + (var5 - var12) / 2.0F;
       context.drawTexture(Mytheria.id("icons/way2.png"), var13, var14, var12, var12, ec.WHITE);
       if (er.isHovered(var11, var9, var5, var5, context)) {
+         eo.set(en.HAND);
+      }
+
+      if (bJ.showGlass()) {
+         context.drawLiquidGlass(
+            var11b,
+            var9,
+            var5,
+            var5,
+            bJ.getGlassBlur(),
+            bJ.getDistortion(),
+            BorderRadius.all(6.0F),
+            ec.getLiquidGlassColor().mulAlpha(alpha * bJ.getGlassAlpha())
+         );
+         context.drawRoundedRect(
+            var11b, var9, var5, var5, BorderRadius.all(6.0F), bJ.getBackgroundColor().withAlpha((int)(255.0F * (0.8F - 0.6F * bJ.glass()) * alpha))
+         );
+      } else {
+         context.drawRoundedRect(var11b, var9, var5, var5, BorderRadius.all(6.0F), ec.getBackgroundColor().mulAlpha(alpha));
+      }
+
+      var13 = var11b + (var5 - var12) / 2.0F;
+      var14 = var9 + (var5 - var12) / 2.0F;
+      context.drawTexture(Mytheria.id("icons/online.png"), var13, var14, var12, var12, ec.WHITE);
+      if (er.isHovered(var11b, var9, var5, var5, context)) {
          eo.set(en.HAND);
       }
    }
@@ -710,14 +737,17 @@ public class dX extends CustomScreen implements IMinecraft, IScaledResolution {
       } else {
          float var11 = 30.0F;
          float var12 = 5.0F;
-         float var13 = var11 * 2.0F + var12;
+         float var13 = var11 * 3.0F + var12 * 2.0F;
          float var14 = var6 + (this.a.getWidth() - var13) / 2.0F;
          float var15 = var7 + this.a.getHeight() + 10.0F;
          float var16 = var14;
          float var17 = var14 + var11 + var12;
+         float var17b = var17 + var11 + var12;
          if (er.isHovered(var16, var15, var11, var11, mouseX, mouseY)) {
             this.d = true;
             this.e = true;
+         } else if (er.isHovered(var17b, var15, var11, var11, mouseX, mouseY)) {
+            mc.setScreen(new evA());
          } else if (!er.isHovered(var17, var15, var11, var11, mouseX, mouseY)) {
             boolean var18 = this.f.isHovered(mouseX, mouseY);
             boolean var19 = this.g.isHovered(mouseX, mouseY);

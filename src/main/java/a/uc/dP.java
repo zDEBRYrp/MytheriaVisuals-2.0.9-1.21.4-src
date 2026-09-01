@@ -168,6 +168,7 @@ import a.cz;
 import a.ay;
 import a.eq;
 import a.dz;
+import a.evA;
 import a.ev;
 import a.ba;
 import a.u;
@@ -938,10 +939,11 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       context.drawText(Fonts.REGULAR.getFont(5.5F), var18, var21 + 3.0F, var22 + 4.0F, var24.mulAlpha(0.8F));
       float var25 = 30.0F;
       float var26 = 5.0F;
-      float var27 = var25 * 2.0F + var26;
+      float var27 = var25 * 3.0F + var26 * 2.0F;
       float var28 = y + this.b.getHeight() + 10.0F;
       float var29 = x + (this.b.getWidth() - var27) / 2.0F;
       float var30 = var29 + var25 + var26;
+      float var30b = var30 + var25 + var26;
       if (bJ.showGlass()) {
          context.drawLiquidGlass(
             var29,
@@ -990,6 +992,31 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
       var33 = var28 + (var25 - var31) / 2.0F;
       context.drawTexture(Mytheria.id("icons/way2.png"), var32, var33, var31, var31, ec.WHITE);
       if (er.isHovered(var30, var28, var25, var25, context)) {
+         eo.set(en.HAND);
+      }
+
+      if (bJ.showGlass()) {
+         context.drawLiquidGlass(
+            var30b,
+            var28,
+            var25,
+            var25,
+            bJ.getGlassBlur(),
+            bJ.getDistortion(),
+            BorderRadius.all(6.0F),
+            ec.getLiquidGlassColor().mulAlpha(alpha * bJ.getGlassAlpha())
+         );
+         context.drawRoundedRect(
+            var30b, var28, var25, var25, BorderRadius.all(6.0F), bJ.getBackgroundColor().withAlpha((int)(255.0F * (0.8F - 0.6F * bJ.glass()) * alpha))
+         );
+      } else {
+         context.drawRoundedRect(var30b, var28, var25, var25, BorderRadius.all(6.0F), ec.getBackgroundColor().mulAlpha(alpha));
+      }
+
+      var32 = var30b + (var25 - var31) / 2.0F;
+      var33 = var28 + (var25 - var31) / 2.0F;
+      context.drawTexture(Mytheria.id("icons/online.png"), var32, var33, var31, var31, ec.WHITE);
+      if (er.isHovered(var30b, var28, var25, var25, context)) {
          eo.set(en.HAND);
       }
 
@@ -1976,12 +2003,17 @@ public class dP extends dt implements IMinecraft, IScaledResolution {
        float var7 = this.b.getY();
        float var24 = 30.0F;
        float var25 = 5.0F;
-       float var26 = var24 * 2.0F + var25;
+       float var26 = var24 * 3.0F + var25 * 2.0F;
        float var27 = var7 + this.b.getHeight() + 10.0F;
        float var28 = var6 + (this.b.getWidth() - var26) / 2.0F;
        float var29 = var28 + var24 + var25;
+       float var30 = var29 + var24 + var25;
        if (er.isHovered(var29, var27, var24, var24, mouseX, mouseY)) {
           mc.setScreen(new dX());
+          return true;
+       }
+       if (er.isHovered(var30, var27, var24, var24, mouseX, mouseY)) {
+          mc.setScreen(new evA());
           return true;
        }
 
