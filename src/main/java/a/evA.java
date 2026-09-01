@@ -268,9 +268,9 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         float toggleBtnY = fieldY + 2.0F;
         eb toggleColor = tokenVisible ? ec.getAccentColor().mulAlpha(alpha) : ec.getTextColor().withAlpha((int)(40.0F * alpha));
         context.drawRoundedRect(toggleBtnX, toggleBtnY, toggleBtnW, toggleBtnH, BorderRadius.all(3.0F), toggleColor);
-        Font tinyFont = Fonts.REGULAR.getFont(5.0F);
-        String eyeText = tokenVisible ? "H" : "S";
-        context.drawCenteredText(tinyFont, eyeText, toggleBtnX + toggleBtnW / 2.0F, toggleBtnY + 3.0F, ec.WHITE.mulAlpha(alpha));
+        String eyeIcon = tokenVisible ? "icons/eye_open.png" : "icons/eye_closed.png";
+        float eyeIconSize = 8.0F;
+        context.drawTexture(Mytheria.id(eyeIcon), toggleBtnX + (toggleBtnW - eyeIconSize) / 2.0F, toggleBtnY + (toggleBtnH - eyeIconSize) / 2.0F, eyeIconSize, eyeIconSize, ec.WHITE.mulAlpha(alpha));
         if (er.isHovered(toggleBtnX, toggleBtnY, toggleBtnW, toggleBtnH, context)) {
             eo.set(en.HAND);
         }
@@ -286,13 +286,14 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
             eo.set(en.HAND);
         }
 
-        float refreshBtnW = 24.0F;
+        float refreshBtnW = 12.0F;
         float refreshBtnH = 12.0F;
         float refreshBtnX = saveBtnX + saveBtnW + 3.0F;
         float refreshBtnY = fieldY + 2.0F;
         context.drawRoundedRect(refreshBtnX, refreshBtnY, refreshBtnW, refreshBtnH, BorderRadius.all(3.0F),
             ec.getTextColor().withAlpha((int)(40.0F * alpha)));
-        context.drawCenteredText(Fonts.REGULAR.getFont(5.5F), "Upd", refreshBtnX + refreshBtnW / 2.0F, refreshBtnY + 3.0F, ec.getTextColor().mulAlpha(alpha));
+        float refIconSize = 8.0F;
+        context.drawTexture(Mytheria.id("icons/refresh.png"), refreshBtnX + (refreshBtnW - refIconSize) / 2.0F, refreshBtnY + (refreshBtnH - refIconSize) / 2.0F, refIconSize, refIconSize, ec.getTextColor().mulAlpha(alpha));
         if (er.isHovered(refreshBtnX, refreshBtnY, refreshBtnW, refreshBtnH, context)) {
             eo.set(en.HAND);
         }
@@ -541,7 +542,7 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         }
 
         // Refresh button
-        float refreshBtnW = 24.0F;
+        float refreshBtnW = 12.0F;
         float refreshBtnH = 12.0F;
         float refreshBtnX = saveBtnX + saveBtnW + 3.0F;
         float refreshBtnY = fieldY + 2.0F;
