@@ -384,25 +384,33 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
             eb bgColor = hovered ? ec.getAccentColor().withAlpha((int)(40.0F * alpha)) : ec.getTextColor().withAlpha((int)(10.0F * alpha));
             context.drawRoundedRect(x + 2.0F, itemY, w - 4.0F, itemH - 2.0F, BorderRadius.all(3.0F), bgColor);
 
-            eb phaseColor = getPhaseColor(ev.phase()).mulAlpha(alpha);
-            context.drawRoundedRect(x + 4.0F, itemY + 4.0F, 3.0F, itemH - 10.0F, BorderRadius.all(1.5F), phaseColor);
+            eb eventColor = getEventColor(ev.eventType()).mulAlpha(alpha);
+            context.drawRoundedRect(x + 4.0F, itemY + 4.0F, 3.0F, itemH - 10.0F, BorderRadius.all(1.5F), eventColor);
 
             Font smallFont = Fonts.REGULAR.getFont(6.0F);
             Font tinyFont = Fonts.REGULAR.getFont(5.0F);
 
-            String name = ev.server() + " - " + ev.eventType();
-            context.drawText(smallFont, name, x + 10.0F, itemY + 4.0F, ec.getTextColor().mulAlpha(alpha));
+            String eventName = getEventName(ev.eventType());
+            context.drawText(smallFont, eventName, x + 10.0F, itemY + 3.0F, eventColor);
 
-            String phaseText = "Фаза: " + ev.phase();
-            context.drawText(tinyFont, phaseText, x + 10.0F, itemY + 14.0F, phaseColor);
+            String phaseRu = getPhaseText(ev.phase());
+            eb phaseColor = getPhaseColor(ev.phase()).mulAlpha(alpha);
+            context.drawText(tinyFont, ev.server() + " | " + phaseRu, x + 10.0F, itemY + 12.0F, phaseColor);
 
             if (ev.loot() != null && !ev.loot().isEmpty()) {
                 context.drawText(tinyFont, ev.loot(), x + 10.0F, itemY + 20.0F, ec.getTextColor().withAlpha((int)(120.0F * alpha)));
+            } else if (ev.locationAnnounced() && (ev.locX() != 0 || ev.locZ() != 0)) {
+                context.drawText(tinyFont, "Координаты: " + ev.locX() + " " + ev.locZ(), x + 10.0F, itemY + 20.0F, ec.getTextColor().withAlpha((int)(120.0F * alpha)));
+            } else {
+                context.drawText(tinyFont, "Ожидание...", x + 10.0F, itemY + 20.0F, ec.getTextColor().withAlpha((int)(80.0F * alpha)));
             }
 
             if (ev.timeLeft() > 0) {
-                String time = formatTime(ev.timeLeft());
-                context.drawRightText(tinyFont, time, x + w - 8.0F, itemY + 6.0F, ec.getTextColor().withAlpha((int)(150.0F * alpha)));
+                long elapsed = (System.currentTimeMillis() - lastFetchTime) / 1000;
+                long remaining = Math.max(0, ev.timeLeft() - elapsed);
+                String time = formatTime(remaining);
+                eb timeColor = remaining <= 10 ? eb.RED : remaining <= 60 ? eb.YELLOW : ec.getTextColor().withAlpha((int)(150.0F * alpha));
+                context.drawRightText(tinyFont, time, x + w - 8.0F, itemY + 6.0F, timeColor.mulAlpha(alpha));
             }
 
             if (hovered) {
@@ -652,12 +660,57 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
 
     private eb getPhaseColor(String phase) {
         if (phase == null) return eb.WHITE;
-        return switch (phase.toLowerCase()) {
-            case "war", "война" -> eb.RED;
-            case "peace", "мир" -> eb.GREEN;
-            case "trade", "торговля" -> eb.YELLOW;
-            case "hunt", "охота" -> new eb(255.0F, 165.0F, 0.0F);
+        return switch (phase.toUpperCase()) {
+            case "STARTING" -> eb.YELLOW;
+            case "ACTIVATING" -> new eb(255.0F, 165.0F, 0.0F);
+            case "RUNNING" -> eb.GREEN;
+            case "OPENED" -> new eb(0.0F, 200.0F, 200.0F);
+            case "CLOSED" -> eb.RED;
             default -> ec.getAccentColor();
+        };
+    }
+
+    private String getPhaseText(String phase) {
+        if (phase == null) return "";
+        return switch (phase.toUpperCase()) {
+            case "STARTING" -> "Стартует";
+            case "ACTIVATING" -> "Активация";
+            case "RUNNING" -> "Идёт";
+            case "OPENED" -> "Открыт";
+            case "CLOSED" -> "Закрыт";
+            default -> phase;
+        };
+    }
+
+    private eb getEventColor(String eventType) {
+        if (eventType == null) return ec.getAccentColor();
+        return switch (eventType.toLowerCase()) {
+            case "altar", "mystic" -> new eb(138.0F, 43.0F, 226.0F);
+            case "beacon", "myst_beacon" -> new eb(255.0F, 69.0F, 0.0F);
+            case "vulkan" -> new eb(255.0F, 140.0F, 0.0F);
+            case "meteor_rain" -> new eb(70.0F, 130.0F, 180.0F);
+            case "hellm" -> new eb(255.0F, 87.0F, 34.0F);
+            case "express" -> new eb(243.0F, 196.0F, 82.0F);
+            case "santa" -> new eb(220.0F, 30.0F, 30.0F);
+            case "deathchest" -> new eb(141.0F, 99.0F, 184.0F);
+            default -> ec.getAccentColor();
+        };
+    }
+
+    private String getEventName(String eventType) {
+        if (eventType == null) return "Ивент";
+        return switch (eventType.toLowerCase()) {
+            case "altar" -> "Мистический Алтарь";
+            case "beacon" -> "Маяк Убийца";
+            case "myst_beacon" -> "Маяк Убийца";
+            case "vulkan" -> "Вулкан";
+            case "meteor_rain" -> "Метеоритный дождь";
+            case "hellm" -> "Горящий череп";
+            case "express" -> "Посылка";
+            case "santa" -> "Санта";
+            case "deathchest" -> "Контейнер";
+            case "mystic" -> "Мистический Алтарь";
+            default -> eventType;
         };
     }
 
