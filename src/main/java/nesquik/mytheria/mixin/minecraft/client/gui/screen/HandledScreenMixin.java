@@ -58,7 +58,7 @@ public abstract class HandledScreenMixin implements IMinecraft {
        if (auctionModule != null && auctionModule.isEnabled() && mc.player != null) {
           HandledScreen<?> screen = (HandledScreen<?>) (Object) this;
           auctionModule.refresh(screen);
-          if (auctionModule.isAuctionDetected() && fR.isHighlightsEnabled()) {
+          if (auctionModule.isAuctionDetected()) {
              int screenX = ((HandledScreenAccessor) this).getX();
              int screenY = ((HandledScreenAccessor) this).getY();
              for (fR.AuctionEntry entry : auctionModule.getTopEntries()) {
@@ -71,7 +71,7 @@ public abstract class HandledScreenMixin implements IMinecraft {
                 context.fill(slotX, slotY, slotX + 16, slotY + 16, auctionModule.rankFillColor(rank));
              }
           }
-          if (auctionModule.isAuctionDetected() && fR.isStatsEnabled() && auctionModule.getCachedStats() != null) {
+          if (auctionModule.isAuctionDetected() && auctionModule.getCachedStats() != null) {
              fR.AuctionStats stats = auctionModule.getCachedStats();
              int panelX = 4;
              int panelY = 4;

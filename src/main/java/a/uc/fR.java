@@ -1,8 +1,6 @@
 package a.uc;
 
 import a.ax;
-import a.ch;
-import a.ck;
 import nesquik.mytheria.systems.setting.settings.SliderSetting;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.screen.slot.Slot;
@@ -13,20 +11,14 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @nesquik.mytheria.systems.modules.api.ModuleInfo(name = "Auction Helper", category = ax.VISUALS, desc = "modules.descriptions.auction_helper")
 public class fR extends aJ {
     private static fR instance;
 
-    private static final Pattern PRICE_PATTERN = Pattern.compile("(\\d[\\d\\s,._]{0,20})");
-    private static final String[] BUY_TRIGGERS = {"\u043a\u0443\u043f\u0438\u0442\u044c", "buy", "auction"};
-    private static final String[] PRICE_TRIGGERS = {"\u0446\u0435\u043d\u0430", "price", "\u0441\u0442\u043e\u0438\u043c\u043e\u0441\u0442\u044c"};
     private static final long MAX_REASONABLE_PRICE = 10_000_000_000L;
+    private static final String[] PRICE_TRIGGERS = {"цена", "price", "стоимость", "купить", "buy", "auction"};
 
-    public final ch a = new ch(this, "modules.settings.auction_helper.show_highlights").enabled(true);
-    public final ch b = new ch(this, "modules.settings.auction_helper.show_stats").enabled(true);
     public final SliderSetting topCount = new SliderSetting(this, "modules.settings.auction_helper.top_count").min(1.0F).max(15.0F).step(1.0F).currentValue(3.0F);
 
     private static final int COLOR_GREEN = 0xFF00CC00;
@@ -51,14 +43,6 @@ public class fR extends aJ {
 
     public static fR getInstance() {
         return instance;
-    }
-
-    public static boolean isHighlightsEnabled() {
-        return instance != null && instance.isEnabled() && instance.a.isEnabled();
-    }
-
-    public static boolean isStatsEnabled() {
-        return instance != null && instance.isEnabled() && instance.b.isEnabled();
     }
 
     public boolean isAuctionDetected() {
@@ -94,13 +78,12 @@ public class fR extends aJ {
 
         for (Slot slot : screen.getScreenHandler().slots) {
             if (slot == null || slot.getStack().isEmpty()) continue;
-            if (slot.getStack().getItem() == net.minecraft.item.Items.AIR) continue;
 
             List<Text> tooltip = getTooltipLines(slot.getStack());
             if (tooltip == null) continue;
 
             long price = detectPrice(tooltip);
-            if (price < 0 || price > MAX_REASONABLE_PRICE) continue;
+            if (price <= 0 || price > MAX_REASONABLE_PRICE) continue;
 
             int count = slot.getStack().getCount();
             double unitPrice = count > 0 ? (double) price / count : price;
@@ -140,29 +123,18 @@ public class fR extends aJ {
             String text = line.getString().toLowerCase(java.util.Locale.ROOT);
             boolean hasPriceTrigger = false;
             for (String trigger : PRICE_TRIGGERS) {
-                if (text.contains(trigger)) { hasPriceTrigger = true; break; }
-            }
-            if (!hasPriceTrigger) {
-                for (String trigger : BUY_TRIGGERS) {
-                    if (text.contains(trigger)) { hasPriceTrigger = true; break; }
+                if (text.contains(trigger)) {
+                    hasPriceTrigger = true;
+                    break;
                 }
             }
-
-            if (hasPriceTrigger) {
-                Matcher matcher = PRICE_PATTERN.matcher(line.getString().replaceAll("[^\\d\\s,.\\d]", ""));
-                if (matcher.find()) {
-                    String priceStr = matcher.group(1).replaceAll("[\\s,.\\s_]", "");
-                    try {
-                        return Long.parseLong(priceStr);
-                    } catch (NumberFormatException ignored) {}
-                }
-            }
+            if (!hasPriceTrigger) continue;
 
             String raw = line.getString().replaceAll("[^\\d]", "");
-            if (raw.length() >= 2 && raw.length() <= 11) {
+            if (raw.length() >= 2 && raw.length() <= 15) {
                 try {
                     long val = Long.parseLong(raw);
-                    if (val >= 100 && val < MAX_REASONABLE_PRICE && text.length() < 30) {
+                    if (val > 0 && val < MAX_REASONABLE_PRICE) {
                         return val;
                     }
                 } catch (NumberFormatException ignored) {}
