@@ -439,21 +439,20 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
             eb bgColor = hovered ? ec.getAccentColor().withAlpha((int)(40.0F * alpha)) : ec.getTextColor().withAlpha((int)(10.0F * alpha));
             context.drawRoundedRect(x + 2.0F, itemY, w - 4.0F, itemH - 2.0F, BorderRadius.all(3.0F), bgColor);
 
-            eb rarityColor = getRarityColor(mine.mineRarity()).mulAlpha(alpha);
-            context.drawRoundedRect(x + 4.0F, itemY + 4.0F, 3.0F, itemH - 10.0F, BorderRadius.all(1.5F), rarityColor);
+            String nextRarity = mine.nextMineRarity() != null && !mine.nextMineRarity().isEmpty() ? mine.nextMineRarity() : mine.mineRarity();
+            eb nextColor = getRarityColor(nextRarity).mulAlpha(alpha);
+            context.drawRoundedRect(x + 4.0F, itemY + 4.0F, 3.0F, itemH - 10.0F, BorderRadius.all(1.5F), nextColor);
 
             Font smallFont = Fonts.REGULAR.getFont(6.0F);
             Font tinyFont = Fonts.REGULAR.getFont(5.0F);
 
-            context.drawText(smallFont, mine.mineName(), x + 10.0F, itemY + 4.0F, rarityColor);
+            String nextText = "Следующая: " + nextRarity;
+            context.drawText(smallFont, nextText, x + 10.0F, itemY + 3.0F, nextColor);
 
-            context.drawText(tinyFont, mine.serverRuName(), x + 10.0F, itemY + 14.0F, ec.getTextColor().mulAlpha(alpha));
+            context.drawText(tinyFont, mine.serverRuName(), x + 10.0F, itemY + 12.0F, ec.getTextColor().mulAlpha(alpha));
 
-            if (mine.nextMineRarity() != null && !mine.nextMineRarity().isEmpty()) {
-                eb nextColor = getRarityColor(mine.nextMineRarity()).mulAlpha(alpha);
-                String nextText = "→ " + mine.nextMineRarity();
-                context.drawText(tinyFont, nextText, x + 10.0F, itemY + 20.0F, nextColor);
-            }
+            String currentText = "Сейчас: " + mine.mineRarity();
+            context.drawText(tinyFont, currentText, x + 10.0F, itemY + 20.0F, ec.getTextColor().withAlpha((int)(120.0F * alpha)));
 
             long elapsed = (System.currentTimeMillis() - lastFetchTime) / 1000;
             long remaining = Math.max(0, mine.resetSecondsLeft() - elapsed);
