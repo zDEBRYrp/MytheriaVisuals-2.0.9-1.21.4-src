@@ -7,16 +7,24 @@ import a.eo;
 import a.en;
 import a.av;
 import a.aj;
+import a.ar;
 import a.uc.bJ;
 import a.uc.dZ;
 import a.uc.cK;
 import a.uc.dP;
 import a.uc.dX;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.blaze3d.systems.RenderSystem;
 import nesquik.mytheria.Mytheria;
 import nesquik.mytheria.framework.base.CustomScreen;
@@ -43,6 +51,7 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
     private String apiToken = "";
     private boolean tokenFocused = false;
     private cK tokenField;
+    private boolean tokenVisible = false;
 
     private float scrollOffset = 0;
     private float targetScrollOffset = 0;
@@ -60,6 +69,8 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
     private long lastFetchTime = 0;
     private long nowMillis = 0;
 
+    private static final File TOKEN_FILE = new File(ar.DIRECTORY, "funtime_token.json");
+
     public evA() {
         float w = 500.0F;
         float h = 343.0F;
@@ -72,6 +83,7 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         this.tokenField.setPreview("API Token");
         this.tokenField.setFocused(false);
         this.lastFetchTime = System.currentTimeMillis();
+        loadToken();
     }
 
     public void tick() {
@@ -79,12 +91,41 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         this.nowMillis = System.currentTimeMillis();
     }
 
+    // --- Token persistence ---
+
+    private void loadToken() {
+        if (TOKEN_FILE.exists()) {
+            try (FileReader r = new FileReader(TOKEN_FILE)) {
+                JsonObject json = (JsonObject) JsonParser.parseReader(r);
+                if (json.has("token")) {
+                    this.apiToken = json.get("token").getAsString();
+                    this.tokenField.clear();
+                    this.tokenField.paste(this.apiToken);
+                }
+            } catch (Exception ignored) {}
+        }
+    }
+
+    private void saveToken() {
+        try {
+            TOKEN_FILE.getParentFile().mkdirs();
+            JsonObject json = new JsonObject();
+            json.addProperty("token", this.apiToken);
+            try (FileWriter w = new FileWriter(TOKEN_FILE)) {
+                w.write(ar.GSON.toJson(json));
+            }
+        } catch (Exception ignored) {}
+    }
+
+    // --- Fetch ---
+
     private void fetchData() {
         this.apiToken = this.tokenField.getBuiltText();
         if (apiToken.isEmpty()) {
             lastError = "Введите API токен";
             return;
         }
+        saveToken();
         loading = true;
         lastError = "";
         lastFetchTime = System.currentTimeMillis();
@@ -98,9 +139,23 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
 
         FunTimeApi.fetchMines(apiToken, serverType)
             .whenComplete((result, ex) -> {
-                mines = result != null ? result : new ArrayList<>();
+                List<FunTimeApi.MineData> raw = result != null ? result : new ArrayList<>();
+                mines = filterAndSortMines(raw);
                 loading = false;
             });
+    }
+
+    // --- Filter finished + sort newest first ---
+
+    private List<FunTimeApi.MineData> filterAndSortMines(List<FunTimeApi.MineData> raw) {
+        List<FunTimeApi.MineData> filtered = new ArrayList<>();
+        for (FunTimeApi.MineData m : raw) {
+            if (m.resetSecondsLeft() > 0) {
+                filtered.add(m);
+            }
+        }
+        Collections.sort(filtered, Comparator.comparingLong(FunTimeApi.MineData::resetSecondsLeft));
+        return filtered;
     }
 
     private void connectToServer(String serverKey) {
@@ -112,6 +167,8 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
             this.close();
         }
     }
+
+    // --- Render ---
 
     @Override
     public void render(UIContext context) {
@@ -187,22 +244,44 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         float fieldX = x + 10.0F;
 
         context.drawRoundedRect(fieldX, fieldY, fieldW, fieldH, BorderRadius.all(4.0F), ec.getTextColor().withAlpha((int)(20.0F * alpha)));
-        this.tokenField.set(fieldX + 4.0F, fieldY + 3.0F, fieldW - 60.0F, fieldH - 6.0F);
+
+        float inputW = fieldW - 80.0F;
+        this.tokenField.set(fieldX + 4.0F, fieldY + 3.0F, inputW, fieldH - 6.0F);
         this.tokenField.setTextColor(ec.getTextColor().mulAlpha(alpha));
         this.tokenField.setAlpha(alpha);
-        this.tokenField.render(context);
+
+        if (!tokenVisible && !this.apiToken.isEmpty()) {
+            Font tinyFont = Fonts.REGULAR.getFont(6.0F);
+            String masked = "*".repeat(Math.min(this.apiToken.length(), 30));
+            context.drawText(tinyFont, masked, fieldX + 6.0F, fieldY + 5.0F, ec.getTextColor().mulAlpha(alpha));
+        } else {
+            this.tokenField.render(context);
+        }
 
         if (er.isHovered(fieldX, fieldY, fieldW, fieldH, context)) {
             eo.set(en.TEXT);
         }
 
-        float fetchBtnW = 50.0F;
+        float toggleBtnW = 14.0F;
+        float toggleBtnH = 12.0F;
+        float toggleBtnX = fieldX + fieldW - 50.0F - toggleBtnW - 2.0F;
+        float toggleBtnY = fieldY + 2.0F;
+        eb toggleColor = tokenVisible ? ec.getAccentColor().mulAlpha(alpha) : ec.getTextColor().withAlpha((int)(40.0F * alpha));
+        context.drawRoundedRect(toggleBtnX, toggleBtnY, toggleBtnW, toggleBtnH, BorderRadius.all(3.0F), toggleColor);
+        Font tinyFont = Fonts.REGULAR.getFont(5.0F);
+        String eyeText = tokenVisible ? "Show" : "Hide";
+        context.drawCenteredText(tinyFont, eyeText, toggleBtnX + toggleBtnW / 2.0F, toggleBtnY + 3.0F, ec.WHITE.mulAlpha(alpha));
+        if (er.isHovered(toggleBtnX, toggleBtnY, toggleBtnW, toggleBtnH, context)) {
+            eo.set(en.HAND);
+        }
+
+        float fetchBtnW = 36.0F;
         float fetchBtnX = fieldX + fieldW - fetchBtnW - 4.0F;
         float fetchBtnH = 12.0F;
         float fetchBtnY = fieldY + 2.0F;
         context.drawRoundedRect(fetchBtnX, fetchBtnY, fetchBtnW, fetchBtnH, BorderRadius.all(3.0F),
             ec.getAccentColor().mulAlpha(alpha));
-        context.drawCenteredText(Fonts.REGULAR.getFont(6.0F), "Загрузить", fetchBtnX + fetchBtnW / 2.0F, fetchBtnY + 3.0F, ec.WHITE.mulAlpha(alpha));
+        context.drawCenteredText(Fonts.REGULAR.getFont(6.0F), "Load", fetchBtnX + fetchBtnW / 2.0F, fetchBtnY + 3.0F, ec.WHITE.mulAlpha(alpha));
         if (er.isHovered(fetchBtnX, fetchBtnY, fetchBtnW, fetchBtnH, context)) {
             eo.set(en.HAND);
         }
@@ -278,7 +357,8 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         int visibleCount = (int)(clipH / itemH) + 1;
         int maxScroll = Math.max(0, events.size() - visibleCount);
         targetScrollOffset = Math.max(0, Math.min(targetScrollOffset, maxScroll));
-        scrollOffset += (targetScrollOffset - scrollOffset) * 0.2F;
+        scrollOffset += (targetScrollOffset - scrollOffset) * 0.15F;
+        if (Math.abs(scrollOffset - targetScrollOffset) < 0.5F) scrollOffset = targetScrollOffset;
         int scroll = Math.round(scrollOffset);
 
         for (int i = scroll; i < Math.min(events.size(), scroll + visibleCount + 1); i++) {
@@ -332,7 +412,8 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         int visibleCount = (int)(clipH / itemH) + 1;
         int maxScroll = Math.max(0, mines.size() - visibleCount);
         targetScrollOffset = Math.max(0, Math.min(targetScrollOffset, maxScroll));
-        scrollOffset += (targetScrollOffset - scrollOffset) * 0.2F;
+        scrollOffset += (targetScrollOffset - scrollOffset) * 0.15F;
+        if (Math.abs(scrollOffset - targetScrollOffset) < 0.5F) scrollOffset = targetScrollOffset;
         int scroll = Math.round(scrollOffset);
 
         for (int i = scroll; i < Math.min(mines.size(), scroll + visibleCount + 1); i++) {
@@ -361,13 +442,11 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
                     ec.getTextColor().withAlpha((int)(120.0F * alpha)));
             }
 
-            if (mine.resetSecondsLeft() > 0) {
-                long elapsed = (System.currentTimeMillis() - lastFetchTime) / 1000;
-                long remaining = Math.max(0, mine.resetSecondsLeft() - elapsed);
-                String time = formatTime(remaining);
-                eb timeColor = remaining <= 10 ? eb.RED : remaining <= 30 ? eb.YELLOW : ec.getTextColor().withAlpha((int)(150.0F * alpha));
-                context.drawRightText(tinyFont, time, x + w - 8.0F, itemY + 6.0F, timeColor.mulAlpha(alpha));
-            }
+            long elapsed = (System.currentTimeMillis() - lastFetchTime) / 1000;
+            long remaining = Math.max(0, mine.resetSecondsLeft() - elapsed);
+            String time = formatTime(remaining);
+            eb timeColor = remaining <= 10 ? eb.RED : remaining <= 30 ? eb.YELLOW : ec.getTextColor().withAlpha((int)(150.0F * alpha));
+            context.drawRightText(tinyFont, time, x + w - 8.0F, itemY + 6.0F, timeColor.mulAlpha(alpha));
 
             if (hovered) {
                 eo.set(en.HAND);
@@ -421,13 +500,24 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         float fieldH = 16.0F;
         float fieldW = panel.getWidth() - 20.0F;
         float fieldX = panel.getX() + 10.0F;
+
+        // Toggle token visibility
+        float toggleBtnW = 14.0F;
+        float toggleBtnH = 12.0F;
+        float toggleBtnX = fieldX + fieldW - 50.0F - toggleBtnW - 2.0F;
+        float toggleBtnY = fieldY + 2.0F;
+        if (er.isHovered(toggleBtnX, toggleBtnY, toggleBtnW, toggleBtnH, mouseX, mouseY)) {
+            tokenVisible = !tokenVisible;
+            return;
+        }
+
         boolean fieldHovered = er.isHovered(fieldX, fieldY, fieldW, fieldH, mouseX, mouseY);
         this.tokenField.setFocused(fieldHovered);
         if (fieldHovered) {
             this.tokenField.onMouseClicked(mouseX, mouseY, button);
         }
 
-        float fetchBtnW = 50.0F;
+        float fetchBtnW = 36.0F;
         float fetchBtnX = fieldX + fieldW - fetchBtnW - 4.0F;
         float fetchBtnH = 12.0F;
         float fetchBtnY = fieldY + 2.0F;
