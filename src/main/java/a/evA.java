@@ -451,8 +451,9 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
 
             context.drawText(tinyFont, mine.serverRuName(), x + 10.0F, itemY + 12.0F, ec.getTextColor().mulAlpha(alpha));
 
+            eb currentColor = getRarityColor(mine.mineRarity()).mulAlpha(alpha);
             String currentText = "Сейчас: " + mine.mineRarity();
-            context.drawText(tinyFont, currentText, x + 10.0F, itemY + 20.0F, ec.getTextColor().withAlpha((int)(120.0F * alpha)));
+            context.drawText(tinyFont, currentText, x + 10.0F, itemY + 20.0F, currentColor);
 
             long elapsed = (System.currentTimeMillis() - lastFetchTime) / 1000;
             long remaining = Math.max(0, mine.resetSecondsLeft() - elapsed);
