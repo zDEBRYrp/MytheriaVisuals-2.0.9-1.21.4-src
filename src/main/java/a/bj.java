@@ -187,10 +187,16 @@ public class bj extends aJ {
       .suffix(" мс");
    private final fO b = new fO();
    private boolean c = false;
-   private final EventListener<W> d = event -> {
+   private boolean wasHoldingBottle = false;
+   private final EventListener<W> e = event -> {
       if (mc.player != null && mc.currentScreen == null) {
+         boolean hasBottle = mc.player.getMainHandStack().getItem() == Items.EXPERIENCE_BOTTLE;
+         if (!hasBottle) {
+            this.c = false;
+            this.wasHoldingBottle = false;
+         }
          if (this.c) {
-            if (mc.player.getMainHandStack().getItem() == Items.EXPERIENCE_BOTTLE) {
+            if (hasBottle) {
                float var2 = this.a.getCurrentValue();
                long var3 = (long)var2;
                if (this.b.finished(var3)) {
@@ -202,22 +208,24 @@ public class bj extends aJ {
       }
    };
 
-   /** Запускает автоматическое использование опыта при правом клике */
    public void onRightClickPress() {
       if (mc.player != null && mc.player.getMainHandStack().getItem() == Items.EXPERIENCE_BOTTLE) {
-         this.c = true;
-         this.b.reset();
+         if (!this.wasHoldingBottle) {
+            this.c = true;
+            this.wasHoldingBottle = true;
+            this.b.reset();
+         }
       }
    }
 
-   /** Останавливает автоматическое использование опыта при отпускании кнопки */
    public void onRightClickRelease() {
       this.c = false;
+      this.wasHoldingBottle = false;
    }
 
-   /** Сбрасывает состояние при отключении модуля */
    @Override
    public void onDisable() {
       this.c = false;
+      this.wasHoldingBottle = false;
    }
 }

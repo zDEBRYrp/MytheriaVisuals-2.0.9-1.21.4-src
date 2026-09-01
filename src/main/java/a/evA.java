@@ -154,7 +154,7 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
                 filtered.add(m);
             }
         }
-        Collections.sort(filtered, Comparator.comparingLong(FunTimeApi.MineData::resetSecondsLeft).reversed());
+        Collections.sort(filtered, Comparator.comparingLong(FunTimeApi.MineData::resetSecondsLeft));
         return filtered;
     }
 
@@ -450,8 +450,9 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
             context.drawText(tinyFont, mine.serverRuName(), x + 10.0F, itemY + 14.0F, ec.getTextColor().mulAlpha(alpha));
 
             if (mine.nextMineRarity() != null && !mine.nextMineRarity().isEmpty()) {
-                context.drawText(tinyFont, "След: " + mine.nextMineRarity(), x + 10.0F, itemY + 20.0F,
-                    ec.getTextColor().withAlpha((int)(120.0F * alpha)));
+                eb nextColor = getRarityColor(mine.nextMineRarity()).mulAlpha(alpha);
+                String nextText = "→ " + mine.nextMineRarity();
+                context.drawText(tinyFont, nextText, x + 10.0F, itemY + 20.0F, nextColor);
             }
 
             long elapsed = (System.currentTimeMillis() - lastFetchTime) / 1000;
