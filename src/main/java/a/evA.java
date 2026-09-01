@@ -262,27 +262,38 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
             eo.set(en.TEXT);
         }
 
-        float toggleBtnW = 14.0F;
+        float toggleBtnW = 12.0F;
         float toggleBtnH = 12.0F;
-        float toggleBtnX = fieldX + fieldW - 50.0F - toggleBtnW - 2.0F;
+        float toggleBtnX = fieldX + inputW + 6.0F;
         float toggleBtnY = fieldY + 2.0F;
         eb toggleColor = tokenVisible ? ec.getAccentColor().mulAlpha(alpha) : ec.getTextColor().withAlpha((int)(40.0F * alpha));
         context.drawRoundedRect(toggleBtnX, toggleBtnY, toggleBtnW, toggleBtnH, BorderRadius.all(3.0F), toggleColor);
         Font tinyFont = Fonts.REGULAR.getFont(5.0F);
-        String eyeText = tokenVisible ? "Show" : "Hide";
+        String eyeText = tokenVisible ? "H" : "S";
         context.drawCenteredText(tinyFont, eyeText, toggleBtnX + toggleBtnW / 2.0F, toggleBtnY + 3.0F, ec.WHITE.mulAlpha(alpha));
         if (er.isHovered(toggleBtnX, toggleBtnY, toggleBtnW, toggleBtnH, context)) {
             eo.set(en.HAND);
         }
 
-        float fetchBtnW = 36.0F;
-        float fetchBtnX = fieldX + fieldW - fetchBtnW - 4.0F;
-        float fetchBtnH = 12.0F;
-        float fetchBtnY = fieldY + 2.0F;
-        context.drawRoundedRect(fetchBtnX, fetchBtnY, fetchBtnW, fetchBtnH, BorderRadius.all(3.0F),
+        float saveBtnW = 30.0F;
+        float saveBtnH = 12.0F;
+        float saveBtnX = toggleBtnX + toggleBtnW + 3.0F;
+        float saveBtnY = fieldY + 2.0F;
+        context.drawRoundedRect(saveBtnX, saveBtnY, saveBtnW, saveBtnH, BorderRadius.all(3.0F),
             ec.getAccentColor().mulAlpha(alpha));
-        context.drawCenteredText(Fonts.REGULAR.getFont(6.0F), "Load", fetchBtnX + fetchBtnW / 2.0F, fetchBtnY + 3.0F, ec.WHITE.mulAlpha(alpha));
-        if (er.isHovered(fetchBtnX, fetchBtnY, fetchBtnW, fetchBtnH, context)) {
+        context.drawCenteredText(Fonts.REGULAR.getFont(5.5F), "Save", saveBtnX + saveBtnW / 2.0F, saveBtnY + 3.0F, ec.WHITE.mulAlpha(alpha));
+        if (er.isHovered(saveBtnX, saveBtnY, saveBtnW, saveBtnH, context)) {
+            eo.set(en.HAND);
+        }
+
+        float refreshBtnW = 24.0F;
+        float refreshBtnH = 12.0F;
+        float refreshBtnX = saveBtnX + saveBtnW + 3.0F;
+        float refreshBtnY = fieldY + 2.0F;
+        context.drawRoundedRect(refreshBtnX, refreshBtnY, refreshBtnW, refreshBtnH, BorderRadius.all(3.0F),
+            ec.getTextColor().withAlpha((int)(40.0F * alpha)));
+        context.drawCenteredText(Fonts.REGULAR.getFont(5.5F), "Upd", refreshBtnX + refreshBtnW / 2.0F, refreshBtnY + 3.0F, ec.getTextColor().mulAlpha(alpha));
+        if (er.isHovered(refreshBtnX, refreshBtnY, refreshBtnW, refreshBtnH, context)) {
             eo.set(en.HAND);
         }
 
@@ -502,9 +513,10 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         float fieldX = panel.getX() + 10.0F;
 
         // Toggle token visibility
-        float toggleBtnW = 14.0F;
+        float inputW = fieldW - 80.0F;
+        float toggleBtnW = 12.0F;
         float toggleBtnH = 12.0F;
-        float toggleBtnX = fieldX + fieldW - 50.0F - toggleBtnW - 2.0F;
+        float toggleBtnX = fieldX + inputW + 6.0F;
         float toggleBtnY = fieldY + 2.0F;
         if (er.isHovered(toggleBtnX, toggleBtnY, toggleBtnW, toggleBtnH, mouseX, mouseY)) {
             tokenVisible = !tokenVisible;
@@ -517,11 +529,23 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
             this.tokenField.onMouseClicked(mouseX, mouseY, button);
         }
 
-        float fetchBtnW = 36.0F;
-        float fetchBtnX = fieldX + fieldW - fetchBtnW - 4.0F;
-        float fetchBtnH = 12.0F;
-        float fetchBtnY = fieldY + 2.0F;
-        if (er.isHovered(fetchBtnX, fetchBtnY, fetchBtnW, fetchBtnH, mouseX, mouseY)) {
+        // Save button
+        float saveBtnW = 30.0F;
+        float saveBtnH = 12.0F;
+        float saveBtnX = toggleBtnX + toggleBtnW + 3.0F;
+        float saveBtnY = fieldY + 2.0F;
+        if (er.isHovered(saveBtnX, saveBtnY, saveBtnW, saveBtnH, mouseX, mouseY)) {
+            this.apiToken = this.tokenField.getBuiltText();
+            saveToken();
+            return;
+        }
+
+        // Refresh button
+        float refreshBtnW = 24.0F;
+        float refreshBtnH = 12.0F;
+        float refreshBtnX = saveBtnX + saveBtnW + 3.0F;
+        float refreshBtnY = fieldY + 2.0F;
+        if (er.isHovered(refreshBtnX, refreshBtnY, refreshBtnW, refreshBtnH, mouseX, mouseY)) {
             this.scrollOffset = 0;
             this.targetScrollOffset = 0;
             fetchData();
