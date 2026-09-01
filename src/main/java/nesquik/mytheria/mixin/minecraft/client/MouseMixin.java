@@ -46,7 +46,7 @@ public class MouseMixin implements IMinecraft {
          if (button == 1) {
             MinecraftClient var7 = MinecraftClient.getInstance();
             bj var8 = Mytheria.getInstance().getModuleManager().getModuleSafe(bj.class);
-            if (var8 != null && var8.isEnabled() && var7.player != null && var7.player.getMainHandStack().getItem() == Items.EXPERIENCE_BOTTLE) {
+            if (var8 != null && var8.isEnabled() && var7.player != null && (var7.player.getMainHandStack().getItem() == Items.EXPERIENCE_BOTTLE || var7.player.getOffHandStack().getItem() == Items.EXPERIENCE_BOTTLE)) {
                if (action == 1) {
                   var8.onRightClickPress();
                } else if (action == 0) {

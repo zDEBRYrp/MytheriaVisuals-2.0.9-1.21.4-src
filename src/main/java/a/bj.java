@@ -187,17 +187,23 @@ public class bj extends aJ {
       .suffix(" мс");
     private final fO b = new fO();
     private boolean c = false;
+    private Hand activeHand = Hand.MAIN_HAND;
     private final EventListener<W> e = event -> {
       if (mc.player != null && mc.currentScreen == null) {
-         boolean hasBottle = mc.player.getMainHandStack().getItem() == Items.EXPERIENCE_BOTTLE;
-         if (!hasBottle) {
+         boolean hasMain = mc.player.getMainHandStack().getItem() == Items.EXPERIENCE_BOTTLE;
+         boolean hasOff = mc.player.getOffHandStack().getItem() == Items.EXPERIENCE_BOTTLE;
+         if (!hasMain && !hasOff) {
             this.c = false;
          }
-         if (this.c && hasBottle) {
+         if (this.c) {
             float var2 = this.a.getCurrentValue();
             long var3 = (long)var2;
             if (this.b.finished(var3)) {
-               mc.interactionManager.interactItem(mc.player, Hand.MAIN_HAND);
+               if (hasMain) {
+                  mc.interactionManager.interactItem(mc.player, Hand.MAIN_HAND);
+               } else if (hasOff) {
+                  mc.interactionManager.interactItem(mc.player, Hand.OFF_HAND);
+               }
                this.b.reset();
             }
          }
@@ -205,7 +211,13 @@ public class bj extends aJ {
    };
 
    public void onRightClickPress() {
-      if (mc.player != null && mc.player.getMainHandStack().getItem() == Items.EXPERIENCE_BOTTLE) {
+      if (mc.player == null) return;
+      if (mc.player.getMainHandStack().getItem() == Items.EXPERIENCE_BOTTLE) {
+         this.activeHand = Hand.MAIN_HAND;
+         this.c = true;
+         this.b.reset();
+      } else if (mc.player.getOffHandStack().getItem() == Items.EXPERIENCE_BOTTLE) {
+         this.activeHand = Hand.OFF_HAND;
          this.c = true;
          this.b.reset();
       }

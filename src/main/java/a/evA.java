@@ -75,6 +75,7 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
     private boolean filterMythical = true;
 
     private long clickFlashTime = 0;
+    private float clickFlashX = 0, clickFlashY = 0, clickFlashW = 0, clickFlashH = 0;
 
     private static final File TOKEN_FILE = new File(ar.DIRECTORY, "funtime_token.json");
 
@@ -228,8 +229,8 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         long elapsed = System.currentTimeMillis() - clickFlashTime;
         if (elapsed < 200) {
             float flash = 1.0F - (float)elapsed / 200.0F;
-            context.drawRoundedRect(panel.getX(), panel.getY(), panel.getWidth(), panel.getHeight(),
-                BorderRadius.all(12.0F), ec.getAccentColor().withAlpha((int)(30.0F * flash * alpha)));
+            context.drawRoundedRect(clickFlashX, clickFlashY, clickFlashW, clickFlashH,
+                BorderRadius.all(4.0F), ec.getAccentColor().withAlpha((int)(50.0F * flash * alpha)));
         }
     }
 
@@ -389,7 +390,7 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         float rowH = 14.0F;
         float cbY = filterY + 18.0F;
 
-        String[] labels = {"Default", "Legendary", "Mythical"};
+        String[] labels = {"Def.", "Leg.", "Myth."};
         eb[] colors = {new eb(128, 128, 128), new eb(0, 255, 255), new eb(180, 0, 255)};
         boolean[] flags = {filterDefault, filterLegendary, filterMythical};
 
@@ -408,7 +409,7 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
 
             context.drawText(labelFont, labels[i], filterX + 16.0F, rowY + 1.0F, colors[i].mulAlpha(alpha));
 
-            if (er.isHovered(filterX + 6.0F, rowY, filterW - 12.0F, cbSize, context)) {
+            if (er.isHovered(filterX + 4.0F, rowY, filterW - 8.0F, cbSize, context)) {
                 eo.set(en.HAND);
             }
         }
@@ -575,13 +576,17 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
 
     @Override
     public void onMouseClicked(double mouseX, double mouseY, MouseButton button) {
-        clickFlashTime = System.currentTimeMillis();
 
         float closeSize = 8.0F;
         float closeX = panel.getX() + panel.getWidth() - closeSize - 15.0F;
         float closeY = panel.getY() + 12.0F;
         if (er.isHovered(closeX, closeY, closeSize, closeSize, mouseX, mouseY)) {
             fL.CLICKGUI_OPEN.play(0.8F, 1.2F);
+            clickFlashTime = System.currentTimeMillis();
+            clickFlashX = closeX - 2.0F;
+            clickFlashY = closeY - 2.0F;
+            clickFlashW = closeSize + 4.0F;
+            clickFlashH = closeSize + 4.0F;
             this.closing = true;
             this.backToClickGUI = false;
             return;
@@ -600,6 +605,11 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         float toggleBtnY = fieldY + 2.0F;
         if (er.isHovered(toggleBtnX, toggleBtnY, toggleBtnW, toggleBtnH, mouseX, mouseY)) {
             fL.CLICKGUI_OPEN.play(0.6F, 1.3F);
+            clickFlashTime = System.currentTimeMillis();
+            clickFlashX = toggleBtnX;
+            clickFlashY = toggleBtnY;
+            clickFlashW = toggleBtnW;
+            clickFlashH = toggleBtnH;
             tokenVisible = !tokenVisible;
             return;
         }
@@ -617,6 +627,11 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         float saveBtnY = fieldY + 2.0F;
         if (er.isHovered(saveBtnX, saveBtnY, saveBtnW, saveBtnH, mouseX, mouseY)) {
             fL.CLICKGUI_OPEN.play(0.8F, 1.0F);
+            clickFlashTime = System.currentTimeMillis();
+            clickFlashX = saveBtnX;
+            clickFlashY = saveBtnY;
+            clickFlashW = saveBtnW;
+            clickFlashH = saveBtnH;
             this.apiToken = this.tokenField.getBuiltText();
             saveToken();
             return;
@@ -629,6 +644,11 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         float refreshBtnY = fieldY + 2.0F;
         if (er.isHovered(refreshBtnX, refreshBtnY, refreshBtnW, refreshBtnH, mouseX, mouseY)) {
             fL.CLICKGUI_OPEN.play(0.8F, 1.1F);
+            clickFlashTime = System.currentTimeMillis();
+            clickFlashX = refreshBtnX;
+            clickFlashY = refreshBtnY;
+            clickFlashW = refreshBtnW;
+            clickFlashH = refreshBtnH;
             this.scrollOffset = 0;
             this.targetScrollOffset = 0;
             fetchData();
@@ -642,6 +662,11 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
             float tabX = panel.getX() + 12.0F + i * (tabW + 4.0F);
             if (er.isHovered(tabX, tabY, tabW, tabH, mouseX, mouseY)) {
                 fL.CLICKGUI_OPEN.play(0.8F, 1.0F + i * 0.1F);
+                clickFlashTime = System.currentTimeMillis();
+                clickFlashX = tabX;
+                clickFlashY = tabY;
+                clickFlashW = tabW;
+                clickFlashH = tabH;
                 selectedTab = i;
                 scrollOffset = 0;
                 targetScrollOffset = 0;
@@ -653,13 +678,19 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         if (selectedTab == 1) {
             float filterX = panel.getX() + panel.getWidth() - 96.0F;
             float filterY = panel.getY() + 86.0F;
+            float filterW = 86.0F;
             float cbSize = 7.0F;
             float rowH = 14.0F;
             float cbY = filterY + 18.0F;
             for (int i = 0; i < 3; i++) {
                 float rowY = cbY + i * rowH;
-                if (er.isHovered(filterX + 6.0F, rowY, cbSize, cbSize, mouseX, mouseY)) {
+                if (er.isHovered(filterX + 4.0F, rowY, filterW - 8.0F, cbSize, mouseX, mouseY)) {
                     fL.CLICKGUI_OPEN.play(0.6F, 1.2F);
+                    clickFlashTime = System.currentTimeMillis();
+                    clickFlashX = filterX + 4.0F;
+                    clickFlashY = rowY;
+                    clickFlashW = filterW - 8.0F;
+                    clickFlashH = cbSize;
                     if (i == 0) filterDefault = !filterDefault;
                     else if (i == 1) filterLegendary = !filterLegendary;
                     else if (i == 2) filterMythical = !filterMythical;
@@ -679,18 +710,33 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
 
         if (er.isHovered(btnX1, btnY, btnSize, btnSize, mouseX, mouseY)) {
             fL.CLICKGUI_OPEN.play(0.8F, 1.0F);
+            clickFlashTime = System.currentTimeMillis();
+            clickFlashX = btnX1;
+            clickFlashY = btnY;
+            clickFlashW = btnSize;
+            clickFlashH = btnSize;
             mc.setScreen(new dP());
             return;
         }
         float btnX2 = btnX1 + btnSize + gap;
         if (er.isHovered(btnX2, btnY, btnSize, btnSize, mouseX, mouseY)) {
             fL.CLICKGUI_OPEN.play(0.8F, 1.1F);
+            clickFlashTime = System.currentTimeMillis();
+            clickFlashX = btnX2;
+            clickFlashY = btnY;
+            clickFlashW = btnSize;
+            clickFlashH = btnSize;
             mc.setScreen(new dX());
             return;
         }
 
         if (er.isHovered(btnX3, btnY, btnSize, btnSize, mouseX, mouseY)) {
             fL.CLICKGUI_OPEN.play(0.8F, 1.2F);
+            clickFlashTime = System.currentTimeMillis();
+            clickFlashX = btnX3;
+            clickFlashY = btnY;
+            clickFlashW = btnSize;
+            clickFlashH = btnSize;
             this.closing = true;
             this.backToClickGUI = true;
             return;
@@ -712,6 +758,11 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
                 float itemY = clipY + (i - scroll) * itemH;
                 if (itemY + itemH > clipY + clipH) break;
                 if (er.isHovered(contentX, itemY, contentW, itemH, mouseX, mouseY)) {
+                    clickFlashTime = System.currentTimeMillis();
+                    clickFlashX = contentX + 2.0F;
+                    clickFlashY = itemY;
+                    clickFlashW = contentW - 4.0F;
+                    clickFlashH = itemH - 2.0F;
                     connectToServer(events.get(i).server());
                     return;
                 }
@@ -723,6 +774,11 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
                 float itemY = clipY + (i - scroll) * itemH;
                 if (itemY + itemH > clipY + clipH) break;
                 if (er.isHovered(contentX, itemY, contentW, itemH, mouseX, mouseY)) {
+                    clickFlashTime = System.currentTimeMillis();
+                    clickFlashX = contentX + 2.0F;
+                    clickFlashY = itemY;
+                    clickFlashW = contentW - 4.0F;
+                    clickFlashH = itemH - 2.0F;
                     connectToServer(mines.get(i).serverKey());
                     return;
                 }
