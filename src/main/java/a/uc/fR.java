@@ -186,40 +186,38 @@ public class fR extends aJ {
     }
 
     private long detectPrice(ItemStack stack) {
+        List<Text> lines = new ArrayList<>();
         try {
             List<Text> tooltip = stack.getTooltip(
                 net.minecraft.item.Item.TooltipContext.DEFAULT,
                 net.minecraft.client.MinecraftClient.getInstance().player,
                 net.minecraft.item.tooltip.TooltipType.BASIC
             );
-            if (tooltip != null) {
-                for (Text line : tooltip) {
-                    String text = STRIPFormatting.matcher(line.getString()).replaceAll("").toLowerCase(java.util.Locale.ROOT);
-                    if (hasTrigger(text)) {
-                        return extractPrice(text);
-                    }
-                }
-            }
+            if (tooltip != null) lines.addAll(tooltip);
         } catch (Exception ignored) {}
 
         try {
             var lore = stack.get(DataComponentTypes.LORE);
-            if (lore != null) {
-                for (Text line : lore.styledLines()) {
-                    String text = STRIPFormatting.matcher(line.getString()).replaceAll("").toLowerCase(java.util.Locale.ROOT);
-                    if (hasTrigger(text)) {
-                        return extractPrice(text);
-                    }
-                }
-            }
+            if (lore != null) lines.addAll(lore.styledLines());
         } catch (Exception ignored) {}
 
+        for (Text line : lines) {
+            String text = STRIPFormatting.matcher(line.getString()).replaceAll("");
+            String lower = text.toLowerCase(java.util.Locale.ROOT);
+            if (hasTrigger(lower) || hasDollarPrice(text)) {
+                return extractPrice(lower);
+            }
+        }
         return -1;
     }
 
-    private static boolean hasTrigger(String text) {
-        String alpha = text.replaceAll("[^a-zA-Z\\u0400-\\u04FF]", "");
+    private static boolean hasTrigger(String lower) {
+        String alpha = lower.replaceAll("[^a-zA-Z\\u0400-\\u04FF]", "");
         return alpha.contains("\u0446\u0435\u043d\u0430") || alpha.contains("price") || alpha.contains("\u0441\u0442\u043e\u0438\u043c\u043e\u0441\u0442\u044c");
+    }
+
+    private static boolean hasDollarPrice(String text) {
+        return text.contains("$") && text.replaceAll("[^\\d]", "").length() >= 2;
     }
 
     private static long extractPrice(String text) {
