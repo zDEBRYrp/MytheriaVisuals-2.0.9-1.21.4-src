@@ -906,6 +906,7 @@ modules.settings.copy.format=Color Format
 
 # Auction Helper
 modules.descriptions.auction_helper=Auction helper: highlights items by price or shows identical items
-modules.settings.auction_helper.show_stats=Show Statistics
+modules.settings.auction_helper.show_top_prices=Show Top Prices
 modules.settings.auction_helper.show_identical=Show Identical Items
+modules.settings.auction_helper.show_stats=Show Statistics
 modules.settings.auction_helper.top_count=Top Positions

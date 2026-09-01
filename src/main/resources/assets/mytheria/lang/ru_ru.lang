@@ -1067,6 +1067,7 @@ modules.settings.copy.format=Формат цвета
 
 # Auction Helper
 modules.descriptions.auction_helper=Помощник аукциона: подсвечивает товары по цене или одинаковые вещи
-modules.settings.auction_helper.show_stats=Показывать статистику
+modules.settings.auction_helper.show_top_prices=Отображать топ цены
 modules.settings.auction_helper.show_identical=Отображать одинаковые вещи
+modules.settings.auction_helper.show_stats=Показывать статистику
 modules.settings.auction_helper.top_count=Топ позиций

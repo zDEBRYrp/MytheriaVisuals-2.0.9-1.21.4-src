@@ -65,7 +65,7 @@ public abstract class HandledScreenMixin implements IMinecraft {
 
              if (auctionModule.isIdenticalMode()) {
                 for (fR.ItemGroup group : auctionModule.getItemGroups()) {
-                   int color = auctionModule.getGroupColor(group.slots().get(0));
+                    int color = auctionModule.getGroupColorForSlot(group.slots().get(0));
                    int borderColor = color | 0xCC000000;
                    int fillColor = (color & 0x00FFFFFF) | 0x30000000;
                    for (Slot slot : group.slots()) {

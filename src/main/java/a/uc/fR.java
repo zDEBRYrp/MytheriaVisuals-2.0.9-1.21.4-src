@@ -4,6 +4,7 @@ import a.ax;
 import a.ch;
 import nesquik.mytheria.systems.setting.settings.SliderSetting;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
@@ -14,86 +15,66 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 @nesquik.mytheria.systems.modules.api.ModuleInfo(name = "Auction Helper", category = ax.VISUALS, desc = "modules.descriptions.auction_helper")
 public class fR extends aJ {
     private static fR instance;
 
     private static final long MAX_REASONABLE_PRICE = 10_000_000_000L;
-    private static final String[] PRICE_TRIGGERS = {"\u0446\u0435\u043d\u0430", "price", "\u0441\u0442\u043e\u0438\u043c\u043e\u0441\u0442\u044c"};
+    private static final Pattern STRIPFormatting = Pattern.compile("\u00a7.");
 
-    public final ch showStats = new ch(this, "modules.settings.auction_helper.show_stats").enabled(true);
+    public final ch showTopPrices = new ch(this, "modules.settings.auction_helper.show_top_prices").enabled(true);
     public final ch showIdentical = new ch(this, "modules.settings.auction_helper.show_identical").enabled(false);
+    public final ch showStats = new ch(this, "modules.settings.auction_helper.show_stats").enabled(true);
     public final SliderSetting topCount = new SliderSetting(this, "modules.settings.auction_helper.top_count").min(1.0F).max(15.0F).step(1.0F).currentValue(3.0F);
 
-    private static final int COLOR_GREEN = 0xFF00CC00;
-    private static final int COLOR_ORANGE = 0xFFCC8800;
+    private static final int COLOR_GREEN  = 0xFF00CC00;
+    private static final int COLOR_ORANGE = 0xFFFFAA00;
     private static final int COLOR_YELLOW = 0xFFCCCC00;
-    private static final int COLOR_RED = 0xFFCC0000;
-    private static final int BORDER_GREEN = 0xCC00CC00;
-    private static final int BORDER_ORANGE = 0xCCCC8800;
-    private static final int BORDER_YELLOW = 0xCCCCCC00;
-    private static final int BORDER_RED = 0xCCCC0000;
+    private static final int COLOR_RED    = 0xFFFF4444;
+    private static final int COLOR_CYAN   = 0xFF00CCCC;
+    private static final int COLOR_PURPLE = 0xFFCC44FF;
+    private static final int COLOR_PINK   = 0xFFFF66AA;
+    private static final int COLOR_LIME   = 0xFF88FF44;
+    private static final int COLOR_BLUE   = 0xFF4488FF;
+    private static final int COLOR_WHITE  = 0xFFFFFFFF;
+    private static final int[] GROUP_PALETTE = {
+        0xFF00CC00, 0xFFFFAA00, 0xFF4488FF, 0xFFFF44AA,
+        0xFFCCCC00, 0xFF00CCCC, 0xFFFF4444, 0xFF88FF44,
+        0xFFCC44FF, 0xFFFF8844, 0xFF44CCFF, 0xFFFF4488
+    };
 
     private List<AuctionEntry> topEntries = List.of();
     private final Map<String, Integer> fpToBestRank = new LinkedHashMap<>();
     private AuctionStats cachedStats = null;
 
     private List<ItemGroup> itemGroups = List.of();
-    private final Map<String, Integer> groupColors = new LinkedHashMap<>();
+    private final Map<String, Integer> groupColorMap = new LinkedHashMap<>();
 
     private HandledScreen<?> lastScreen = null;
     private boolean isAuctionScreen = false;
 
-    public fR() {
-        instance = this;
-    }
+    public fR() { instance = this; }
+    public static fR getInstance() { return instance; }
 
-    public static fR getInstance() {
-        return instance;
-    }
-
-    public boolean isAuctionDetected() {
-        return isAuctionScreen;
-    }
-
-    public boolean isIdenticalMode() {
-        return isEnabled() && showIdentical.isEnabled();
-    }
-
-    public int getTopCount() {
-        return (int) topCount.getCurrentValue();
-    }
-
-    public List<AuctionEntry> getTopEntries() {
-        return topEntries;
-    }
-
-    public List<ItemGroup> getItemGroups() {
-        return itemGroups;
-    }
-
-    public AuctionStats getCachedStats() {
-        return cachedStats;
-    }
+    public boolean isAuctionDetected() { return isAuctionScreen; }
+    public boolean isIdenticalMode() { return isEnabled() && showIdentical.isEnabled(); }
+    public boolean isTopPricesMode() { return isEnabled() && showTopPrices.isEnabled(); }
+    public int getTopCount() { return (int) topCount.getCurrentValue(); }
+    public List<AuctionEntry> getTopEntries() { return topEntries; }
+    public List<ItemGroup> getItemGroups() { return itemGroups; }
+    public AuctionStats getCachedStats() { return cachedStats; }
 
     public int getRankForSlot(Slot slot) {
         String fp = fingerprint(slot.getStack());
         return fpToBestRank.getOrDefault(fp, -1);
     }
 
-    public int getGroupColor(Slot slot) {
+    public int getGroupColorForSlot(Slot slot) {
         String fp = fingerprint(slot.getStack());
-        Integer color = groupColors.get(fp);
-        return color != null ? color : 0xFFFFFFFF;
-    }
-
-    public int getGroupBorderColor(Slot slot) {
-        return getGroupColor(slot) | 0xCC000000;
-    }
-
-    public int getGroupFillColor(Slot slot) {
-        return (getGroupColor(slot) & 0x00FFFFFF) | 0x30000000;
+        Integer c = groupColorMap.get(fp);
+        return c != null ? c : COLOR_WHITE;
     }
 
     public int getGroupCount(Slot slot) {
@@ -112,7 +93,7 @@ public class fR extends aJ {
             topEntries = List.of();
             fpToBestRank.clear();
             itemGroups = List.of();
-            groupColors.clear();
+            groupColorMap.clear();
             cachedStats = null;
             lastScreen = screen;
             isAuctionScreen = false;
@@ -120,8 +101,13 @@ public class fR extends aJ {
 
         if (showIdentical.isEnabled()) {
             refreshIdentical(screen);
-        } else {
+        } else if (showTopPrices.isEnabled()) {
             refreshPrice(screen);
+        } else {
+            topEntries = List.of();
+            fpToBestRank.clear();
+            isAuctionScreen = false;
+            cachedStats = null;
         }
     }
 
@@ -139,20 +125,22 @@ public class fR extends aJ {
                 .map(e -> new ItemGroup(e.getKey(), List.copyOf(e.getValue()), e.getValue().size()))
                 .toList();
 
-        groupColors.clear();
+        groupColorMap.clear();
         for (int i = 0; i < itemGroups.size(); i++) {
-            groupColors.put(itemGroups.get(i).fingerprint(), groupColor(i, itemGroups.size()));
+            int color = GROUP_PALETTE[i % GROUP_PALETTE.length];
+            for (String fp = itemGroups.get(i).fingerprint(); !groupColorMap.containsKey(fp); ) {
+                groupColorMap.put(fp, color);
+                break;
+            }
         }
 
         isAuctionScreen = !itemGroups.isEmpty();
-
         if (!isAuctionScreen) {
             cachedStats = null;
-            return;
+        } else {
+            int totalItems = itemGroups.stream().mapToInt(ItemGroup::count).sum();
+            cachedStats = new AuctionStats(totalItems, 0, 0, 0, 0);
         }
-
-        int totalItems = itemGroups.stream().mapToInt(ItemGroup::count).sum();
-        cachedStats = new AuctionStats(totalItems, 0, 0, 0, 0);
     }
 
     private void refreshPrice(HandledScreen<?> screen) {
@@ -160,17 +148,14 @@ public class fR extends aJ {
 
         for (Slot slot : screen.getScreenHandler().slots) {
             if (slot == null || slot.getStack().isEmpty()) continue;
-
             long price = detectPrice(slot.getStack());
             if (price <= 0 || price > MAX_REASONABLE_PRICE) continue;
-
             int count = slot.getStack().getCount();
             double unitPrice = count > 0 ? (double) price / count : price;
             allEntries.add(new AuctionEntry(slot, price, unitPrice, count));
         }
 
         isAuctionScreen = !allEntries.isEmpty();
-
         if (allEntries.isEmpty()) {
             topEntries = List.of();
             fpToBestRank.clear();
@@ -201,118 +186,101 @@ public class fR extends aJ {
     }
 
     private long detectPrice(ItemStack stack) {
-        List<Text> tooltip;
         try {
-            tooltip = stack.getTooltip(
+            List<Text> tooltip = stack.getTooltip(
                 net.minecraft.item.Item.TooltipContext.DEFAULT,
                 net.minecraft.client.MinecraftClient.getInstance().player,
                 net.minecraft.item.tooltip.TooltipType.BASIC
             );
-        } catch (Exception e) {
-            return -1;
-        }
-        if (tooltip == null) return -1;
-
-        for (Text line : tooltip) {
-            String text = line.getString().toLowerCase(java.util.Locale.ROOT);
-            boolean hasTrigger = false;
-            for (String trigger : PRICE_TRIGGERS) {
-                if (text.contains(trigger)) {
-                    hasTrigger = true;
-                    break;
+            if (tooltip != null) {
+                for (Text line : tooltip) {
+                    String text = STRIPFormatting.matcher(line.getString()).replaceAll("").toLowerCase(java.util.Locale.ROOT);
+                    if (hasTrigger(text)) {
+                        return extractPrice(text);
+                    }
                 }
             }
-            if (!hasTrigger) continue;
+        } catch (Exception ignored) {}
 
-            String digits = text.replaceAll("[^\\d]", "");
-            if (digits.isEmpty()) continue;
-            try {
-                long val = Long.parseLong(digits);
-                if (val > 0 && val < MAX_REASONABLE_PRICE) return val;
-            } catch (NumberFormatException ignored) {}
-        }
+        try {
+            var lore = stack.get(DataComponentTypes.LORE);
+            if (lore != null) {
+                for (Text line : lore.styledLines()) {
+                    String text = STRIPFormatting.matcher(line.getString()).replaceAll("").toLowerCase(java.util.Locale.ROOT);
+                    if (hasTrigger(text)) {
+                        return extractPrice(text);
+                    }
+                }
+            }
+        } catch (Exception ignored) {}
+
         return -1;
+    }
+
+    private static boolean hasTrigger(String text) {
+        String alpha = text.replaceAll("[^a-zA-Z\\u0400-\\u04FF]", "");
+        return alpha.contains("\u0446\u0435\u043d\u0430") || alpha.contains("price") || alpha.contains("\u0441\u0442\u043e\u0438\u043c\u043e\u0441\u0442\u044c");
+    }
+
+    private static long extractPrice(String text) {
+        String digits = text.replaceAll("[^\\d]", "");
+        if (digits.isEmpty()) return -1;
+        try {
+            long val = Long.parseLong(digits);
+            return (val > 0 && val < MAX_REASONABLE_PRICE) ? val : -1;
+        } catch (NumberFormatException e) {
+            return -1;
+        }
     }
 
     private static String fingerprint(ItemStack stack) {
         StringBuilder sb = new StringBuilder();
         sb.append(stack.getItem().toString());
         sb.append("|").append(stack.getCount());
-        var enchants = stack.get(net.minecraft.component.DataComponentTypes.ENCHANTMENTS);
-        if (enchants != null) {
-            var entries = new ArrayList<>(enchants.getEnchantmentEntries());
-            entries.sort(Comparator.comparingInt(e -> e.getKey().value().toString().hashCode()));
-            for (var entry : entries) {
-                sb.append("|e:").append(entry.getKey().value()).append(":").append(entry.getIntValue());
+        try {
+            var enchants = stack.get(DataComponentTypes.ENCHANTMENTS);
+            if (enchants != null) {
+                var entries = new ArrayList<>(enchants.getEnchantmentEntries());
+                entries.sort(Comparator.comparingInt(e -> e.getKey().value().toString().hashCode()));
+                for (var entry : entries) {
+                    sb.append("|e:").append(entry.getKey().value()).append(":").append(entry.getIntValue());
+                }
             }
-        }
-        var storedEnchants = stack.get(net.minecraft.component.DataComponentTypes.STORED_ENCHANTMENTS);
-        if (storedEnchants != null) {
-            var entries = new ArrayList<>(storedEnchants.getEnchantmentEntries());
-            entries.sort(Comparator.comparingInt(e -> e.getKey().value().toString().hashCode()));
-            for (var entry : entries) {
-                sb.append("|se:").append(entry.getKey().value()).append(":").append(entry.getIntValue());
+            var storedEnchants = stack.get(DataComponentTypes.STORED_ENCHANTMENTS);
+            if (storedEnchants != null) {
+                var entries = new ArrayList<>(storedEnchants.getEnchantmentEntries());
+                entries.sort(Comparator.comparingInt(e -> e.getKey().value().toString().hashCode()));
+                for (var entry : entries) {
+                    sb.append("|se:").append(entry.getKey().value()).append(":").append(entry.getIntValue());
+                }
             }
-        }
-        var lore = stack.get(net.minecraft.component.DataComponentTypes.LORE);
-        if (lore != null) {
-            for (Text line : lore.styledLines()) {
-                sb.append("|l:").append(line.getString());
+            var lore = stack.get(DataComponentTypes.LORE);
+            if (lore != null) {
+                for (Text line : lore.styledLines()) {
+                    sb.append("|l:").append(line.getString());
+                }
             }
-        }
+        } catch (Exception ignored) {}
         return sb.toString();
-    }
-
-    private static int groupColor(int index, int total) {
-        if (total <= 0) return COLOR_GREEN;
-        float hue = (float) index / total;
-        float s = 0.75f;
-        float b = 0.95f;
-        int r, g, bl;
-        if (s == 0) {
-            r = g = bl = (int) (b * 255 + 0.5f);
-        } else {
-            float q = b < 0.5f ? b * (1 + s) : b + s - b * s;
-            float p = 2 * b - q;
-            r = (int) (hueToRgb(p, q, hue + 1f / 3) * 255 + 0.5f);
-            g = (int) (hueToRgb(p, q, hue) * 255 + 0.5f);
-            bl = (int) (hueToRgb(p, q, hue - 1f / 3) * 255 + 0.5f);
-        }
-        return 0xFF000000 | (r << 16) | (g << 8) | bl;
-    }
-
-    private static float hueToRgb(float p, float q, float t) {
-        if (t < 0) t += 1;
-        if (t > 1) t -= 1;
-        if (t < 1f / 6) return p + (q - p) * 6 * t;
-        if (t < 0.5f) return q;
-        if (t < 2f / 3) return p + (q - p) * (2f / 3 - t) * 6;
-        return p;
     }
 
     private static int[] getRankColors(int rank, int total) {
         if (total <= 3) {
             return switch (rank) {
-                case 0 -> new int[]{COLOR_GREEN, BORDER_GREEN};
-                case 1 -> new int[]{COLOR_YELLOW, BORDER_YELLOW};
-                default -> new int[]{COLOR_RED, BORDER_RED};
+                case 0 -> new int[]{COLOR_GREEN, 0xCC00CC00};
+                case 1 -> new int[]{COLOR_YELLOW, 0xCCCCCC00};
+                default -> new int[]{COLOR_RED, 0xCCCC0000};
             };
         }
         int orangeThreshold = Math.max(1, total / 4);
-        if (rank == 0) return new int[]{COLOR_GREEN, BORDER_GREEN};
-        if (rank < orangeThreshold) return new int[]{COLOR_ORANGE, BORDER_ORANGE};
-        if (rank < total - Math.max(1, total / 4)) return new int[]{COLOR_YELLOW, BORDER_YELLOW};
-        return new int[]{COLOR_RED, BORDER_RED};
+        if (rank == 0) return new int[]{COLOR_GREEN, 0xCC00CC00};
+        if (rank < orangeThreshold) return new int[]{COLOR_ORANGE, 0xCCCC8800};
+        if (rank < total - Math.max(1, total / 4)) return new int[]{COLOR_YELLOW, 0xCCCCCC00};
+        return new int[]{COLOR_RED, 0xCCCC0000};
     }
 
-    public int rankBorderColor(int rank) {
-        return getRankColors(rank, topEntries.size())[1];
-    }
-
-    public int rankFillColor(int rank) {
-        int base = getRankColors(rank, topEntries.size())[0];
-        return (base & 0x00FFFFFF) | 0x20000000;
-    }
+    public int rankBorderColor(int rank) { return getRankColors(rank, topEntries.size())[1]; }
+    public int rankFillColor(int rank) { return (getRankColors(rank, topEntries.size())[0] & 0x00FFFFFF) | 0x20000000; }
 
     public record AuctionEntry(Slot slot, long totalPrice, double unitPrice, int count) {}
     public record AuctionStats(int auctionItems, long minTotalPrice, long minUnitPrice, long avgTotalPrice, long avgUnitPrice) {}
