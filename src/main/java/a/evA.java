@@ -38,7 +38,6 @@ import nesquik.mytheria.utility.animation.base.Easing;
 import nesquik.mytheria.utility.interfaces.IMinecraft;
 import nesquik.mytheria.utility.interfaces.IScaledResolution;
 import net.minecraft.text.Text;
-import net.minecraft.client.gui.screen.Screen;
 
 public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
     private final fw panel;
@@ -74,6 +73,8 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
     private boolean filterDefault = true;
     private boolean filterLegendary = true;
     private boolean filterMythical = true;
+
+    private long clickFlashTime = 0;
 
     private static final File TOKEN_FILE = new File(ar.DIRECTORY, "funtime_token.json");
 
@@ -137,18 +138,15 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         lastFetchTime = System.currentTimeMillis();
         String serverType = serverTypes[selectedServerType].isEmpty() ? "all" : serverTypes[selectedServerType];
 
-        FunTimeApi.fetchEvents(apiToken, "all", serverType)
-            .whenComplete((result, ex) -> {
-                events = result != null ? result : new ArrayList<>();
-                loading = false;
-            });
+        CompletableFuture<List<FunTimeApi.EventData>> eventsFuture = FunTimeApi.fetchEvents(apiToken, "all", serverType);
+        CompletableFuture<List<FunTimeApi.MineData>> minesFuture = FunTimeApi.fetchMines(apiToken, serverType);
 
-        FunTimeApi.fetchMines(apiToken, serverType)
-            .whenComplete((result, ex) -> {
-                List<FunTimeApi.MineData> raw = result != null ? result : new ArrayList<>();
-                mines = filterAndSortMines(raw);
-                loading = false;
-            });
+        CompletableFuture.allOf(eventsFuture, minesFuture).whenComplete((v, ex) -> {
+            events = eventsFuture.join() != null ? eventsFuture.join() : new ArrayList<>();
+            List<FunTimeApi.MineData> raw = minesFuture.join();
+            mines = filterAndSortMines(raw != null ? raw : new ArrayList<>());
+            loading = false;
+        });
     }
 
     // --- Filter finished + sort newest first ---
@@ -226,6 +224,13 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         drawContent(context, x, y, w, h, alpha);
         drawFilterPanel(context, x, y, w, h, alpha);
         drawBottomButtons(context, x, y, w, alpha);
+
+        long elapsed = System.currentTimeMillis() - clickFlashTime;
+        if (elapsed < 200) {
+            float flash = 1.0F - (float)elapsed / 200.0F;
+            context.drawRoundedRect(panel.getX(), panel.getY(), panel.getWidth(), panel.getHeight(),
+                BorderRadius.all(12.0F), ec.getAccentColor().withAlpha((int)(30.0F * flash * alpha)));
+        }
     }
 
     private void drawTopBar(UIContext context, float x, float y, float w, float alpha) {
@@ -570,6 +575,8 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
 
     @Override
     public void onMouseClicked(double mouseX, double mouseY, MouseButton button) {
+        clickFlashTime = System.currentTimeMillis();
+
         float closeSize = 8.0F;
         float closeX = panel.getX() + panel.getWidth() - closeSize - 15.0F;
         float closeY = panel.getY() + 12.0F;
@@ -742,11 +749,6 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
             return true;
         }
         if (this.tokenField.isFocused()) {
-            if (keyCode == 65 && Screen.hasControlDown()) {
-                this.tokenField.clear();
-                this.apiToken = "";
-                return true;
-            }
             this.tokenField.onKeyPressed(keyCode, scanCode, modifiers);
             this.apiToken = this.tokenField.getBuiltText();
             return true;

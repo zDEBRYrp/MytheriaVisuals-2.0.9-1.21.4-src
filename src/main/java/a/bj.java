@@ -185,24 +185,20 @@ public class bj extends aJ {
       .step(1.0F)
       .currentValue(50.0F)
       .suffix(" мс");
-   private final fO b = new fO();
-   private boolean c = false;
-   private boolean wasHoldingBottle = false;
-   private final EventListener<W> e = event -> {
+    private final fO b = new fO();
+    private boolean c = false;
+    private final EventListener<W> e = event -> {
       if (mc.player != null && mc.currentScreen == null) {
          boolean hasBottle = mc.player.getMainHandStack().getItem() == Items.EXPERIENCE_BOTTLE;
          if (!hasBottle) {
             this.c = false;
-            this.wasHoldingBottle = false;
          }
-         if (this.c) {
-            if (hasBottle) {
-               float var2 = this.a.getCurrentValue();
-               long var3 = (long)var2;
-               if (this.b.finished(var3)) {
-                  mc.interactionManager.interactItem(mc.player, Hand.MAIN_HAND);
-                  this.b.reset();
-               }
+         if (this.c && hasBottle) {
+            float var2 = this.a.getCurrentValue();
+            long var3 = (long)var2;
+            if (this.b.finished(var3)) {
+               mc.interactionManager.interactItem(mc.player, Hand.MAIN_HAND);
+               this.b.reset();
             }
          }
       }
@@ -210,22 +206,17 @@ public class bj extends aJ {
 
    public void onRightClickPress() {
       if (mc.player != null && mc.player.getMainHandStack().getItem() == Items.EXPERIENCE_BOTTLE) {
-         if (!this.wasHoldingBottle) {
-            this.c = true;
-            this.wasHoldingBottle = true;
-            this.b.reset();
-         }
+         this.c = true;
+         this.b.reset();
       }
    }
 
    public void onRightClickRelease() {
       this.c = false;
-      this.wasHoldingBottle = false;
    }
 
    @Override
    public void onDisable() {
       this.c = false;
-      this.wasHoldingBottle = false;
    }
 }
