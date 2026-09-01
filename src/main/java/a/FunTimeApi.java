@@ -57,9 +57,15 @@ public class FunTimeApi {
                     .header("Authorization-Token", token)
                     .GET().build();
                 HttpResponse<String> resp = HTTP_CLIENT.send(req, HttpResponse.BodyHandlers.ofString());
-                JsonObject json = JsonParser.parseString(resp.body()).getAsJsonObject();
+                String body = resp.body();
+                if (resp.statusCode() != 200) {
+                    System.out.println("[FunTime] Events HTTP " + resp.statusCode() + ": " + body);
+                    return result;
+                }
+                JsonObject json = JsonParser.parseString(body).getAsJsonObject();
                 if (json.has("response")) {
-                    for (JsonElement item : json.getAsJsonArray("response")) {
+                    JsonArray arr = json.getAsJsonArray("response");
+                    for (JsonElement item : arr) {
                         JsonObject serverObj = item.getAsJsonObject();
                         String server = serverObj.has("server") ? serverObj.get("server").getAsString() : "";
                         if (serverObj.has("events")) {
@@ -83,7 +89,10 @@ public class FunTimeApi {
                         }
                     }
                 }
-            } catch (Exception ignored) {}
+                System.out.println("[FunTime] Events: " + result.size() + " found (response array: " + json.get("response") + ")");
+            } catch (Exception ex) {
+                System.out.println("[FunTime] Events error: " + ex.getMessage());
+            }
             return result;
         }, EXECUTOR);
     }
@@ -98,7 +107,12 @@ public class FunTimeApi {
                     .header("Authorization-Token", token)
                     .GET().build();
                 HttpResponse<String> resp = HTTP_CLIENT.send(req, HttpResponse.BodyHandlers.ofString());
-                JsonObject json = JsonParser.parseString(resp.body()).getAsJsonObject();
+                String body = resp.body();
+                if (resp.statusCode() != 200) {
+                    System.out.println("[FunTime] Mines HTTP " + resp.statusCode() + ": " + body);
+                    return result;
+                }
+                JsonObject json = JsonParser.parseString(body).getAsJsonObject();
                 if (json.has("servers")) {
                     JsonObject servers = json.getAsJsonObject("servers");
                     for (String serverKey : servers.keySet()) {
@@ -115,7 +129,10 @@ public class FunTimeApi {
                         }
                     }
                 }
-            } catch (Exception ignored) {}
+                System.out.println("[FunTime] Mines: " + result.size() + " found");
+            } catch (Exception ex) {
+                System.out.println("[FunTime] Mines error: " + ex.getMessage());
+            }
             return result;
         }, EXECUTOR);
     }

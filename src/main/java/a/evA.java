@@ -147,6 +147,10 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
             List<FunTimeApi.MineData> raw = minesFuture.join();
             mines = filterAndSortMines(raw != null ? raw : new ArrayList<>());
             loading = false;
+            System.out.println("[FunTime] Done: events=" + events.size() + " mines=" + mines.size());
+            if (events.isEmpty() && mines.isEmpty()) {
+                lastError = "Нет данных (проверьте токен в консоли)";
+            }
         });
     }
 
@@ -390,7 +394,7 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         float rowH = 14.0F;
         float cbY = filterY + 18.0F;
 
-        String[] labels = {"Def.", "Leg.", "Myth."};
+        String[] labels = {"Default", "Legendary", "Mythical"};
         eb[] colors = {new eb(128, 128, 128), new eb(0, 255, 255), new eb(180, 0, 255)};
         boolean[] flags = {filterDefault, filterLegendary, filterMythical};
 
