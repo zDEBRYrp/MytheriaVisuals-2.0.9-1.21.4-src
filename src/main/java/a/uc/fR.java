@@ -193,7 +193,9 @@ public class fR extends aJ {
                 net.minecraft.client.MinecraftClient.getInstance().player,
                 net.minecraft.item.tooltip.TooltipType.BASIC
             );
-            if (tooltip != null) lines.addAll(tooltip);
+            if (tooltip != null && tooltip.size() > 1) {
+                for (int i = 1; i < tooltip.size(); i++) lines.add(tooltip.get(i));
+            }
         } catch (Exception ignored) {}
 
         try {
@@ -217,7 +219,7 @@ public class fR extends aJ {
     }
 
     private static boolean hasDollarPrice(String text) {
-        return java.util.regex.Pattern.compile("\\$\\d").matcher(text).find();
+        return java.util.regex.Pattern.compile("\\$\\s*\\d").matcher(text).find();
     }
 
     private static long extractPrice(String text) {
