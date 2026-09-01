@@ -314,6 +314,7 @@ search.tooltip.enter=Enter - Toggle
 
 # меню
 menu.binding=Press any key
+menu.events=Events
 
 configs.loaded=Config loaded successfully
 chat.connection_warning=You have connected to the server %s using version %s. You may want to switch to a more suitable client version for better experience.

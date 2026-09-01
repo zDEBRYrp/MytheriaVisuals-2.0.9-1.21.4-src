@@ -71,6 +71,7 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
     }
 
     private void fetchData() {
+        this.apiToken = this.tokenField.getBuiltText();
         if (apiToken.isEmpty()) {
             lastError = "Введите API токен";
             return;
@@ -184,7 +185,9 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         float fieldX = x + 10.0F;
 
         context.drawRoundedRect(fieldX, fieldY, fieldW, fieldH, BorderRadius.all(4.0F), ec.getTextColor().withAlpha((int)(20.0F * alpha)));
-        this.tokenField.pos(fieldX + 4.0F, fieldY + 3.0F);
+        this.tokenField.set(fieldX + 4.0F, fieldY + 3.0F, fieldW - 60.0F, fieldH - 6.0F);
+        this.tokenField.setTextColor(ec.getTextColor().mulAlpha(alpha));
+        this.tokenField.setAlpha(alpha);
         this.tokenField.render(context);
 
         if (er.isHovered(fieldX, fieldY, fieldW, fieldH, context)) {
@@ -413,7 +416,11 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         float fieldH = 16.0F;
         float fieldW = panel.getWidth() - 20.0F;
         float fieldX = panel.getX() + 10.0F;
-        this.tokenField.setFocused(er.isHovered(fieldX, fieldY, fieldW, fieldH, mouseX, mouseY));
+        boolean fieldHovered = er.isHovered(fieldX, fieldY, fieldW, fieldH, mouseX, mouseY);
+        this.tokenField.setFocused(fieldHovered);
+        if (fieldHovered) {
+            this.tokenField.onMouseClicked(mouseX, mouseY, button);
+        }
 
         float fetchBtnW = 50.0F;
         float fetchBtnX = fieldX + fieldW - fetchBtnW - 4.0F;
@@ -463,6 +470,24 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         }
 
         super.onMouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean charTyped(char chr, int modifiers) {
+        if (this.tokenField.isFocused()) {
+            return this.tokenField.charTyped(chr, modifiers);
+        }
+        return super.charTyped(chr, modifiers);
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (this.tokenField.isFocused()) {
+            this.tokenField.onKeyPressed(keyCode, scanCode, modifiers);
+            this.apiToken = this.tokenField.getBuiltText();
+            return true;
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
