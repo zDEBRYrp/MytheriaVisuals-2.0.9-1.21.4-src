@@ -1066,7 +1066,7 @@ modules.settings.copy_helper.item_copy_key=Клавиша копирования
 modules.settings.copy.format=Формат цвета
 
 # Auction Helper
-modules.descriptions.auction_helper=Помощник аукциона: подсвечивает самые выгодные товары на аукционе
-modules.settings.auction_helper.show_highlights=Подсвечивать топ-3
+modules.descriptions.auction_helper=Помощник аукциона: подсвечивает товары по цене или одинаковые вещи
 modules.settings.auction_helper.show_stats=Показывать статистику
+modules.settings.auction_helper.show_identical=Отображать одинаковые вещи
 modules.settings.auction_helper.top_count=Топ позиций

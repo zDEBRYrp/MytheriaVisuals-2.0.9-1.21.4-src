@@ -905,7 +905,7 @@ modules.settings.copy_helper.item_copy_key=Item Copy Key
 modules.settings.copy.format=Color Format
 
 # Auction Helper
-modules.descriptions.auction_helper=Auction helper: highlights cheapest items and shows stats
-modules.settings.auction_helper.show_highlights=Show Top 3 Highlights
+modules.descriptions.auction_helper=Auction helper: highlights items by price or shows identical items
 modules.settings.auction_helper.show_stats=Show Statistics
+modules.settings.auction_helper.show_identical=Show Identical Items
 modules.settings.auction_helper.top_count=Top Positions
