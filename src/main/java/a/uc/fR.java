@@ -217,7 +217,7 @@ public class fR extends aJ {
     }
 
     private static boolean hasDollarPrice(String text) {
-        return text.contains("$") && text.replaceAll("[^\\d]", "").length() >= 2;
+        return java.util.regex.Pattern.compile("\\$\\d").matcher(text).find();
     }
 
     private static long extractPrice(String text) {
