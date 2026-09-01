@@ -57,6 +57,9 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
 
     private int selectedServerType = 0;
 
+    private long lastFetchTime = 0;
+    private long nowMillis = 0;
+
     public evA() {
         float w = 500.0F;
         float h = 343.0F;
@@ -68,6 +71,12 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         this.tokenField = new cK(Fonts.REGULAR.getFont(7.0F));
         this.tokenField.setPreview("API Token");
         this.tokenField.setFocused(false);
+        this.lastFetchTime = System.currentTimeMillis();
+    }
+
+    public void tick() {
+        super.tick();
+        this.nowMillis = System.currentTimeMillis();
     }
 
     private void fetchData() {
@@ -78,6 +87,7 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         }
         loading = true;
         lastError = "";
+        lastFetchTime = System.currentTimeMillis();
         String serverType = serverTypes[selectedServerType].isEmpty() ? "all" : serverTypes[selectedServerType];
 
         FunTimeApi.fetchEvents(apiToken, "all", serverType)
@@ -342,9 +352,9 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
             Font smallFont = Fonts.REGULAR.getFont(6.0F);
             Font tinyFont = Fonts.REGULAR.getFont(5.0F);
 
-            context.drawText(smallFont, mine.mineName(), x + 10.0F, itemY + 4.0F, ec.getTextColor().mulAlpha(alpha));
+            context.drawText(smallFont, mine.mineName(), x + 10.0F, itemY + 4.0F, rarityColor);
 
-            context.drawText(tinyFont, mine.serverRuName(), x + 10.0F, itemY + 14.0F, rarityColor);
+            context.drawText(tinyFont, mine.serverRuName(), x + 10.0F, itemY + 14.0F, ec.getTextColor().mulAlpha(alpha));
 
             if (mine.nextMineRarity() != null && !mine.nextMineRarity().isEmpty()) {
                 context.drawText(tinyFont, "След: " + mine.nextMineRarity(), x + 10.0F, itemY + 20.0F,
@@ -352,8 +362,11 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
             }
 
             if (mine.resetSecondsLeft() > 0) {
-                String time = formatTime(mine.resetSecondsLeft());
-                context.drawRightText(tinyFont, time, x + w - 8.0F, itemY + 6.0F, ec.getTextColor().withAlpha((int)(150.0F * alpha)));
+                long elapsed = (System.currentTimeMillis() - lastFetchTime) / 1000;
+                long remaining = Math.max(0, mine.resetSecondsLeft() - elapsed);
+                String time = formatTime(remaining);
+                eb timeColor = remaining <= 10 ? eb.RED : remaining <= 30 ? eb.YELLOW : ec.getTextColor().withAlpha((int)(150.0F * alpha));
+                context.drawRightText(tinyFont, time, x + w - 8.0F, itemY + 6.0F, timeColor.mulAlpha(alpha));
             }
 
             if (hovered) {
@@ -533,14 +546,15 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
     }
 
     private eb getRarityColor(String rarity) {
-        if (rarity == null) return eb.WHITE;
+        if (rarity == null) return new eb(128.0F, 128.0F, 128.0F);
         return switch (rarity.toLowerCase()) {
-            case "common", "обычная" -> eb.WHITE;
+            case "common", "обычная", "default" -> new eb(128.0F, 128.0F, 128.0F);
             case "uncommon", "необычная" -> eb.GREEN;
             case "rare", "редкая" -> eb.BLUE;
             case "epic", "эпическая" -> new eb(160.0F, 32.0F, 240.0F);
-            case "legendary", "легендарная" -> new eb(255.0F, 215.0F, 0.0F);
-            default -> ec.getAccentColor();
+            case "legendary", "легендарная" -> new eb(0.0F, 255.0F, 255.0F);
+            case "mythical", "мистическая" -> new eb(180.0F, 0.0F, 255.0F);
+            default -> new eb(128.0F, 128.0F, 128.0F);
         };
     }
 
