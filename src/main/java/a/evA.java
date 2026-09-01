@@ -78,27 +78,19 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         }
         loading = true;
         lastError = "";
-        String serverType = serverTypes[selectedServerType];
+        String serverType = serverTypes[selectedServerType].isEmpty() ? "all" : serverTypes[selectedServerType];
 
-        if (selectedTab == 0) {
-            FunTimeApi.fetchEvents(apiToken, "all", serverType.isEmpty() ? "all" : serverType)
-                .whenComplete((result, ex) -> {
-                    events = result != null ? result : new ArrayList<>();
-                    loading = false;
-                    if (events.isEmpty() && (ex != null || result == null)) {
-                        lastError = "Нет данных или неверный токен";
-                    }
-                });
-        } else {
-            FunTimeApi.fetchMines(apiToken, serverType.isEmpty() ? "all" : serverType)
-                .whenComplete((result, ex) -> {
-                    mines = result != null ? result : new ArrayList<>();
-                    loading = false;
-                    if (mines.isEmpty() && (ex != null || result == null)) {
-                        lastError = "Нет данных или неверный токен";
-                    }
-                });
-        }
+        FunTimeApi.fetchEvents(apiToken, "all", serverType)
+            .whenComplete((result, ex) -> {
+                events = result != null ? result : new ArrayList<>();
+                loading = false;
+            });
+
+        FunTimeApi.fetchMines(apiToken, serverType)
+            .whenComplete((result, ex) -> {
+                mines = result != null ? result : new ArrayList<>();
+                loading = false;
+            });
     }
 
     private void connectToServer(String serverKey) {
@@ -467,6 +459,39 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
             this.closing = true;
             this.backToClickGUI = true;
             return;
+        }
+
+        float contentX = panel.getX() + 10.0F;
+        float contentY = panel.getY() + 86.0F;
+        float contentW = panel.getWidth() - 20.0F;
+        float contentH = panel.getHeight() - 130.0F;
+        float itemH = 28.0F;
+        float clipY = contentY + 2.0F;
+        float clipH = contentH - 4.0F;
+        int visibleCount = (int)(clipH / itemH) + 1;
+
+        if (selectedTab == 0 && !events.isEmpty()) {
+            int maxScroll = Math.max(0, events.size() - visibleCount);
+            int scroll = Math.round(Math.max(0, Math.min(targetScrollOffset, maxScroll)));
+            for (int i = scroll; i < Math.min(events.size(), scroll + visibleCount + 1); i++) {
+                float itemY = clipY + (i - scroll) * itemH;
+                if (itemY + itemH > clipY + clipH) break;
+                if (er.isHovered(contentX, itemY, contentW, itemH, mouseX, mouseY)) {
+                    connectToServer(events.get(i).server());
+                    return;
+                }
+            }
+        } else if (selectedTab == 1 && !mines.isEmpty()) {
+            int maxScroll = Math.max(0, mines.size() - visibleCount);
+            int scroll = Math.round(Math.max(0, Math.min(targetScrollOffset, maxScroll)));
+            for (int i = scroll; i < Math.min(mines.size(), scroll + visibleCount + 1); i++) {
+                float itemY = clipY + (i - scroll) * itemH;
+                if (itemY + itemH > clipY + clipH) break;
+                if (er.isHovered(contentX, itemY, contentW, itemH, mouseX, mouseY)) {
+                    connectToServer(mines.get(i).serverKey());
+                    return;
+                }
+            }
         }
 
         super.onMouseClicked(mouseX, mouseY, button);
