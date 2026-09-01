@@ -8,6 +8,7 @@ import a.en;
 import a.av;
 import a.aj;
 import a.ar;
+import a.uc.fL;
 import a.uc.bJ;
 import a.uc.dZ;
 import a.uc.cK;
@@ -37,6 +38,7 @@ import nesquik.mytheria.utility.animation.base.Easing;
 import nesquik.mytheria.utility.interfaces.IMinecraft;
 import nesquik.mytheria.utility.interfaces.IScaledResolution;
 import net.minecraft.text.Text;
+import net.minecraft.client.gui.screen.Screen;
 
 public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
     private final fw panel;
@@ -69,10 +71,14 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
     private long lastFetchTime = 0;
     private long nowMillis = 0;
 
+    private boolean filterDefault = true;
+    private boolean filterLegendary = true;
+    private boolean filterMythical = true;
+
     private static final File TOKEN_FILE = new File(ar.DIRECTORY, "funtime_token.json");
 
     public evA() {
-        float w = 500.0F;
+        float w = 600.0F;
         float h = 343.0F;
         this.panel = new fw(
             sr.getScaledWidth() / 2.0F - w / 2.0F,
@@ -218,6 +224,7 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         drawTokenField(context, x, y, w, alpha);
         drawTabs(context, x, y, w, alpha);
         drawContent(context, x, y, w, h, alpha);
+        drawFilterPanel(context, x, y, w, h, alpha);
         drawBottomButtons(context, x, y, w, alpha);
     }
 
@@ -281,7 +288,7 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         float saveBtnY = fieldY + 2.0F;
         context.drawRoundedRect(saveBtnX, saveBtnY, saveBtnW, saveBtnH, BorderRadius.all(3.0F),
             ec.getAccentColor().mulAlpha(alpha));
-        context.drawCenteredText(Fonts.REGULAR.getFont(5.5F), "Save", saveBtnX + saveBtnW / 2.0F, saveBtnY + 3.0F, ec.WHITE.mulAlpha(alpha));
+        context.drawCenteredText(Fonts.BOLD.getFont(6.0F), "Save", saveBtnX + saveBtnW / 2.0F, saveBtnY + 3.0F, ec.WHITE.mulAlpha(alpha));
         if (er.isHovered(saveBtnX, saveBtnY, saveBtnW, saveBtnH, context)) {
             eo.set(en.HAND);
         }
@@ -332,7 +339,8 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         float contentY = y + 86.0F;
         float contentH = h - 130.0F;
         float contentX = x + 10.0F;
-        float contentW = w - 20.0F;
+        float filterW = selectedTab == 1 ? 90.0F : 0.0F;
+        float contentW = w - 20.0F - filterW;
 
         context.drawRoundedRect(contentX, contentY, contentW, contentH, BorderRadius.all(4.0F),
             ec.getTextColor().withAlpha((int)(10.0F * alpha)));
@@ -353,6 +361,51 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
             drawEventsList(context, contentX, contentY, contentW, contentH, alpha);
         } else {
             drawMinesList(context, contentX, contentY, contentW, contentH, alpha);
+        }
+    }
+
+    private void drawFilterPanel(UIContext context, float x, float y, float w, float h, float alpha) {
+        if (selectedTab != 1) return;
+
+        float filterX = x + w - 96.0F;
+        float filterY = y + 86.0F;
+        float filterW = 86.0F;
+        float filterH = h - 130.0F;
+
+        context.drawRoundedRect(filterX, filterY, filterW, filterH, BorderRadius.all(4.0F),
+            ec.getTextColor().withAlpha((int)(10.0F * alpha)));
+
+        Font titleFont = Fonts.SEMIBOLD.getFont(6.0F);
+        Font labelFont = Fonts.REGULAR.getFont(5.5F);
+
+        context.drawText(titleFont, "Фильтр", filterX + 6.0F, filterY + 6.0F, ec.getTextColor().mulAlpha(alpha));
+
+        float cbSize = 7.0F;
+        float rowH = 14.0F;
+        float cbY = filterY + 18.0F;
+
+        String[] labels = {"Default", "Legendary", "Mythical"};
+        eb[] colors = {new eb(128, 128, 128), new eb(0, 255, 255), new eb(180, 0, 255)};
+        boolean[] flags = {filterDefault, filterLegendary, filterMythical};
+
+        for (int i = 0; i < 3; i++) {
+            float rowY = cbY + i * rowH;
+
+            context.drawRoundedRect(filterX + 6.0F, rowY, cbSize, cbSize, BorderRadius.all(2.0F),
+                ec.getTextColor().withAlpha((int)(30.0F * alpha)));
+
+            if (flags[i]) {
+                context.drawRoundedRect(filterX + 7.0F, rowY + 1.0F, cbSize - 2.0F, cbSize - 2.0F,
+                    BorderRadius.all(1.5F), colors[i].mulAlpha(alpha));
+                context.drawTexture(Mytheria.id("icons/check.png"),
+                    filterX + 7.5F, rowY + 1.5F, cbSize - 3.0F, cbSize - 3.0F, ec.WHITE.mulAlpha(alpha));
+            }
+
+            context.drawText(labelFont, labels[i], filterX + 16.0F, rowY + 1.0F, colors[i].mulAlpha(alpha));
+
+            if (er.isHovered(filterX + 6.0F, rowY, filterW - 12.0F, cbSize, context)) {
+                eo.set(en.HAND);
+            }
         }
     }
 
@@ -420,8 +473,17 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
     }
 
     private void drawMinesList(UIContext context, float x, float y, float w, float h, float alpha) {
-        if (mines.isEmpty()) {
-            context.drawCenteredText(Fonts.REGULAR.getFont(7.0F), "Нет доступных шахт",
+        List<FunTimeApi.MineData> filtered = new ArrayList<>();
+        for (FunTimeApi.MineData m : mines) {
+            String r = m.nextMineRarity() != null ? m.nextMineRarity().toLowerCase() : "";
+            if (r.isEmpty() || r.equals("default")) { if (!filterDefault) continue; }
+            else if (r.equals("legendary")) { if (!filterLegendary) continue; }
+            else if (r.equals("mythical")) { if (!filterMythical) continue; }
+            filtered.add(m);
+        }
+
+        if (filtered.isEmpty()) {
+            context.drawCenteredText(Fonts.REGULAR.getFont(7.0F), mines.isEmpty() ? "Нет доступных шахт" : "Нет по фильтру",
                 x + w / 2.0F, y + h / 2.0F - 4.0F, ec.getTextColor().mulAlpha(alpha));
             return;
         }
@@ -430,14 +492,14 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         float clipY = y + 2.0F;
         float clipH = h - 4.0F;
         int visibleCount = (int)(clipH / itemH) + 1;
-        int maxScroll = Math.max(0, mines.size() - visibleCount);
+        int maxScroll = Math.max(0, filtered.size() - visibleCount);
         targetScrollOffset = Math.max(0, Math.min(targetScrollOffset, maxScroll));
         scrollOffset += (targetScrollOffset - scrollOffset) * 0.15F;
         if (Math.abs(scrollOffset - targetScrollOffset) < 0.5F) scrollOffset = targetScrollOffset;
         int scroll = Math.round(scrollOffset);
 
-        for (int i = scroll; i < Math.min(mines.size(), scroll + visibleCount + 1); i++) {
-            FunTimeApi.MineData mine = mines.get(i);
+        for (int i = scroll; i < Math.min(filtered.size(), scroll + visibleCount + 1); i++) {
+            FunTimeApi.MineData mine = filtered.get(i);
             float itemY = clipY + (i - scroll) * itemH;
 
             if (itemY + itemH > clipY + clipH) break;
@@ -512,6 +574,7 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         float closeX = panel.getX() + panel.getWidth() - closeSize - 15.0F;
         float closeY = panel.getY() + 12.0F;
         if (er.isHovered(closeX, closeY, closeSize, closeSize, mouseX, mouseY)) {
+            fL.CLICKGUI_OPEN.play(0.8F, 1.2F);
             this.closing = true;
             this.backToClickGUI = false;
             return;
@@ -529,6 +592,7 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         float toggleBtnX = fieldX + inputW + 6.0F;
         float toggleBtnY = fieldY + 2.0F;
         if (er.isHovered(toggleBtnX, toggleBtnY, toggleBtnW, toggleBtnH, mouseX, mouseY)) {
+            fL.CLICKGUI_OPEN.play(0.6F, 1.3F);
             tokenVisible = !tokenVisible;
             return;
         }
@@ -545,6 +609,7 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         float saveBtnX = toggleBtnX + toggleBtnW + 3.0F;
         float saveBtnY = fieldY + 2.0F;
         if (er.isHovered(saveBtnX, saveBtnY, saveBtnW, saveBtnH, mouseX, mouseY)) {
+            fL.CLICKGUI_OPEN.play(0.8F, 1.0F);
             this.apiToken = this.tokenField.getBuiltText();
             saveToken();
             return;
@@ -556,6 +621,7 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         float refreshBtnX = saveBtnX + saveBtnW + 3.0F;
         float refreshBtnY = fieldY + 2.0F;
         if (er.isHovered(refreshBtnX, refreshBtnY, refreshBtnW, refreshBtnH, mouseX, mouseY)) {
+            fL.CLICKGUI_OPEN.play(0.8F, 1.1F);
             this.scrollOffset = 0;
             this.targetScrollOffset = 0;
             fetchData();
@@ -568,10 +634,32 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         for (int i = 0; i < tabNames.length; i++) {
             float tabX = panel.getX() + 12.0F + i * (tabW + 4.0F);
             if (er.isHovered(tabX, tabY, tabW, tabH, mouseX, mouseY)) {
+                fL.CLICKGUI_OPEN.play(0.8F, 1.0F + i * 0.1F);
                 selectedTab = i;
                 scrollOffset = 0;
                 targetScrollOffset = 0;
                 return;
+            }
+        }
+
+        // Filter checkboxes
+        if (selectedTab == 1) {
+            float filterX = panel.getX() + panel.getWidth() - 96.0F;
+            float filterY = panel.getY() + 86.0F;
+            float cbSize = 7.0F;
+            float rowH = 14.0F;
+            float cbY = filterY + 18.0F;
+            for (int i = 0; i < 3; i++) {
+                float rowY = cbY + i * rowH;
+                if (er.isHovered(filterX + 6.0F, rowY, cbSize, cbSize, mouseX, mouseY)) {
+                    fL.CLICKGUI_OPEN.play(0.6F, 1.2F);
+                    if (i == 0) filterDefault = !filterDefault;
+                    else if (i == 1) filterLegendary = !filterLegendary;
+                    else if (i == 2) filterMythical = !filterMythical;
+                    scrollOffset = 0;
+                    targetScrollOffset = 0;
+                    return;
+                }
             }
         }
 
@@ -583,16 +671,19 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         float btnX3 = btnX1 + (btnSize + gap) * 2;
 
         if (er.isHovered(btnX1, btnY, btnSize, btnSize, mouseX, mouseY)) {
+            fL.CLICKGUI_OPEN.play(0.8F, 1.0F);
             mc.setScreen(new dP());
             return;
         }
         float btnX2 = btnX1 + btnSize + gap;
         if (er.isHovered(btnX2, btnY, btnSize, btnSize, mouseX, mouseY)) {
+            fL.CLICKGUI_OPEN.play(0.8F, 1.1F);
             mc.setScreen(new dX());
             return;
         }
 
         if (er.isHovered(btnX3, btnY, btnSize, btnSize, mouseX, mouseY)) {
+            fL.CLICKGUI_OPEN.play(0.8F, 1.2F);
             this.closing = true;
             this.backToClickGUI = true;
             return;
@@ -644,7 +735,18 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (keyCode == 256) {
+            fL.CLICKGUI_OPEN.play(0.8F, 1.2F);
+            this.closing = true;
+            this.backToClickGUI = false;
+            return true;
+        }
         if (this.tokenField.isFocused()) {
+            if (keyCode == 65 && Screen.hasControlDown()) {
+                this.tokenField.clear();
+                this.apiToken = "";
+                return true;
+            }
             this.tokenField.onKeyPressed(keyCode, scanCode, modifiers);
             this.apiToken = this.tokenField.getBuiltText();
             return true;
