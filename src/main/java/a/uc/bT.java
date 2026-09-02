@@ -306,23 +306,29 @@ public class bT extends aJ {
          }
 
           if (this.t != null && this.p.getValue() != 0.0F && !this.t.isRemoved() && mc.world != null && mc.player != null) {
+            System.out.println("[TargetESP-DEBUG] RENDER HIT, entity=" + this.t.getClass().getSimpleName());
             MatrixStack var13 = event.getMatrices();
             var13.push();
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(SrcFactor.SRC_ALPHA, DstFactor.ONE);
             RenderSystem.enableDepthTest();
+
+            boolean visible = true;
             try {
-            if (mc.world
-                  .raycast(
-                     new RaycastContext(
-                        mc.gameRenderer.getCamera().getPos(), this.t.getEyePos(), ShapeType.COLLIDER, FluidHandling.NONE, mc.player
+               if (mc.world
+                     .raycast(
+                        new RaycastContext(
+                           mc.gameRenderer.getCamera().getPos(), this.t.getEyePos(), ShapeType.COLLIDER, FluidHandling.NONE, mc.player
+                        )
                      )
-                  )
-                  .getType()
-               != Type.MISS) {
+                     .getType()
+                  != Type.MISS) {
+                  visible = false;
+               }
+            } catch (Exception ignored) {}
+            if (!visible) {
                RenderSystem.disableDepthTest();
             }
-            } catch (Exception ignored) {}
 
             RenderSystem.disableCull();
             RenderSystem.depthMask(false);
