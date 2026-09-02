@@ -49,6 +49,9 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
     private int selectedTab = 0;
     private final String[] tabNames = new String[]{"Ивенты", "Шахты"};
 
+    private int selectedEventTab = 0;
+    private final String[] eventTabNames = new String[]{"Текущие", "Предстоящие"};
+
     private String apiToken = "";
     private boolean tokenFocused = false;
     private cK tokenField;
@@ -427,6 +430,32 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         }
 
         if (selectedTab == 0) {
+            float subTabY = contentY - 18.0F;
+            float subTabH = 14.0F;
+            float subTabW = 60.0F;
+            float subTabGap = 4.0F;
+            float subTabTotalW = eventTabNames.length * subTabW + (eventTabNames.length - 1) * subTabGap;
+            float subTabStartX = x + (w - filterW - subTabTotalW) / 2.0F;
+
+            for (int i = 0; i < eventTabNames.length; i++) {
+                float stx = subTabStartX + i * (subTabW + subTabGap);
+                boolean sel = i == selectedEventTab;
+                if (sel) {
+                    context.drawRoundedRect(stx, subTabY, subTabW, subTabH, BorderRadius.all(3.0F),
+                        ec.getAccentColor().mulAlpha(alpha));
+                    context.drawCenteredText(Fonts.REGULAR.getFont(6.0F), eventTabNames[i],
+                        stx + subTabW / 2.0F, subTabY + 3.0F, ec.WHITE.mulAlpha(alpha));
+                } else {
+                    context.drawRoundedRect(stx, subTabY, subTabW, subTabH, BorderRadius.all(3.0F),
+                        ec.getTextColor().withAlpha((int)(20.0F * alpha)));
+                    context.drawCenteredText(Fonts.REGULAR.getFont(6.0F), eventTabNames[i],
+                        stx + subTabW / 2.0F, subTabY + 3.0F, ec.getTextColor().mulAlpha(alpha));
+                }
+                if (er.isHovered(stx, subTabY, subTabW, subTabH, context)) {
+                    eo.set(en.HAND);
+                }
+            }
+
             drawEventsList(context, contentX, contentY, contentW, contentH, alpha);
         } else {
             drawMinesList(context, contentX, contentY, contentW, contentH, alpha);
@@ -530,6 +559,14 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
             if (!typeAllowed && !type.isEmpty()) continue;
             if (type.isEmpty()) typeAllowed = true;
             if (!typeAllowed) continue;
+
+            String phase = ev.phase() != null ? ev.phase().toUpperCase() : "";
+            if (selectedEventTab == 0) {
+                if (phase.equals("CLOSED") || phase.equals("WAITING") || phase.equals("STARTING")) continue;
+            } else {
+                if (!phase.equals("WAITING") && !phase.equals("STARTING")) continue;
+            }
+
             filtered.add(ev);
         }
 
@@ -801,6 +838,32 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
             }
         }
 
+        if (selectedTab == 0) {
+            float filterW = 90.0F;
+            float subTabY = panel.getY() + 86.0F - 18.0F;
+            float subTabH = 14.0F;
+            float subTabW = 60.0F;
+            float subTabGap = 4.0F;
+            float subTabTotalW = eventTabNames.length * subTabW + (eventTabNames.length - 1) * subTabGap;
+            float subTabStartX = panel.getX() + (panel.getWidth() - filterW - subTabTotalW) / 2.0F;
+
+            for (int i = 0; i < eventTabNames.length; i++) {
+                float stx = subTabStartX + i * (subTabW + subTabGap);
+                if (er.isHovered(stx, subTabY, subTabW, subTabH, mouseX, mouseY)) {
+                    fL.CLICKGUI_OPEN.play(0.8F, 1.0F + i * 0.1F);
+                    clickFlashTime = System.currentTimeMillis();
+                    clickFlashX = stx;
+                    clickFlashY = subTabY;
+                    clickFlashW = subTabW;
+                    clickFlashH = subTabH;
+                    selectedEventTab = i;
+                    scrollOffset = 0;
+                    targetScrollOffset = 0;
+                    return;
+                }
+            }
+        }
+
         // Filter checkboxes
         if (selectedTab == 0 || selectedTab == 1) {
             float filterX = panel.getX() + panel.getWidth() - 96.0F;
@@ -922,6 +985,14 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
                 if (!allowed && !type.isEmpty()) continue;
                 if (type.isEmpty()) allowed = true;
                 if (!allowed) continue;
+
+                String phase = ev.phase() != null ? ev.phase().toUpperCase() : "";
+                if (selectedEventTab == 0) {
+                    if (phase.equals("CLOSED") || phase.equals("WAITING") || phase.equals("STARTING")) continue;
+                } else {
+                    if (!phase.equals("WAITING") && !phase.equals("STARTING")) continue;
+                }
+
                 filteredClick.add(ev);
             }
             int maxScroll = Math.max(0, filteredClick.size() - visibleCount);
