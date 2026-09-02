@@ -306,57 +306,12 @@ public class bT extends aJ {
          }
 
           if (this.t != null && this.p.getValue() != 0.0F && !this.t.isRemoved() && mc.world != null && mc.player != null) {
-            System.out.println("[TargetESP-DEBUG] RENDER HIT, entity=" + this.t.getClass().getSimpleName());
-            MatrixStack var13 = event.getMatrices();
-            var13.push();
-            RenderSystem.enableBlend();
-            RenderSystem.blendFunc(SrcFactor.SRC_ALPHA, DstFactor.ONE);
-            RenderSystem.enableDepthTest();
-
-            boolean visible = true;
-            try {
-               if (mc.world
-                     .raycast(
-                        new RaycastContext(
-                           mc.gameRenderer.getCamera().getPos(), this.t.getEyePos(), ShapeType.COLLIDER, FluidHandling.NONE, mc.player
-                        )
-                     )
-                     .getType()
-                  != Type.MISS) {
-                  visible = false;
-               }
-            } catch (Exception ignored) {}
-            if (!visible) {
-               RenderSystem.disableDepthTest();
-            }
-
-            RenderSystem.disableCull();
-            RenderSystem.depthMask(false);
-            if (this.d.isSelected()) {
-               this.a(var13, this.t);
-            } else if (this.e.isSelected()) {
-               this.c(var13, this.t);
-            } else if (this.f.isSelected()) {
-               this.b(var13, this.t);
-            } else if (this.c.isSelected()) {
-               this.d(var13, this.t);
-            } else if (this.g.isSelected()) {
-               this.f(var13, this.t);
-            } else if (this.h.isSelected()) {
-               this.g(var13, this.t);
-            } else {
-               this.e(var13, this.t);
-            }
-
-            RenderSystem.depthMask(true);
-            RenderSystem.setShaderTexture(0, 0);
-            RenderSystem.disableBlend();
-            RenderSystem.enableCull();
-            RenderSystem.disableDepthTest();
-            var13.pop();
-         }
-      }
-      } catch (Exception e) {
+             System.out.println("[TargetESP-DEBUG] RENDER HIT, entity=" + this.t.getClass().getSimpleName());
+             System.out.println("[TargetESP-DEBUG] Mode: d=" + this.d.isSelected() + " e=" + this.e.isSelected() + " f=" + this.f.isSelected() + " c=" + this.c.isSelected() + " g=" + this.g.isSelected() + " h=" + this.h.isSelected());
+              return;
+       }
+       }
+       } catch (Exception e) {
          System.err.println("[TargetESP] Error: " + e.getClass().getSimpleName() + ": " + e.getMessage());
       }
    };
