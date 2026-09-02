@@ -267,7 +267,7 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         this.tokenField.setTextColor(ec.getTextColor().mulAlpha(alpha));
         this.tokenField.setAlpha(alpha);
 
-        if (!tokenVisible && !this.apiToken.isEmpty()) {
+        if (!tokenVisible && !this.apiToken.isEmpty() && !this.tokenField.isFocused()) {
             Font tinyFont = Fonts.REGULAR.getFont(6.0F);
             String masked = "*".repeat(Math.min(this.apiToken.length(), 30));
             context.drawText(tinyFont, masked, fieldX + 6.0F, fieldY + 5.0F, ec.getTextColor().mulAlpha(alpha));
@@ -615,6 +615,9 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
             clickFlashW = toggleBtnW;
             clickFlashH = toggleBtnH;
             tokenVisible = !tokenVisible;
+            if (tokenVisible) {
+                this.tokenField.setFocused(true);
+            }
             return;
         }
 
