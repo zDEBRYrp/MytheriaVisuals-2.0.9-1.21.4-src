@@ -190,13 +190,56 @@ public class TextFormatUtils {
         return sb.toString();
     }
 
+    private static final int[][] LEGACY_COLORS = {
+        {0x000000, 0x0000AA, 0x00AA00, 0x00AAAA, 0xAA0000, 0xAA00AA, 0xFFAA00, 0xAAAAAA,
+         0x555555, 0x5555FF, 0x55FF55, 0x55FFFF, 0xFF5555, 0xFF55FF, 0xFFFF55, 0xFFFFFF}
+    };
+    private static final char[] LEGACY_CHARS = "0123456789abcdef".toCharArray();
+
+    private static int rgbToLegacy(int rgb) {
+        int bestIdx = 0;
+        int bestDist = Integer.MAX_VALUE;
+        int r1 = (rgb >> 16) & 0xFF, g1 = (rgb >> 8) & 0xFF, b1 = rgb & 0xFF;
+        for (int i = 0; i < 16; i++) {
+            int c = LEGACY_COLORS[0][i];
+            int r2 = (c >> 16) & 0xFF, g2 = (c >> 8) & 0xFF, b2 = c & 0xFF;
+            int dist = (r1 - r2) * (r1 - r2) + (g1 - g2) * (g1 - g2) + (b1 - b2) * (b1 - b2);
+            if (dist < bestDist) {
+                bestDist = dist;
+                bestIdx = i;
+            }
+        }
+        return bestIdx;
+    }
+
+    public static String toFormatLegacy(Text text) {
+        return toFormatLegacy(extractSegments(text));
+    }
+
+    public static String toFormatLegacy(OrderedText text) {
+        return toFormatLegacy(extractSegments(text));
+    }
+
+    private static String toFormatLegacy(List<Segment> segments) {
+        StringBuilder sb = new StringBuilder();
+        for (Segment seg : segments) {
+            if (seg.color != -1) {
+                sb.append("&").append(LEGACY_CHARS[rgbToLegacy(seg.color)]);
+            }
+            appendFormatting(sb, seg);
+            sb.append(seg.text);
+        }
+        return sb.toString();
+    }
+
     public static String format(Text text, int formatIndex) {
         return switch (formatIndex) {
             case 0 -> toFormat1(text);
             case 1 -> toFormat2(text);
             case 2 -> toFormat3(text);
             case 3 -> toFormat4(text);
-            case 4 -> toPlain(text);
+            case 4 -> toFormatLegacy(text);
+            case 5 -> toPlain(text);
             default -> toFormat1(text);
         };
     }
@@ -207,7 +250,8 @@ public class TextFormatUtils {
             case 1 -> toFormat2(text);
             case 2 -> toFormat3(text);
             case 3 -> toFormat4(text);
-            case 4 -> toPlain(text);
+            case 4 -> toFormatLegacy(text);
+            case 5 -> toPlain(text);
             default -> toFormat1(text);
         };
     }

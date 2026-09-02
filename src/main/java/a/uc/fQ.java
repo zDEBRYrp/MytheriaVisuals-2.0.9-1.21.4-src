@@ -13,7 +13,7 @@ import nesquik.mytheria.systems.event.EventListener;
 import nesquik.mytheria.systems.modules.api.ModuleInfo;
 import org.lwjgl.glfw.GLFW;
 
-@ModuleInfo(name = "Copy Helper", category = ax.VISUALS, desc = "modules.descriptions.copy_helper")
+@ModuleInfo(name = "Copy Helper", category = ax.OTHER, desc = "modules.descriptions.copy_helper")
 public class fQ extends aJ {
     private static fQ instance;
     private final ch a = new ch(this, "modules.settings.copy_helper.chat_copy").enabled(true);
@@ -24,6 +24,7 @@ public class fQ extends aJ {
     private final ck.a e = new ck.a(this.c, "<#RRGGBB>");
     private final ck.a f = new ck.a(this.c, "&x&R&R&G&G&B&B");
     private final ck.a g = new ck.a(this.c, "&x&r&r&g&g&b&b");
+    private final ck.a h_legacy = new ck.a(this.c, "Legacy (&a/&2/&b)");
     private final ck.a h_plain = new ck.a(this.c, "Без цветов");
 
     private final EventListener<an> i = event -> {
@@ -65,7 +66,8 @@ public class fQ extends aJ {
         if (this.e.isSelected()) return 1;
         if (this.f.isSelected()) return 2;
         if (this.g.isSelected()) return 3;
-        if (this.h_plain.isSelected()) return 4;
+        if (this.h_legacy.isSelected()) return 4;
+        if (this.h_plain.isSelected()) return 5;
         return 0;
     }
 
