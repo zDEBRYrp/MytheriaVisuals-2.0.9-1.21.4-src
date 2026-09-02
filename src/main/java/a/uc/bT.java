@@ -515,54 +515,101 @@ public class bT extends aJ {
       RenderSystem.disableBlend();
    }
 
-   private void d(MatrixStack ms, LivingEntity target) {
-      Camera var3 = mc.gameRenderer.getCamera();
-      Vec3d var4 = var3.getPos();
-      eb var5 = this.a();
-      float var6 = this.t.getWidth() * 1.5F;
-      fl.prepareMatrices(ms, this.a(this.t));
-      BufferBuilder var7 = fg.createBuffer();
+    private static int applyBrightness(int color, float brightness) {
+       int a = color >> 24 & 0xFF;
+       int r = Math.min(255, Math.max(0, (int)((color >> 16 & 0xFF) * brightness)));
+       int g = Math.min(255, Math.max(0, (int)((color >> 8 & 0xFF) * brightness)));
+       int b = Math.min(255, Math.max(0, (int)((color & 0xFF) * brightness)));
+       return a << 24 | r << 16 | g << 8 | b;
+    }
 
-      for (byte var8 = 0; var8 < 360; var8 += 20) {
-         float var9 = 1.2F - 0.5F * this.p.getValue();
-         float var10 = (float)(eI.sin((float)Math.toRadians(var8 + this.q.getValue() * 0.3F)) * var6 * var9);
-         float var11 = (float)(eI.cos((float)Math.toRadians(var8 + this.q.getValue() * 0.3F)) * var6 * var9);
-         float var12 = 0.1F;
-         ms.push();
-         ms.translate(var10, 0.1F + target.getHeight() * Math.abs(eI.sin(var8)), var11);
-         Vec3d var13 = this.a(this.t).add(var10, 1.0, var11);
-         Vec3d var14 = target.getPos().add(0.0, target.getHeight() / 2.0, 0.0);
-         Vector3f var15 = new Vector3f(
-               (float)(var14.x - var13.x), (float)(var14.y - var13.y), (float)(var14.z - var13.z)
-            )
-            .normalize();
-         Vector3f var16 = new Vector3f(0.0F, 1.0F, 0.0F);
-         Quaternionf var17 = new Quaternionf().rotationTo(var16, var15);
-         ms.multiply(var17);
-         fg.render(ms, var7, 0.0F, 0.0F, 0.0F, var12, var5.withAlpha(255.0F * this.p.getValue()));
-         ms.pop();
-      }
+    private static final Vector3f[] CRYSTAL_VERTS = new Vector3f[]{
+       new Vector3f(0.0F, 1.5F, 0.0F),
+       new Vector3f(0.0F, -1.5F, 0.0F),
+       new Vector3f(1.0F, 0.0F, 0.0F),
+       new Vector3f(-1.0F, 0.0F, 0.0F),
+       new Vector3f(0.0F, 0.0F, 1.0F),
+       new Vector3f(0.0F, 0.0F, -1.0F)
+    };
+    private static final int[][] CRYSTAL_FACES = new int[][]{
+       {0, 2, 4}, {0, 4, 3}, {0, 3, 5}, {0, 5, 2},
+       {1, 4, 2}, {1, 3, 4}, {1, 5, 3}, {1, 2, 5}
+    };
+    private static final float[] CRYSTAL_BRIGHTNESS = new float[]{
+       1.0F, 0.8F, 0.6F, 0.9F, 0.7F, 0.5F, 0.4F, 0.6F
+    };
 
-      BufferRenderer.drawWithGlobalProgram(var7.end());
-      Identifier var18 = Mytheria.id("textures/bloom.png");
-      RenderSystem.setShaderTexture(0, var18);
-      RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX_COLOR);
-      BufferBuilder var19 = RenderSystem.renderThreadTesselator().begin(DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
-      float var20 = 1.0F;
+    private void d(MatrixStack ms, LivingEntity target) {
+       Camera var3 = mc.gameRenderer.getCamera();
+       eb var5 = this.a();
+       float var6 = this.t.getWidth() * 1.5F;
+       float alpha = 255.0F * this.p.getValue();
+       eb faceColor = var5.withAlpha(alpha);
 
-      for (byte var21 = 0; var21 < 360; var21 += 20) {
-         float var22 = 1.2F - 0.5F * this.p.getValue();
-         float var23 = (float)(eI.sin((float)Math.toRadians(var21 + this.q.getValue() * 0.3F)) * var6 * var22);
-         float var24 = (float)(eI.cos((float)Math.toRadians(var21 + this.q.getValue() * 0.3F)) * var6 * var22);
-         ms.push();
-         ms.translate(var23, 0.1F + target.getHeight() * Math.abs(eI.sin(var21)), var24);
-         ms.multiply(var3.getRotation());
-         fj.drawImage(ms, var19, -var20 / 2.0F, -var20 / 2.0F, 0.0, var20, var20, var5.withAlpha(255.0F * this.p.getValue() * 0.2F));
-         ms.pop();
-      }
+       RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
+       RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+       fl.prepareMatrices(ms, this.a(this.t));
 
-      fl.buildBuffer(var19);
-   }
+       for (byte var8 = 0; var8 < 360; var8 += 20) {
+          float var9 = 1.2F - 0.5F * this.p.getValue();
+          float var10 = (float)(eI.sin((float)Math.toRadians(var8 + this.q.getValue() * 0.3F)) * var6 * var9);
+          float var11 = (float)(eI.cos((float)Math.toRadians(var8 + this.q.getValue() * 0.3F)) * var6 * var9);
+          float var12 = 0.1F;
+          ms.push();
+          ms.translate(var10, 0.1F + target.getHeight() * Math.abs(eI.sin(var8)), var11);
+          Vec3d var13 = this.a(this.t).add(var10, 1.0, var11);
+          Vec3d var14 = target.getPos().add(0.0, target.getHeight() / 2.0, 0.0);
+          Vector3f dir = new Vector3f(
+                (float)(var14.x - var13.x), (float)(var14.y - var13.y), (float)(var14.z - var13.z)
+             );
+          float len = dir.length();
+          if (len < 0.001F) {
+             ms.pop();
+             continue;
+          }
+          dir.normalize();
+          Vector3f up = new Vector3f(0.0F, 1.0F, 0.0F);
+          Quaternionf rot = new Quaternionf().rotationTo(up, dir);
+          ms.multiply(rot);
+
+          ms.push();
+          ms.scale(var12, var12, var12);
+          Matrix4f posMat = ms.peek().getPositionMatrix();
+          BufferBuilder buf = RenderSystem.renderThreadTesselator().begin(DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR);
+          for (int f = 0; f < CRYSTAL_FACES.length; f++) {
+             int[] face = CRYSTAL_FACES[f];
+             float bright = CRYSTAL_BRIGHTNESS[f];
+             int c = applyBrightness(faceColor.getRGB(), bright);
+             for (int v = 0; v < 3; v++) {
+                Vector3f vert = CRYSTAL_VERTS[face[v]];
+                buf.vertex(posMat, vert.x, vert.y, vert.z).color(c);
+             }
+          }
+          BufferRenderer.drawWithGlobalProgram(buf.end());
+          ms.pop();
+
+          ms.pop();
+       }
+
+       Identifier var18 = Mytheria.id("textures/bloom.png");
+       RenderSystem.setShaderTexture(0, var18);
+       RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX_COLOR);
+       BufferBuilder var19 = RenderSystem.renderThreadTesselator().begin(DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
+       float var20 = 1.0F;
+
+       for (byte var21 = 0; var21 < 360; var21 += 20) {
+          float var22 = 1.2F - 0.5F * this.p.getValue();
+          float var23 = (float)(eI.sin((float)Math.toRadians(var21 + this.q.getValue() * 0.3F)) * var6 * var22);
+          float var24 = (float)(eI.cos((float)Math.toRadians(var21 + this.q.getValue() * 0.3F)) * var6 * var22);
+          ms.push();
+          ms.translate(var23, 0.1F + target.getHeight() * Math.abs(eI.sin(var21)), var24);
+          ms.multiply(var3.getRotation());
+          fj.drawImage(ms, var19, -var20 / 2.0F, -var20 / 2.0F, 0.0, var20, var20, var5.withAlpha(255.0F * this.p.getValue() * 0.2F));
+          ms.pop();
+       }
+
+       fl.buildBuffer(var19);
+    }
 
    private void e(MatrixStack ms, LivingEntity target) {
       Camera var3 = mc.gameRenderer.getCamera();
