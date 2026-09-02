@@ -623,49 +623,53 @@ public class bT extends aJ {
        fl.buildBuffer(var19);
     }
 
-   private void e(MatrixStack ms, LivingEntity target) {
-      Camera var3 = mc.gameRenderer.getCamera();
-      eb var4 = this.a();
-      Identifier var5 = Mytheria.id("textures/bloom.png");
-      float var6 = this.t.getWidth() * 1.5F;
-      RenderSystem.setShaderTexture(0, var5);
-      RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX_COLOR);
-      BufferBuilder var7 = RenderSystem.renderThreadTesselator().begin(DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
-      fl.prepareMatrices(ms, this.a(this.t));
-      byte var8 = 2;
-      byte var9 = 0;
-      byte var10 = 0;
-      int var11 = 0;
+    private void e(MatrixStack ms, LivingEntity target) {
+       Camera var3 = mc.gameRenderer.getCamera();
+       Vec3d var4 = this.a(target);
+       Vec3d var5 = var3.getPos();
+       eb var6 = this.a();
+       Identifier var7 = Mytheria.id("textures/bloom.png");
+       float var8 = this.t.getWidth() * 1.5F;
+       double var9 = var4.x - var5.getX();
+       double var11 = var4.y - var5.getY();
+       double var13 = var4.z - var5.getZ();
+       RenderSystem.setShaderTexture(0, var7);
+       RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX_COLOR);
+       BufferBuilder var15 = RenderSystem.renderThreadTesselator().begin(DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
+       byte var16 = 2;
+       byte var17 = 0;
+       byte var18 = 0;
+       int var19 = 0;
 
-      for (byte var12 = 0; var12 < 360; var12 += var8) {
-         float var13 = 0.13F + 0.005F * var9;
-         float var14 = 0.7F + 0.005F * var9;
-         if (var10 > 0) {
-            var10 -= var8;
-         } else {
-            var9 += var8;
-            if (var9 > 50) {
-               var10 = 100;
-               var9 = 0;
-               var11++;
-            } else {
-               float var15 = Math.max(0.5F, 1.2F - 0.5F * this.p.getValue());
-               float var16 = (float)(eI.sin((float)Math.toRadians(var12 + this.q.getValue() * 1.0F)) * var6 * var15);
-               float var17 = (float)(eI.cos((float)Math.toRadians(var12 + this.q.getValue() * 1.0F)) * var6 * var15);
-               ms.push();
-               ms.translate(
-                  var16, this.t.getHeight() / 1.5F + this.t.getHeight() / 3.0F * eI.sin(Math.toRadians(var12 / 2.0F + this.q.getValue() / 5.0F)), var17
-               );
-               ms.multiply(var3.getRotation());
-               fj.drawImage(ms, var7, -var14 / 2.0F, -var14 / 2.0F, -var13 / 2.0F, var14, var14, var4.withAlpha(var4.getAlpha() * this.p.getValue() * 0.05F));
-               fj.drawImage(ms, var7, -var13 / 2.0F, -var13 / 2.0F, -var13 / 2.0F, var13, var13, var4.withAlpha(var4.getAlpha() * this.p.getValue()));
-               ms.pop();
-            }
-         }
-      }
+       for (byte var20 = 0; var20 < 360; var20 += var16) {
+          float var21 = 0.13F + 0.005F * var17;
+          float var22 = 0.7F + 0.005F * var17;
+          if (var18 > 0) {
+             var18 -= var16;
+          } else {
+             var17 += var16;
+             if (var17 > 50) {
+                var18 = 100;
+                var17 = 0;
+                var19++;
+             } else {
+                float var23 = Math.max(0.5F, 1.2F - 0.5F * this.p.getValue());
+                float var24 = (float)(eI.sin((float)Math.toRadians(var20 + this.q.getValue() * 1.0F)) * var8 * var23);
+                float var25 = (float)(eI.cos((float)Math.toRadians(var20 + this.q.getValue() * 1.0F)) * var8 * var23);
+                double var26 = this.t.getHeight() / 1.5F + this.t.getHeight() / 3.0F * eI.sin(Math.toRadians(var20 / 2.0F + this.q.getValue() / 5.0F));
+                ms.push();
+                ms.translate(var9 + var24, var11 + var26, var13 + var25);
+                ms.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-var3.getYaw()));
+                ms.multiply(RotationAxis.POSITIVE_X.rotationDegrees(var3.getPitch()));
+                fj.drawImage(ms, var15, -var22 / 2.0F, -var22 / 2.0F, -var21 / 2.0F, var22, var22, var6.withAlpha(var6.getAlpha() * this.p.getValue() * 0.05F));
+                fj.drawImage(ms, var15, -var21 / 2.0F, -var21 / 2.0F, -var21 / 2.0F, var21, var21, var6.withAlpha(var6.getAlpha() * this.p.getValue()));
+                ms.pop();
+             }
+          }
+       }
 
-      BufferRenderer.drawWithGlobalProgram(var7.end());
-   }
+       BufferRenderer.drawWithGlobalProgram(var15.end());
+    }
 
    private Vec3d a(LivingEntity target) {
       float var2 = MinecraftClient.getInstance().getRenderTickCounter().getTickDelta(false);
