@@ -13,7 +13,7 @@ import nesquik.mytheria.systems.event.EventListener;
 import nesquik.mytheria.systems.modules.api.ModuleInfo;
 import org.lwjgl.glfw.GLFW;
 
-@ModuleInfo(name = "Copy Helper", category = ax.OTHER, desc = "modules.descriptions.copy_helper")
+@ModuleInfo(name = "Copy Helper", category = ax.VISUALS, desc = "modules.descriptions.copy_helper")
 public class fQ extends aJ {
     private static fQ instance;
     private final ch a = new ch(this, "modules.settings.copy_helper.chat_copy").enabled(true);

@@ -74,9 +74,8 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
     private boolean filterLegendary = true;
     private boolean filterMythical = true;
 
-    private int eventTimeFilter = 0;
-    private final String[] eventTimeNames = {"Все", "<5 мин", "<15 мин", "<30 мин", "<1 час"};
-    private final long[] eventTimeLimits = {0, 300, 900, 1800, 3600};
+    private float filterScrollOffset = 0;
+    private float filterTargetScrollOffset = 0;
 
     private final String[] eventFilterKeys = {"airdrop", "hellm", "altar", "beacon", "myst_beacon", "vulkan", "meteor_rain", "express", "santa", "deathchest"};
     private final String[] eventFilterNames = {"Аирдроп", "Череп", "Алтарь", "Маяк", "Мист. Маяк", "Вулкан", "Метеорит", "Посылка", "Санта", "Контейнер"};
@@ -155,7 +154,6 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
                 if (json.has("filterDefault")) filterDefault = json.get("filterDefault").getAsBoolean();
                 if (json.has("filterLegendary")) filterLegendary = json.get("filterLegendary").getAsBoolean();
                 if (json.has("filterMythical")) filterMythical = json.get("filterMythical").getAsBoolean();
-                if (json.has("eventTimeFilter")) eventTimeFilter = json.get("eventTimeFilter").getAsInt();
                 if (json.has("eventFilters")) {
                     JsonObject ef = json.getAsJsonObject("eventFilters");
                     for (int i = 0; i < eventFilterKeys.length; i++) {
@@ -175,7 +173,6 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
             json.addProperty("filterDefault", filterDefault);
             json.addProperty("filterLegendary", filterLegendary);
             json.addProperty("filterMythical", filterMythical);
-            json.addProperty("eventTimeFilter", eventTimeFilter);
             JsonObject ef = new JsonObject();
             for (int i = 0; i < eventFilterKeys.length; i++) {
                 ef.addProperty(eventFilterKeys[i], eventFilterFlags[i]);
@@ -452,10 +449,10 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
 
         float cbSize = 7.0F;
         float rowH = 12.0F;
-        float curY = filterY + 4.0F;
 
         if (selectedTab == 1) {
-            context.drawText(titleFont, "Редкость", filterX + 6.0F, curY + 2.0F, ec.getTextColor().mulAlpha(alpha));
+            float curY = filterY + 6.0F;
+            context.drawText(titleFont, "Редкость", filterX + 6.0F, curY, ec.getTextColor().mulAlpha(alpha));
             curY += 12.0F;
 
             String[] labels = {"Default", "Legendary", "Mythical"};
@@ -478,36 +475,25 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
                 }
             }
         } else if (selectedTab == 0) {
-            context.drawText(titleFont, "Время", filterX + 6.0F, curY + 2.0F, ec.getTextColor().mulAlpha(alpha));
+            float contentH = filterH - 16.0F;
+            int totalRows = eventFilterKeys.length;
+            int visibleRows = (int)(contentH / rowH);
+            int maxScroll = Math.max(0, totalRows - visibleRows);
+            filterTargetScrollOffset = Math.max(0, Math.min(filterTargetScrollOffset, maxScroll));
+            filterScrollOffset += (filterTargetScrollOffset - filterScrollOffset) * 0.15F;
+            if (Math.abs(filterScrollOffset - filterTargetScrollOffset) < 0.5F) filterScrollOffset = filterTargetScrollOffset;
+            int fScroll = Math.round(filterScrollOffset);
+
+            float curY = filterY + 6.0F;
+            context.drawText(titleFont, "Типы ивентов", filterX + 6.0F, curY, ec.getTextColor().mulAlpha(alpha));
             curY += 12.0F;
 
-            for (int i = 0; i < eventTimeNames.length; i++) {
-                float rowY = curY + i * rowH;
-                boolean selected = i == eventTimeFilter;
-                context.drawRoundedRect(filterX + 6.0F, rowY, cbSize, cbSize, BorderRadius.all(2.0F),
-                    ec.getTextColor().withAlpha((int)(30.0F * alpha)));
-                if (selected) {
-                    context.drawRoundedRect(filterX + 7.0F, rowY + 1.0F, cbSize - 2.0F, cbSize - 2.0F,
-                        BorderRadius.all(1.5F), ec.getAccentColor().mulAlpha(alpha));
-                }
-                context.drawText(labelFont, eventTimeNames[i], filterX + 16.0F, rowY + 1.0F,
-                    selected ? ec.getAccentColor().mulAlpha(alpha) : ec.getTextColor().mulAlpha(alpha));
-                if (er.isHovered(filterX + 4.0F, rowY, filterW - 8.0F, cbSize, context)) {
-                    eo.set(en.HAND);
-                }
-            }
-            curY += eventTimeNames.length * rowH + 4.0F;
+            fm.push(context.getMatrices(), filterX, curY, filterW, contentH);
 
-            context.drawRoundedRect(filterX + 4.0F, curY, filterW - 8.0F, 1.0F, BorderRadius.all(0.5F),
-                ec.getTextColor().withAlpha((int)(20.0F * alpha)));
-            curY += 6.0F;
+            for (int i = fScroll; i < Math.min(totalRows, fScroll + visibleRows + 1); i++) {
+                float rowY = curY + (i - fScroll) * rowH;
+                if (rowY + cbSize > curY + contentH) break;
 
-            context.drawText(titleFont, "Типы", filterX + 6.0F, curY + 2.0F, ec.getTextColor().mulAlpha(alpha));
-            curY += 12.0F;
-
-            for (int i = 0; i < eventFilterKeys.length; i++) {
-                float rowY = curY + i * rowH;
-                if (rowY + cbSize > filterY + filterH) break;
                 context.drawRoundedRect(filterX + 6.0F, rowY, cbSize, cbSize, BorderRadius.all(2.0F),
                     ec.getTextColor().withAlpha((int)(30.0F * alpha)));
                 if (eventFilterFlags[i]) {
@@ -517,17 +503,20 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
                         filterX + 7.5F, rowY + 1.5F, cbSize - 3.0F, cbSize - 3.0F, ec.WHITE.mulAlpha(alpha));
                 }
                 context.drawText(labelFont, eventFilterNames[i], filterX + 16.0F, rowY + 1.0F, eventFilterColors[i].mulAlpha(alpha));
-                if (er.isHovered(filterX + 4.0F, rowY, filterW - 8.0F, cbSize, context)) {
-                    eo.set(en.HAND);
-                }
+            }
+
+            fm.pop();
+
+            if (maxScroll > 0) {
+                float scrollBarH = Math.max(10.0F, contentH * ((float)visibleRows / totalRows));
+                float scrollBarY = curY + (contentH - scrollBarH) * ((float)fScroll / maxScroll);
+                context.drawRoundedRect(filterX + filterW - 4.0F, scrollBarY, 2.0F, scrollBarH,
+                    BorderRadius.all(1.0F), ec.getTextColor().withAlpha((int)(40.0F * alpha)));
             }
         }
     }
 
     private void drawEventsList(UIContext context, float x, float y, float w, float h, float alpha) {
-        long elapsed = (System.currentTimeMillis() - lastFetchTime) / 1000;
-        long timeLimit = eventTimeLimits[eventTimeFilter];
-
         List<FunTimeApi.EventData> filtered = new ArrayList<>();
         for (FunTimeApi.EventData ev : events) {
             String type = ev.eventType() != null ? ev.eventType().toLowerCase() : "";
@@ -541,14 +530,15 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
             if (!typeAllowed && !type.isEmpty()) continue;
             if (type.isEmpty()) typeAllowed = true;
             if (!typeAllowed) continue;
-
-            if (timeLimit > 0 && ev.timeLeft() > 0) {
-                long remaining = Math.max(0, ev.timeLeft() - elapsed);
-                if (remaining > timeLimit) continue;
-            }
-
             filtered.add(ev);
         }
+
+        filtered.sort((a, b) -> {
+            int pa = phasePriority(a.phase());
+            int pb = phasePriority(b.phase());
+            if (pa != pb) return Integer.compare(pa, pb);
+            return Long.compare(a.timeLeft(), b.timeLeft());
+        });
 
         if (filtered.isEmpty()) {
             context.drawCenteredText(Fonts.REGULAR.getFont(7.0F), events.isEmpty() ? "Нет активных ивентов" : "Нет по фильтру",
@@ -599,6 +589,7 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
             }
 
             if (ev.timeLeft() > 0) {
+                long elapsed = (System.currentTimeMillis() - lastFetchTime) / 1000;
                 long rem = Math.max(0, ev.timeLeft() - elapsed);
                 String time = formatTime(rem);
                 eb timeColor = rem <= 10 ? eb.RED : rem <= 60 ? eb.YELLOW : ec.getTextColor().withAlpha((int)(150.0F * alpha));
@@ -818,10 +809,9 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
             float filterH = panel.getHeight() - 130.0F;
             float cbSize = 7.0F;
             float rowH = 12.0F;
-            float curY = filterY + 4.0F;
 
             if (selectedTab == 1) {
-                curY += 12.0F;
+                float curY = filterY + 18.0F;
                 for (int i = 0; i < 3; i++) {
                     float rowY = curY + i * rowH;
                     if (er.isHovered(filterX + 4.0F, rowY, filterW - 8.0F, cbSize, mouseX, mouseY)) {
@@ -841,27 +831,15 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
                     }
                 }
             } else if (selectedTab == 0) {
-                curY += 12.0F;
-                for (int i = 0; i < eventTimeNames.length; i++) {
-                    float rowY = curY + i * rowH;
-                    if (er.isHovered(filterX + 4.0F, rowY, filterW - 8.0F, cbSize, mouseX, mouseY)) {
-                        fL.CLICKGUI_OPEN.play(0.6F, 1.2F);
-                        clickFlashTime = System.currentTimeMillis();
-                        clickFlashX = filterX + 4.0F;
-                        clickFlashY = rowY;
-                        clickFlashW = filterW - 8.0F;
-                        clickFlashH = cbSize;
-                        eventTimeFilter = i;
-                        scrollOffset = 0;
-                        targetScrollOffset = 0;
-                        saveFilters();
-                        return;
-                    }
-                }
-                curY += eventTimeNames.length * rowH + 10.0F;
-                for (int i = 0; i < eventFilterKeys.length; i++) {
-                    float rowY = curY + i * rowH;
-                    if (rowY + cbSize > filterY + filterH) break;
+                float contentH = filterH - 16.0F;
+                float curY = filterY + 18.0F;
+                int totalRows = eventFilterKeys.length;
+                int visibleRows = (int)(contentH / rowH);
+                int fScroll = Math.round(filterScrollOffset);
+
+                for (int i = fScroll; i < Math.min(totalRows, fScroll + visibleRows + 1); i++) {
+                    float rowY = curY + (i - fScroll) * rowH;
+                    if (rowY + cbSize > curY + contentH) break;
                     if (er.isHovered(filterX + 4.0F, rowY, filterW - 8.0F, cbSize, mouseX, mouseY)) {
                         fL.CLICKGUI_OPEN.play(0.6F, 1.2F);
                         clickFlashTime = System.currentTimeMillis();
@@ -931,8 +909,6 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         int visibleCount = (int)(clipH / itemH) + 1;
 
         if (selectedTab == 0 && !events.isEmpty()) {
-            long elapsedClick = (System.currentTimeMillis() - lastFetchTime) / 1000;
-            long timeLimitClick = eventTimeLimits[eventTimeFilter];
             List<FunTimeApi.EventData> filteredClick = new ArrayList<>();
             for (FunTimeApi.EventData ev : events) {
                 String type = ev.eventType() != null ? ev.eventType().toLowerCase() : "";
@@ -946,10 +922,6 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
                 if (!allowed && !type.isEmpty()) continue;
                 if (type.isEmpty()) allowed = true;
                 if (!allowed) continue;
-                if (timeLimitClick > 0 && ev.timeLeft() > 0) {
-                    long remaining = Math.max(0, ev.timeLeft() - elapsedClick);
-                    if (remaining > timeLimitClick) continue;
-                }
                 filteredClick.add(ev);
             }
             int maxScroll = Math.max(0, filteredClick.size() - visibleCount);
@@ -1014,8 +986,32 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
 
     @Override
     public boolean onMouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
+        float filterX = panel.getX() + panel.getWidth() - 96.0F;
+        float filterY = panel.getY() + 86.0F;
+        float filterW = 86.0F;
+        float filterH = panel.getHeight() - 130.0F;
+
+        if (selectedTab == 0 && mouseX >= filterX && mouseX <= filterX + filterW && mouseY >= filterY && mouseY <= filterY + filterH) {
+            filterTargetScrollOffset -= (float)(verticalAmount * 2.0);
+            return true;
+        }
+
         targetScrollOffset -= (float)(verticalAmount * 2.0);
         return true;
+    }
+
+    private int phasePriority(String phase) {
+        if (phase == null) return 5;
+        return switch (phase.toUpperCase()) {
+            case "RUNNING" -> 0;
+            case "ACTIVATING" -> 1;
+            case "STARTING" -> 2;
+            case "OPENED" -> 3;
+            case "LOOTING" -> 4;
+            case "WAITING" -> 5;
+            case "CLOSED" -> 6;
+            default -> 5;
+        };
     }
 
     private eb getPhaseColor(String phase) {
@@ -1037,6 +1033,8 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
             case "ACTIVATING" -> "Активация";
             case "RUNNING" -> "Идёт";
             case "OPENED" -> "Открыт";
+            case "LOOTING" -> "Лут";
+            case "WAITING" -> "Ожидание";
             case "CLOSED" -> "Закрыт";
             default -> phase;
         };
