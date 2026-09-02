@@ -258,7 +258,8 @@ public class bT extends aJ {
    private final dZ q = new dZ(70L, 0.0F, Easing.LINEAR);
    private final dZ r = new dZ(200L, 0.0F, Easing.BOTH_CUBIC);
    private final dZ s = new dZ(50L, 0.0F, Easing.LINEAR);
-   private LivingEntity t;
+    private LivingEntity t;
+    private PigEntity pigCache;
    private float u = 0.0F;
    private final fO v = new fO();
    private double w = 0.0;
@@ -303,7 +304,7 @@ public class bT extends aJ {
             this.r.update(false);
          }
 
-         if (this.t != null && this.p.getValue() != 0.0F) {
+          if (this.t != null && this.p.getValue() != 0.0F && !this.t.isRemoved() && mc.world != null) {
             MatrixStack var13 = event.getMatrices();
             var13.push();
             RenderSystem.enableBlend();
@@ -757,7 +758,10 @@ public class bT extends aJ {
       RenderSystem.setShaderColor(var34, var35, var36, var37);
 
       try {
-         PigEntity var38 = new PigEntity(EntityType.PIG, mc.world);
+         if (this.pigCache == null || this.pigCache.isRemoved()) {
+            this.pigCache = new PigEntity(EntityType.PIG, mc.world);
+         }
+         PigEntity var38 = this.pigCache;
          var38.age = 0;
          EntityRenderDispatcher var39 = mc.getEntityRenderDispatcher();
          Immediate var40 = mc.getBufferBuilders().getEntityVertexConsumers();

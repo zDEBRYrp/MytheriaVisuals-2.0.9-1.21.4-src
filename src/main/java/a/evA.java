@@ -80,21 +80,23 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
     private float filterScrollOffset = 0;
     private float filterTargetScrollOffset = 0;
 
-    private final String[] eventFilterKeys = {"airdrop", "hellm", "altar", "beacon", "myst_beacon", "vulkan", "meteor_rain", "express", "santa", "deathchest"};
-    private final String[] eventFilterNames = {"Аирдроп", "Череп", "Алтарь", "Маяк", "Мист. Маяк", "Вулкан", "Метеорит", "Посылка", "Санта", "Контейнер"};
+    private final String[] eventFilterKeys = {"airdrop", "hellm", "altar", "altarundead", "beacon", "myst_beacon", "vulkan", "meteor_rain", "express", "santa", "deathchest", "geyser"};
+    private final String[] eventFilterNames = {"Аирдроп", "Череп", "Алтарь", "Алт. Мертвых", "Маяк", "Мист. Маяк", "Вулкан", "Метеорит", "Посылка", "Санта", "Контейнер", "Гейзер"};
     private final eb[] eventFilterColors = {
         new eb(0.0F, 200.0F, 100.0F),
         new eb(255.0F, 87.0F, 34.0F),
         new eb(138.0F, 43.0F, 226.0F),
+        new eb(160.0F, 80.0F, 200.0F),
         new eb(255.0F, 69.0F, 0.0F),
         new eb(255.0F, 69.0F, 0.0F),
         new eb(255.0F, 140.0F, 0.0F),
         new eb(70.0F, 130.0F, 180.0F),
         new eb(243.0F, 196.0F, 82.0F),
         new eb(220.0F, 30.0F, 30.0F),
-        new eb(141.0F, 99.0F, 184.0F)
+        new eb(141.0F, 99.0F, 184.0F),
+        new eb(0.0F, 180.0F, 255.0F)
     };
-    private final boolean[] eventFilterFlags = {true, true, true, true, true, true, true, true, true, true};
+    private final boolean[] eventFilterFlags = {true, true, true, true, true, true, true, true, true, true, true, true};
 
     private static final File FILTER_FILE = new File(ar.DIRECTORY, "events_filters.json");
 
@@ -1114,7 +1116,7 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
     private eb getEventColor(String eventType) {
         if (eventType == null) return ec.getAccentColor();
         return switch (eventType.toLowerCase()) {
-            case "altar", "mystic" -> new eb(138.0F, 43.0F, 226.0F);
+            case "altar", "mystic", "altarundead" -> new eb(138.0F, 43.0F, 226.0F);
             case "beacon", "myst_beacon" -> new eb(255.0F, 69.0F, 0.0F);
             case "vulkan" -> new eb(255.0F, 140.0F, 0.0F);
             case "meteor_rain" -> new eb(70.0F, 130.0F, 180.0F);
@@ -1123,6 +1125,7 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
             case "santa" -> new eb(220.0F, 30.0F, 30.0F);
             case "deathchest" -> new eb(141.0F, 99.0F, 184.0F);
             case "airdrop" -> new eb(0.0F, 200.0F, 100.0F);
+            case "geyser" -> new eb(0.0F, 180.0F, 255.0F);
             default -> ec.getAccentColor();
         };
     }
@@ -1131,6 +1134,7 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
         if (eventType == null) return "Ивент";
         return switch (eventType.toLowerCase()) {
             case "altar" -> "Мистический Алтарь";
+            case "altarundead" -> "Алтарь Мертвых";
             case "beacon" -> "Маяк Убийца";
             case "myst_beacon" -> "Маяк Убийца";
             case "vulkan" -> "Вулкан";
@@ -1141,6 +1145,7 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
             case "deathchest" -> "Контейнер";
             case "mystic" -> "Мистический Алтарь";
             case "airdrop" -> "Аирдроп";
+            case "geyser" -> "Гейзер";
             default -> eventType;
         };
     }

@@ -96,6 +96,7 @@ public class FunTimeApi {
                                     if ("system".equals(evType) && id.isEmpty()) continue;
 
                                     String actualType = id.isEmpty() ? evType : id;
+                                    if (actualType.isEmpty()) continue;
                                     String phase = getStr(e, "phase");
                                     String loot = getStr(e, "loot");
                 if (loot.equals("null") || loot.equals("NULL")) loot = "";
