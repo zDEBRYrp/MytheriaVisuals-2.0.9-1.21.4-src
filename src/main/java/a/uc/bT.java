@@ -266,6 +266,7 @@ public class bT extends aJ {
    private float x = 0.0F;
    private long y = 0L;
    private final EventListener<ae> z = event -> {
+      try {
       if (ee.isInGame()) {
          LivingEntity var2 = null;
          HitResult var3 = mc.crosshairTarget;
@@ -304,12 +305,13 @@ public class bT extends aJ {
             this.r.update(false);
          }
 
-          if (this.t != null && this.p.getValue() != 0.0F && !this.t.isRemoved() && mc.world != null) {
+          if (this.t != null && this.p.getValue() != 0.0F && !this.t.isRemoved() && mc.world != null && mc.player != null) {
             MatrixStack var13 = event.getMatrices();
             var13.push();
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(SrcFactor.SRC_ALPHA, DstFactor.ONE);
             RenderSystem.enableDepthTest();
+            try {
             if (mc.world
                   .raycast(
                      new RaycastContext(
@@ -320,6 +322,7 @@ public class bT extends aJ {
                != Type.MISS) {
                RenderSystem.disableDepthTest();
             }
+            } catch (Exception ignored) {}
 
             RenderSystem.disableCull();
             RenderSystem.depthMask(false);
@@ -346,6 +349,9 @@ public class bT extends aJ {
             RenderSystem.disableDepthTest();
             var13.pop();
          }
+      }
+      } catch (Exception e) {
+         System.err.println("[TargetESP] Error: " + e.getClass().getSimpleName() + ": " + e.getMessage());
       }
    };
 
