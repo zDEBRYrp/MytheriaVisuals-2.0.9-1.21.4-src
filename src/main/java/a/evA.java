@@ -861,6 +861,7 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
             case "express" -> new eb(243.0F, 196.0F, 82.0F);
             case "santa" -> new eb(220.0F, 30.0F, 30.0F);
             case "deathchest" -> new eb(141.0F, 99.0F, 184.0F);
+            case "airdrop" -> new eb(0.0F, 200.0F, 100.0F);
             default -> ec.getAccentColor();
         };
     }
@@ -878,6 +879,7 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
             case "santa" -> "Санта";
             case "deathchest" -> "Контейнер";
             case "mystic" -> "Мистический Алтарь";
+            case "airdrop" -> "Аирдроп";
             default -> eventType;
         };
     }
