@@ -751,7 +751,8 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
 
         float contentX = panel.getX() + 10.0F;
         float contentY = panel.getY() + 86.0F;
-        float contentW = panel.getWidth() - 20.0F;
+        float filterW = selectedTab == 1 ? 90.0F : 0.0F;
+        float contentW = panel.getWidth() - 20.0F - filterW;
         float contentH = panel.getHeight() - 130.0F;
         float itemH = 28.0F;
         float clipY = contentY + 2.0F;
