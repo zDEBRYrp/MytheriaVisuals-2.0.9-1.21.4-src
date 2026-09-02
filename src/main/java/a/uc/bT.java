@@ -633,13 +633,14 @@ public class bT extends aJ {
        double var9 = var4.x - var5.getX();
        double var11 = var4.y - var5.getY();
        double var13 = var4.z - var5.getZ();
-       RenderSystem.setShaderTexture(0, var7);
-       RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX_COLOR);
-       BufferBuilder var15 = RenderSystem.renderThreadTesselator().begin(DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
        byte var16 = 2;
        byte var17 = 0;
        byte var18 = 0;
        int var19 = 0;
+
+       RenderSystem.setShaderTexture(0, var7);
+       RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX_COLOR);
+       BufferBuilder buf = RenderSystem.renderThreadTesselator().begin(DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
 
        for (byte var20 = 0; var20 < 360; var20 += var16) {
           float var21 = 0.13F + 0.005F * var17;
@@ -661,14 +662,29 @@ public class bT extends aJ {
                 ms.translate(var9 + var24, var11 + var26, var13 + var25);
                 ms.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-var3.getYaw()));
                 ms.multiply(RotationAxis.POSITIVE_X.rotationDegrees(var3.getPitch()));
-                fj.drawImage(ms, var15, -var22 / 2.0F, -var22 / 2.0F, -var21 / 2.0F, var22, var22, var6.withAlpha(var6.getAlpha() * this.p.getValue() * 0.05F));
-                fj.drawImage(ms, var15, -var21 / 2.0F, -var21 / 2.0F, -var21 / 2.0F, var21, var21, var6.withAlpha(var6.getAlpha() * this.p.getValue()));
+                Matrix4f posMat = ms.peek().getPositionMatrix();
+                eb glowColor = var6.withAlpha(var6.getAlpha() * this.p.getValue() * 0.05F);
+                float gx = -var22 / 2.0F;
+                float gy = -var22 / 2.0F;
+                float gz = -var21 / 2.0F;
+                buf.vertex(posMat, gx, gy + var22, gz).texture(0.0F, 1.0F).color(glowColor.getRGB());
+                buf.vertex(posMat, gx + var22, gy + var22, gz).texture(1.0F, 1.0F).color(glowColor.getRGB());
+                buf.vertex(posMat, gx + var22, gy, gz).texture(1.0F, 0.0F).color(glowColor.getRGB());
+                buf.vertex(posMat, gx, gy, gz).texture(0.0F, 0.0F).color(glowColor.getRGB());
+                eb coreColor = var6.withAlpha(var6.getAlpha() * this.p.getValue());
+                float cx = -var21 / 2.0F;
+                float cy = -var21 / 2.0F;
+                float cz = -var21 / 2.0F;
+                buf.vertex(posMat, cx, cy + var21, cz).texture(0.0F, 1.0F).color(coreColor.getRGB());
+                buf.vertex(posMat, cx + var21, cy + var21, cz).texture(1.0F, 1.0F).color(coreColor.getRGB());
+                buf.vertex(posMat, cx + var21, cy, cz).texture(1.0F, 0.0F).color(coreColor.getRGB());
+                buf.vertex(posMat, cx, cy, cz).texture(0.0F, 0.0F).color(coreColor.getRGB());
                 ms.pop();
              }
           }
        }
 
-       BufferRenderer.drawWithGlobalProgram(var15.end());
+       BufferRenderer.drawWithGlobalProgram(buf.end());
     }
 
    private Vec3d a(LivingEntity target) {
