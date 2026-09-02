@@ -98,6 +98,7 @@ public class FunTimeApi {
                                     String actualType = id.isEmpty() ? evType : id;
                                     String phase = getStr(e, "phase");
                                     String loot = getStr(e, "loot");
+                if (loot.equals("null") || loot.equals("NULL")) loot = "";
                                     long timeLeft = e.has("time-seconds-left") ? e.get("time-seconds-left").getAsLong() : 0;
                                     boolean locAnnounced = "true".equals(getStr(e, "location-announced"));
                                     int lx = 0, ly = 0, lz = 0;

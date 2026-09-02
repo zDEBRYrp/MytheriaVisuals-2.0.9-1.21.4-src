@@ -814,13 +814,13 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
                 float curY = filterY + 18.0F;
                 for (int i = 0; i < 3; i++) {
                     float rowY = curY + i * rowH;
-                    if (er.isHovered(filterX + 4.0F, rowY, filterW - 8.0F, cbSize, mouseX, mouseY)) {
+                    if (er.isHovered(filterX + 4.0F, rowY, filterW - 8.0F, rowH, mouseX, mouseY)) {
                         fL.CLICKGUI_OPEN.play(0.6F, 1.2F);
                         clickFlashTime = System.currentTimeMillis();
                         clickFlashX = filterX + 4.0F;
                         clickFlashY = rowY;
                         clickFlashW = filterW - 8.0F;
-                        clickFlashH = cbSize;
+                        clickFlashH = rowH;
                         if (i == 0) filterDefault = !filterDefault;
                         else if (i == 1) filterLegendary = !filterLegendary;
                         else if (i == 2) filterMythical = !filterMythical;
@@ -839,14 +839,14 @@ public class evA extends CustomScreen implements IMinecraft, IScaledResolution {
 
                 for (int i = fScroll; i < Math.min(totalRows, fScroll + visibleRows + 1); i++) {
                     float rowY = curY + (i - fScroll) * rowH;
-                    if (rowY + cbSize > curY + contentH) break;
-                    if (er.isHovered(filterX + 4.0F, rowY, filterW - 8.0F, cbSize, mouseX, mouseY)) {
+                    if (rowY + rowH > curY + contentH) break;
+                    if (er.isHovered(filterX + 4.0F, rowY, filterW - 8.0F, rowH, mouseX, mouseY)) {
                         fL.CLICKGUI_OPEN.play(0.6F, 1.2F);
                         clickFlashTime = System.currentTimeMillis();
                         clickFlashX = filterX + 4.0F;
                         clickFlashY = rowY;
                         clickFlashW = filterW - 8.0F;
-                        clickFlashH = cbSize;
+                        clickFlashH = rowH;
                         eventFilterFlags[i] = !eventFilterFlags[i];
                         scrollOffset = 0;
                         targetScrollOffset = 0;
